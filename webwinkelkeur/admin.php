@@ -42,12 +42,12 @@ class WebwinkelkeurAdmin {
                 $config[$field_name] = (string) @$_POST['webwinkelkeur_' . $field_name];
 
             if(empty($config['wwk_shop_id']))
-                $errors[] = 'Uw webwinkel ID is verplicht.';
+                $errors[] = __('Uw webwinkel ID is verplicht.');
             elseif(!ctype_digit($config['wwk_shop_id']))
-                $errors[] = 'Uw webwinkel ID kan alleen cijfers bevatten.';
+                $errors[] = __('Uw webwinkel ID kan alleen cijfers bevatten.');
 
             if($config['invite'] && !$config['wwk_api_key'])
-                $errors[] = 'Om uitnodigingen te versturen is uw API key verplicht.';
+                $errors[] = __('Om uitnodigingen te versturen is uw API key verplicht.');
 
             if(!$errors)
                 foreach($config as $name => $value)
