@@ -26,8 +26,10 @@ function webwinkelkeur_activate() {
             `url` varchar(255) NOT NULL,
             `response` text NOT NULL,
             `time` bigint NOT NULL,
+            `reported` boolean NOT NULL DEFAULT 0,
             PRIMARY KEY (`id`),
-            KEY `time` (`time`)
+            KEY `time` (`time`),
+            KEY `reported` (`reported`)
         )
     ");
 }

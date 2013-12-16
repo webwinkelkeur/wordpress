@@ -22,11 +22,12 @@ class WebwinkelkeurAPI {
 
         if(!$response) {
             throw new WebwinkelkeurAPIError($url, 'API not reachable.');
-        } elseif(!preg_match('|^Success:|', trim($response))
-                 && !preg_match('|invite already sent|', trim($response))) {
-            throw new WebwinkelkeurAPIError($url, 'API response: ' . $response);
-        } else {
+        } elseif(preg_match('|^\s*Success:|', $response)) {
             return true;
+        } elseif(preg_match('|invite already sent|', $response)) {
+            throw new WebwinkelkeurAPIAlreadySentError($url, $response);
+        } else {
+            throw new WebwinkelkeurAPIError($url, $response);
         }
     }
 
@@ -52,3 +53,5 @@ class WebwinkelkeurAPIError extends Exception {
         return $this->url;
     }
 }
+
+class WebwinkelkeurAPIAlreadySentError extends WebwinkelkeurAPIError {}

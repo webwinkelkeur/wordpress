@@ -35,13 +35,26 @@ class WebwinkelkeurWooCommerce {
         $api = new WebwinkelkeurAPI($shop_id, $api_key);
         try {
             $api->invite($order_id, $email, $invite_delay);
+        } catch(WebwinkelkeurAPIAlreadySentError $e) {
+            // that's okay
         } catch(WebwinkelkeurAPIError $e) {
             $wpdb->insert($wpdb->prefix . 'webwinkelkeur_invite_error', array(
                 'url'       => $e->getURL(),
                 'response'  => $e->getMessage(),
                 'time'      => time(),
             ));
+            $this->insert_comment($order_id, __('Webwinkelkeur uitnodiging kon niet worden verstuurd.') . ' ' . $e->getMessage());
         }
+    }
+
+    private function insert_comment($order_id, $content) {
+        wp_insert_comment(array(
+            'comment_post_ID'   => $order_id,
+            'comment_author'    => 'Webwinkelkeur',
+            'comment_content'   => $content,
+            'comment_agent'     => 'Webwinkelkeur',
+            'comment_type'      => 'order_note',
+        ));
     }
 }
 
