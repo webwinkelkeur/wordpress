@@ -27,7 +27,7 @@ class WebwinkelkeurWooCommerce {
             $invite_delay = 0;
 
         // e-mail
-        $email = get_post_meta(18, '_billing_email', true);
+        $email = get_post_meta($order_id, '_billing_email', true);
         if(!preg_match('|@|', $email))
             return;
 
