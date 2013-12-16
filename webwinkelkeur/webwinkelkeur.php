@@ -13,7 +13,28 @@ if(!function_exists('add_action')) {
 	exit;
 }
 
+register_activation_hook('webwinkelkeur/webwinkelkeur.php', 'webwinkelkeur_activate');
+
+function webwinkelkeur_activate() {
+    global $wpdb;
+
+    require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+    dbDelta("
+        CREATE TABLE `" . $wpdb->prefix . "webwinkelkeur_invite_error` (
+            `id` int NOT NULL AUTO_INCREMENT,
+            `url` varchar(255) NOT NULL,
+            `response` text NOT NULL,
+            `time` bigint NOT NULL,
+            PRIMARY KEY (`id`),
+            KEY `time` (`time`)
+        )
+    ");
+}
+
 if(is_admin())
     require dirname(__FILE__) . '/admin.php';
 else
     require dirname(__FILE__) . '/frontend.php';
+
+require dirname(__FILE__) . '/woocommerce.php';
