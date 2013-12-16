@@ -31,6 +31,10 @@
                         <input type="checkbox" id="webwinkelkeur-invite" name="webwinkelkeur_invite" value="1" <?php if($config['invite']) echo 'checked'; ?> />
                         <?php _e('Ja, verstuur een uitnodiging nadat een bestelling is verzonden.'); ?>
                     </label>
+                    <?php if(!$this->woocommerce): ?>
+                    <p class="description"><?php _e('Installeer en activeer WooCommerce om deze functionaliteit te kunnen gebruiken.'); ?></p>
+                    <?php endif; ?>
+                    <p class="description"><?php _e('Deze functionaliteit is alleen beschikbaar voor Plus-leden.'); ?></p>
                 </td>
             </tr> 
             <tr valign="top">

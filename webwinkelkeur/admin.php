@@ -1,10 +1,13 @@
 <?php
 
 class WebwinkelkeurAdmin {
+    private $woocommerce = false;
+
     public function __construct() {
         add_action('admin_menu', array($this, 'admin_menu'));
         add_action('plugin_action_links', array($this, 'plugin_action_links'), 10, 2);
         add_action('admin_notices', array($this, 'invite_error_notices'));
+        add_action('before_woocommerce_init', array($this, 'activate_woocommerce'));
     }
 
     public function admin_menu() {
@@ -17,6 +20,10 @@ class WebwinkelkeurAdmin {
             $links[] = '<a href="admin.php?page=webwinkelkeur">' . __('Settings') . '</a>';
         }
         return $links;
+    }
+
+    public function activate_woocommerce() {
+        $this->woocommerce = true;
     }
 
     public function options_page() {

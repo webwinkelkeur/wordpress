@@ -1,9 +1,12 @@
 WebwinkelKeur WordPress en WooCommerce plugin
 =============================================
 
-Deze plugin integreert de WebwinkelKeur sitebar plugin in uw WordPress website
-of WooCommerce webshop. De plugin kan eenvoudig worden geïnstalleerd. Gebruik
+Deze plugin integreert de WebwinkelKeur sidebar in uw WordPress website of
+WooCommerce webshop. De plugin kan eenvoudig worden geïnstalleerd. Gebruik
 daarvoor de onderstaande installatieinstructies.
+
+Het versturen van uitnodigingen is alleen mogelijk in combinatie met
+WooCommerce.
 
 De plugin is getest met WordPress versies 3.5 en later.
 
