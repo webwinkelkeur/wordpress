@@ -1,5 +1,5 @@
 <?php
-
+require_once dirname(__FILE__) . '/vendor/Peschar/URLRetriever.php';
 class WebwinkelkeurAPI {
     private $shop_id;
     private $api_key;
@@ -18,7 +18,8 @@ class WebwinkelkeurAPI {
             'delay'     => $delay,
         ));
 
-        $response = @file_get_contents($url);
+        $retriever = new Peschar_URLRetriever();
+        $response = $retriever->retrieve($url);
 
         if(!$response) {
             throw new WebwinkelkeurAPIError($url, 'API not reachable.');
