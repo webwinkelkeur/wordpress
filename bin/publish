@@ -1,0 +1,23 @@
+#!/bin/bash
+set -eu
+cd `dirname "$0"`
+cd ..
+
+./bin/package
+package=`readlink -f dist/wordpress-webwinkelkeur.zip`
+
+svndir=`mktemp -d`
+trap "rm -rf '$svndir'" EXIT
+
+svn co http://plugins.svn.wordpress.org/webwinkelkeur "$svndir"
+
+cd "$svndir"
+svn rm --force trunk
+mkdir trunk
+cd trunk
+
+unzip "$package"
+
+svn add --force .
+
+svn ci -m 'Update plugin' --username apeschar --no-auth-cache
