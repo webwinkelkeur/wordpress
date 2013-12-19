@@ -7,20 +7,24 @@ Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Deze plugin integreert de WebwinkelKeur sidebar in uw WordPress website of WooCommerce webshop.
+Deze module integreert de WebwinkelKeur sidebar in uw WordPress website of WooCommerce webshop.
 
 == Description ==
 
-Deze plugin integreert de WebwinkelKeur sidebar in uw WordPress website of
-WooCommerce webshop. De plugin kan eenvoudig worden geïnstalleerd. Gebruik
-daarvoor de onderstaande installatieinstructies.
+De WordPress module zorgt voor een eenvoudige integratie van het WebwinkelKeur
+binnen jouw WordPress website en WooCommerce webwinkel. Zo integreert de module
+automatisch de innovatieve [WebwinkelKeur Sidebar][1] binnen elke WordPress
+website of webwinkel.  Voor gebruikers van de WooCommerce plugin voor WordPress
+zorgt de module voor het automatisch uitnodigen van klanten voor het delen van
+een klantervaring. Deze functie is alleen beschikbaar voor PLUS leden.  Bij elke
+afgewerkte bestelling wordt automatisch een uitnodiging naar de klant verzonden
+waarin hij uitgenodigd wordt om zijn ervaring te delen. Zo vergroot je het
+vertrouwen en de conversie van jouw webwinkel.
 
-Het versturen van uitnodigingen is alleen mogelijk in combinatie met
-WooCommerce.
+[Klik hier][2] voor meer informatie over de WordPress module.
 
-De plugin is getest met WordPress versies 3.5 en later.
-
-(C) 2013 Albert Peschar <albert@peschar.net>
+[1]: https://www.webwinkelkeur.nl/webwinkel/mogelijkheden/sidebar/
+[2]: https://www.webwinkelkeur.nl/webwinkel/mogelijkheden/wordpress-module/
 
 == Installation ==
 
