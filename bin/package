@@ -7,4 +7,4 @@ cd ..
 rm -rf dist
 mkdir -p dist
 
-git archive -o dist/wordpress-webwinkelkeur.zip -9 HEAD readme.txt webwinkelkeur
+git archive -o dist/wordpress-webwinkelkeur.zip -9 HEAD webwinkelkeur
