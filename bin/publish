@@ -7,17 +7,19 @@ cd ..
 package=`readlink -f dist/wordpress-webwinkelkeur.zip`
 
 svndir=`mktemp -d`
-trap "rm -rf '$svndir'" EXIT
+pkgdir=`mktemp -d`
+trap "rm -rf '$svndir' '$pkgdir'" EXIT
 
 svn co http://plugins.svn.wordpress.org/webwinkelkeur "$svndir"
 
 cd "$svndir"
 svn rm --force trunk
 mkdir trunk
-cd trunk
 
+cd "$pkgdir"
 unzip "$package"
+rsync -av webwinkelkeur/ "$svndir/trunk"
 
+cd "$svndir/trunk"
 svn add --force .
-
 svn ci -m 'Update plugin' --username apeschar --no-auth-cache
