@@ -2,6 +2,12 @@
     <div class="wrap">
         <?php screen_icon(); ?>
         <h2><?php _e('WebwinkelKeur'); ?></h2>
+        <?php
+        if($updated)
+            echo "<div class=updated><p>", _e('Uw wijzigingen zijn opgeslagen.'), "</p></div>";
+        foreach($errors as $error)
+            echo "<div class=error><p>", $error, "</p></div>";
+        ?>
         <table class="form-table">
             <tr valign="top">
                 <th scope="row"><label for="wwk-shop-id"><?php _e('Webwinkel ID'); ?></label></th>
@@ -25,12 +31,45 @@
                 </td>
             </tr> 
             <tr valign="top">
-                <th scope="row"><label for="webwinkelkeur-invite"><?php _e('Uitnodigingen versturen'); ?></label></th>
+                <th scope="row"><?php _e('Sidebar positie'); ?></th>
                 <td>
-                    <label>
-                        <input type="checkbox" id="webwinkelkeur-invite" name="webwinkelkeur_invite" value="1" <?php if($config['invite']) echo 'checked'; ?> />
-                        <?php _e('Ja, verstuur een uitnodiging nadat een bestelling is verzonden.'); ?>
-                    </label>
+                    <fieldset>
+                        <label>
+                            <input type="radio" name="webwinkelkeur_sidebar_position" value="left" <?php if($config['sidebar_position'] == 'left') echo 'checked'; ?> />
+                            <?php _e('Links'); ?>
+                        </label><br>
+                        <label>
+                            <input type="radio" name="webwinkelkeur_sidebar_position" value="right" <?php if($config['sidebar_position'] == 'right') echo 'checked'; ?> />
+                            <?php _e('Rechts'); ?>
+                        </label>
+                    </fieldset>
+                </td>
+            </tr> 
+            <tr valign="top">
+                <th scope="row"><label for="webwinkelkeur-sidebar-top"><?php _e('Sidebar hoogte'); ?></label></th>
+                <td><input name="webwinkelkeur_sidebar_top" type="text" id="webwinkelkeur-sidebar-top" value="<?php echo esc_html($config['sidebar_top']); ?>" class="small-text" />
+                <p class="description">
+                <?php _e('Aantal pixels vanaf de bovenkant.'); ?>
+                </p>
+                </td>
+            </tr>
+            <tr valign="top">
+                <th scope="row"><?php _e('Uitnodigingen versturen'); ?></th>
+                <td>
+                    <fieldset>
+                        <label>
+                            <input type="radio" name="webwinkelkeur_invite" value="1" <?php if($config['invite'] == 1) echo 'checked'; ?> />
+                            Ja, na elke bestelling.
+                        </label><br>
+                        <label>
+                            <input type="radio" name="webwinkelkeur_invite" value="2" <?php if($config['invite'] == 2) echo 'checked'; ?> />
+                            Ja, alleen bij de eerste bestelling.
+                        </label><br>
+                        <label>
+                            <input type="radio" name="webwinkelkeur_invite" value="0" <?php if(!$config['invite']) echo 'checked'; ?> />
+                            Nee, geen uitnodigingen versturen.
+                        </label>
+                    </fieldset>
                     <?php if(!$this->woocommerce): ?>
                     <p class="description"><?php _e('Installeer en activeer WooCommerce om deze functionaliteit te kunnen gebruiken.'); ?></p>
                     <?php endif; ?>
@@ -45,6 +84,24 @@
                 </p>
                 </td>
             </tr>
+            <tr valign="top">
+                <th scope="row"><label for="webwinkelkeur-tooltip"><?php _e('Tooltip weergeven'); ?></label></th>
+                <td>
+                    <label>
+                        <input type="checkbox" id="webwinkelkeur-tooltip" name="webwinkelkeur_tooltip" value="1" <?php if($config['tooltip']) echo 'checked'; ?> />
+                        <?php _e('Ja, voeg de WebwinkelKeur Tooltip toe aan mijn website.'); ?>
+                    </label>
+                </td>
+            </tr> 
+            <tr valign="top">
+                <th scope="row"><label for="webwinkelkeur-javascript"><?php _e('JavaScript-integratie'); ?></label></th>
+                <td>
+                    <label>
+                        <input type="checkbox" id="webwinkelkeur-javascript" name="webwinkelkeur_javascript" value="1" <?php if($config['javascript']) echo 'checked'; ?> />
+                        <?php _e('Ja, voeg de WebwinkelKeur JavaScript toe aan mijn website.'); ?>
+                    </label>
+                </td>
+            </tr> 
         </table>
         <?php submit_button(); ?>
     </div>

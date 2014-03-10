@@ -14,6 +14,9 @@ class WebwinkelKeurWooCommerce {
         if(!get_option('webwinkelkeur_invite'))
             return;
 
+        // noremail?
+        $noremail = get_option('webwinkelkeur_invite') == 2;
+
         // API credentials
         $shop_id = get_option('webwinkelkeur_wwk_shop_id');
         $api_key = get_option('webwinkelkeur_wwk_api_key');
@@ -34,7 +37,7 @@ class WebwinkelKeurWooCommerce {
         // send invite
         $api = new WebwinkelKeurAPI($shop_id, $api_key);
         try {
-            $api->invite($order_id, $email, $invite_delay);
+            $api->invite($order_id, $email, $invite_delay, $noremail);
         } catch(WebwinkelKeurAPIAlreadySentError $e) {
             // that's okay
         } catch(WebwinkelKeurAPIError $e) {

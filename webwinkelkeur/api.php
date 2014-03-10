@@ -9,14 +9,19 @@ class WebwinkelKeurAPI {
         $this->api_key = (string) $api_key;
     }
 
-    public function invite($order_id, $email, $delay) {
-        $url = $this->buildURL('https://www.webwinkelkeur.nl/api.php', array(
+    public function invite($order_id, $email, $delay, $noremail = false) {
+        $parameters = array(
             'id'        => $this->shop_id,
             'password'  => $this->api_key,
             'order'     => $order_id,
             'email'     => $email,
             'delay'     => $delay,
-        ));
+        );
+
+        if($noremail)
+            $parameters['noremail'] = true;
+
+        $url = $this->buildURL('https://www.webwinkelkeur.nl/api.php', $parameters);
 
         $retriever = new Peschar_URLRetriever();
         $response = $retriever->retrieve($url);

@@ -28,14 +28,24 @@ class WebwinkelKeurAdmin {
 
     public function options_page() {
         $errors = array();
+        $updated = false;
         $fields = array(
             'wwk_shop_id',
             'wwk_api_key',
             'sidebar',
+            'sidebar_position',
+            'sidebar_top',
             'invite',
             'invite_delay',
+            'tooltip',
+            'javascript',
         );
-        $config = array('invite_delay' => 3);
+        $config = array(
+            'invite_delay'     => 3,
+            'sidebar_position' => 'left',
+            'tooltip'          => true,
+            'javascript'       => true,
+        );
 
         foreach($fields as $field_name) {
             $value = get_option('webwinkelkeur_' . $field_name, false);
@@ -57,13 +67,12 @@ class WebwinkelKeurAdmin {
             if($config['invite'] && !$config['wwk_api_key'])
                 $errors[] = __('Om uitnodigingen te versturen is uw API key verplicht.');
 
-            if(!$errors)
+            if(!$errors) {
                 foreach($config as $name => $value)
                     update_option('webwinkelkeur_' . $name, $value);
+                $updated = true;
+            }
         }
-
-        foreach($errors as $error)
-            echo "<div class=error><p>", $error, "</p></div>";
         
         require dirname(__FILE__) . '/options.php';
     }
