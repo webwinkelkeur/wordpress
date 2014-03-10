@@ -1,6 +1,6 @@
 <?php
 
-class WebwinkelkeurAdmin {
+class WebwinkelKeurAdmin {
     private $woocommerce = false;
 
     public function __construct() {
@@ -11,7 +11,7 @@ class WebwinkelkeurAdmin {
     }
 
     public function admin_menu() {
-        add_submenu_page('plugins.php', __('Webwinkelkeur'), __('Webwinkelkeur'),
+        add_submenu_page('plugins.php', __('WebwinkelKeur'), __('WebwinkelKeur'),
                          'manage_options', 'webwinkelkeur', array($this, 'options_page'));
     }
 
@@ -81,7 +81,7 @@ class WebwinkelkeurAdmin {
         foreach($errors as $error) {
             ?>
             <div class="error"><p>
-                <?php _e('Bij het versturen van de Webwinkelkeur uitnodiging is een fout opgetreden:') ?><br/>
+                <?php _e('Bij het versturen van de WebwinkelKeur uitnodiging is een fout opgetreden:') ?><br/>
                 <?php echo esc_html($error->response); ?>
             </p></div>
             <?php
@@ -101,4 +101,4 @@ class WebwinkelkeurAdmin {
     }
 }
 
-new WebwinkelkeurAdmin;
+new WebwinkelKeurAdmin;

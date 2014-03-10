@@ -1,7 +1,7 @@
 <form method="POST" action="">
     <div class="wrap">
         <?php screen_icon(); ?>
-        <h2><?php _e('Webwinkelkeur'); ?></h2>
+        <h2><?php _e('WebwinkelKeur'); ?></h2>
         <table class="form-table">
             <tr valign="top">
                 <th scope="row"><label for="wwk-shop-id"><?php _e('Webwinkel ID'); ?></label></th>
@@ -20,7 +20,7 @@
                 <td>
                     <label>
                         <input type="checkbox" id="webwinkelkeur-sidebar" name="webwinkelkeur_sidebar" value="1" <?php if($config['sidebar']) echo 'checked'; ?> />
-                        <?php _e('Ja, voeg de Webwinkelkeur Sidebar toe aan mijn website.'); ?>
+                        <?php _e('Ja, voeg de WebwinkelKeur Sidebar toe aan mijn website.'); ?>
                     </label>
                 </td>
             </tr> 

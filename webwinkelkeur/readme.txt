@@ -29,6 +29,6 @@ vertrouwen en de conversie van jouw webwinkel.
 == Installation ==
 
 1. Plaats de map "webwinkelkeur" in de map "wp-content/plugins" op de webserver.
-1. De plugin kan nu worden geactiveerd in de administratieinterface. Ga daarvoor naar Plugins en klik op Activeren bij de Webwinkelkeur plugin.
+1. De plugin kan nu worden geactiveerd in de administratieinterface. Ga daarvoor naar Plugins en klik op Activeren bij de WebwinkelKeur plugin.
 1. Klik op Instellingen om de plugin te configureren.
 1. Controleer of de sidebar op uw site wordt getoond.

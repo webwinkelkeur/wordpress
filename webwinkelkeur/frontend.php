@@ -1,6 +1,6 @@
 <?php
 
-class WebwinkelkeurFrontend {
+class WebwinkelKeurFrontend {
     private $sidebar_printed = false;
 
     public function __construct() {
@@ -18,13 +18,13 @@ class WebwinkelkeurFrontend {
         $this->sidebar_printed = true;
 
         if(!get_option('webwinkelkeur_sidebar')) {
-            echo '<!-- Webwinkelkeur: sidebar niet geactiveerd -->';
+            echo '<!-- WebwinkelKeur: sidebar niet geactiveerd -->';
             return;
         }
 
         $wwk_shop_id = (int) get_option('webwinkelkeur_wwk_shop_id');
         if(!$wwk_shop_id) {
-            echo '<!-- Webwinkelkeur: webwinkel ID niet geldig of niet opgegeven -->';
+            echo '<!-- WebwinkelKeur: webwinkel ID niet geldig of niet opgegeven -->';
             return;
         }
 
@@ -32,4 +32,4 @@ class WebwinkelkeurFrontend {
     }
 }
 
-new WebwinkelkeurFrontend;
+new WebwinkelKeurFrontend;
