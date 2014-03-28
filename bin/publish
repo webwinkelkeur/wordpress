@@ -1,25 +1,27 @@
 #!/bin/bash
 set -eu
+set -x
 cd `dirname "$0"`
 cd ..
 
+root=$PWD
+
 ./bin/package
-package=`readlink -f dist/wordpress-webwinkelkeur.zip`
 
-svndir=`mktemp -d`
-pkgdir=`mktemp -d`
-trap "rm -rf '$svndir' '$pkgdir'" EXIT
+rm -rf tmp
+mkdir -p tmp/package tmp/svn
 
-svn co http://plugins.svn.wordpress.org/webwinkelkeur "$svndir"
-
-cd "$svndir"
+svn co http://plugins.svn.wordpress.org/webwinkelkeur tmp/svn
+cd tmp/svn
 svn rm --force trunk
 mkdir trunk
 
-cd "$pkgdir"
-unzip "$package"
-rsync -av webwinkelkeur/ "$svndir/trunk"
+cd $root/tmp/package
+unzip $root/dist/wordpress-webwinkelkeur.zip
+rsync -a webwinkelkeur/ $root/tmp/svn/trunk/
 
-cd "$svndir/trunk"
-svn add --force .
+cd $root/tmp/svn
+svn add --force trunk
 svn ci -m 'Update plugin' --username apeschar --no-auth-cache
+
+rm -rf $root/tmp
