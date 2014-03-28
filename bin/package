@@ -7,4 +7,5 @@ cd ..
 rm -rf dist
 mkdir -p dist
 
-git archive -o dist/wordpress-webwinkelkeur.zip -9 HEAD webwinkelkeur
+git archive -o dist/wordpress-webwinkelkeur.zip -9 master webwinkelkeur
+git archive -o dist/wordpress-evalor.zip -9 evalor evalor
