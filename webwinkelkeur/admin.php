@@ -39,6 +39,7 @@ class WebwinkelKeurAdmin {
             'invite_delay',
             'tooltip',
             'javascript',
+            'rich_snippet',
         );
         $config = array(
             'invite_delay'     => 3,

@@ -102,6 +102,19 @@
                     </label>
                 </td>
             </tr> 
+            <tr valign="top">
+                <th scope="row"><label for="webwinkelkeur-javascript"><?php _e('Rich snippet sterren'); ?></label></th>
+                <td>
+                    <label>
+                        <input type="checkbox" id="webwinkelkeur-rich-snippet" name="webwinkelkeur_rich_snippet" value="1" <?php if($config['rich_snippet']) echo 'checked'; ?> />
+                        <?php _e('Ja, voeg een rich snippet toe aan de footer.'); ?>
+                    </label>
+                    <p class="description">
+                        Google kan hiermee uw waardering in de zoekresultaten tonen. Gebruik op eigen risico.
+                        <a target="_blank" href="https://support.google.com/webmasters/answer/99170?hl=nl">Meer informatie.</a>
+                    </p>
+                </td>
+            </tr> 
         </table>
         <?php submit_button(); ?>
     </div>
