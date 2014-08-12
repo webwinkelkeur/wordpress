@@ -40,3 +40,6 @@ else
     require dirname(__FILE__) . '/frontend.php';
 
 require dirname(__FILE__) . '/woocommerce.php';
+
+require_once dirname(__FILE__) . '/vendor/Peschar/Ping.php';
+Peschar_Ping::run('WebwinkelKeur WordPress', dirname(__FILE__) . '/../../..');
