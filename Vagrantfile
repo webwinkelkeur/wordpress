@@ -5,6 +5,9 @@ Vagrant.configure("2") do |config|
     config.vm.synced_folder 'webwinkelkeur',
         '/var/www/wp-content/plugins/webwinkelkeur',
         type: 'rsync', rsync__exclude: '.*.swp'
+    config.vm.synced_folder 'webwinkelkeur',
+        '/var/www/wp40/wp-content/plugins/webwinkelkeur',
+        type: 'rsync', rsync__exclude: '.*.swp'
 
     config.vm.provision :puppet do |puppet|
         puppet.manifests_path = 'puppet/manifests'
