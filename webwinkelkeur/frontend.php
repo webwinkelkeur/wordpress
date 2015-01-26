@@ -3,6 +3,7 @@
 class WebwinkelKeurFrontend {
     private $wwk_shop_id;
     private $script_printed = false;
+    private $enable_rich_snippet = true;
 
     public function __construct() {
         $this->wwk_shop_id = (int) get_option('webwinkelkeur_wwk_shop_id');
@@ -17,8 +18,10 @@ class WebwinkelKeurFrontend {
         ) as $action)
             add_action($action, array($this, 'sidebar'));
 
-        if(get_option('webwinkelkeur_rich_snippet'))
+        if(get_option('webwinkelkeur_rich_snippet')) {
             add_action('wp_footer', array($this, 'rich_snippet'));
+            add_action('woocommerce_before_single_product', array($this, 'disable_rich_snippet'));
+        }
     }
 
     public function sidebar() {
@@ -50,8 +53,14 @@ class WebwinkelKeurFrontend {
     }
 
     public function rich_snippet() {
+        if(!$this->enable_rich_snippet)
+            return;
         $html = $this->get_rich_snippet();
         if($html) echo $html;
+    }
+
+    public function disable_rich_snippet() {
+        $this->enable_rich_snippet = false;
     }
 
     private function get_rich_snippet() {
