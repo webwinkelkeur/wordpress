@@ -34,10 +34,16 @@ class WebwinkelKeurWooCommerce {
         if(!preg_match('|@|', $email))
             return;
 
+        // billing name
+        $customername = get_post_meta($order_id, '_billing_first_name', true).' '.get_post_meta($order_id, '_billing_last_name', true);
+
+        // lang
+        $lang = get_locale();
+
         // send invite
         $api = new WebwinkelKeurAPI($shop_id, $api_key);
         try {
-            $api->invite($order_id, $email, $invite_delay, $noremail);
+            $api->invite($order_id, $email, $invite_delay, $lang, $customername, $noremail);
         } catch(WebwinkelKeurAPIAlreadySentError $e) {
             // that's okay
         } catch(WebwinkelKeurAPIError $e) {

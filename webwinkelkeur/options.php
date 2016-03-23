@@ -22,37 +22,17 @@
                 </td>
             </tr>
             <tr valign="top">
-                <th scope="row"><label for="webwinkelkeur-sidebar"><?php _e('Sidebar weergeven'); ?></label></th>
+                <th scope="row"><label for="webwinkelkeur-javascript"><?php _e('JavaScript-integratie'); ?></label></th>
                 <td>
                     <label>
-                        <input type="checkbox" id="webwinkelkeur-sidebar" name="webwinkelkeur_sidebar" value="1" <?php if($config['sidebar']) echo 'checked'; ?> />
-                        <?php _e('Ja, voeg de WebwinkelKeur Sidebar toe aan mijn website.'); ?>
+                        <input type="checkbox" id="webwinkelkeur-javascript" name="webwinkelkeur_javascript" value="1" <?php if($config['javascript']) echo 'checked'; ?> />
+                        <?php _e('Ja, voeg de WebwinkelKeur JavaScript toe aan mijn website.'); ?>
                     </label>
+                    <p class="description">
+                    <?php _e('Gebruik de JavaScript-integratie om de sidebar en de tooltip op je site te plaatsen.<br>Alle instellingen voor de sidebar en de tooltip, vind je in het <a href="https://dashboard.webwinkelkeur.nl/integration" target="_blank">WebwinkelKeur Dashboard</a>.'); ?>
+                    </p>
                 </td>
             </tr> 
-            <tr valign="top">
-                <th scope="row"><?php _e('Sidebar positie'); ?></th>
-                <td>
-                    <fieldset>
-                        <label>
-                            <input type="radio" name="webwinkelkeur_sidebar_position" value="left" <?php if($config['sidebar_position'] == 'left') echo 'checked'; ?> />
-                            <?php _e('Links'); ?>
-                        </label><br>
-                        <label>
-                            <input type="radio" name="webwinkelkeur_sidebar_position" value="right" <?php if($config['sidebar_position'] == 'right') echo 'checked'; ?> />
-                            <?php _e('Rechts'); ?>
-                        </label>
-                    </fieldset>
-                </td>
-            </tr> 
-            <tr valign="top">
-                <th scope="row"><label for="webwinkelkeur-sidebar-top"><?php _e('Sidebar hoogte'); ?></label></th>
-                <td><input name="webwinkelkeur_sidebar_top" type="text" id="webwinkelkeur-sidebar-top" value="<?php echo esc_html($config['sidebar_top']); ?>" class="small-text" />
-                <p class="description">
-                <?php _e('Aantal pixels vanaf de bovenkant.'); ?>
-                </p>
-                </td>
-            </tr>
             <tr valign="top">
                 <th scope="row"><?php _e('Uitnodigingen versturen'); ?></th>
                 <td>
@@ -84,24 +64,6 @@
                 </p>
                 </td>
             </tr>
-            <tr valign="top">
-                <th scope="row"><label for="webwinkelkeur-tooltip"><?php _e('Tooltip weergeven'); ?></label></th>
-                <td>
-                    <label>
-                        <input type="checkbox" id="webwinkelkeur-tooltip" name="webwinkelkeur_tooltip" value="1" <?php if($config['tooltip']) echo 'checked'; ?> />
-                        <?php _e('Ja, voeg de WebwinkelKeur Tooltip toe aan mijn website.'); ?>
-                    </label>
-                </td>
-            </tr> 
-            <tr valign="top">
-                <th scope="row"><label for="webwinkelkeur-javascript"><?php _e('JavaScript-integratie'); ?></label></th>
-                <td>
-                    <label>
-                        <input type="checkbox" id="webwinkelkeur-javascript" name="webwinkelkeur_javascript" value="1" <?php if($config['javascript']) echo 'checked'; ?> />
-                        <?php _e('Ja, voeg de WebwinkelKeur JavaScript toe aan mijn website.'); ?>
-                    </label>
-                </td>
-            </tr> 
             <tr valign="top">
                 <th scope="row"><label for="webwinkelkeur-javascript"><?php _e('Rich snippet sterren'); ?></label></th>
                 <td>

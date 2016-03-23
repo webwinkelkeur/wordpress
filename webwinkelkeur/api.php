@@ -9,13 +9,16 @@ class WebwinkelKeurAPI {
         $this->api_key = (string) $api_key;
     }
 
-    public function invite($order_id, $email, $delay, $noremail = false) {
+    public function invite($order_id, $email, $delay, $lang, $customername, $noremail = false) {
         $parameters = array(
             'id'        => $this->shop_id,
             'password'  => $this->api_key,
             'order'     => $order_id,
             'email'     => $email,
             'delay'     => $delay,
+            'lang'      => $lang,
+            'customername' => $customername,
+            'client'    => 'wordpress'
         );
 
         if($noremail)

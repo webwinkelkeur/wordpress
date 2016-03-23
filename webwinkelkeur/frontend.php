@@ -28,26 +28,14 @@ class WebwinkelKeurFrontend {
         if($this->script_printed) return;
         $this->script_printed = true;
 
-        if(!get_option('webwinkelkeur_sidebar')
-           && !get_option('webwinkelkeur_tooltip')
-           && !get_option('webwinkelkeur_javascript')
-        ) {
+        if(!get_option('webwinkelkeur_javascript')) {
             echo '<!-- WebwinkelKeur: sidebar niet geactiveerd -->';
             return;
         }
 
         $settings = array(
             '_webwinkelkeur_id' => $this->wwk_shop_id,
-            '_webwinkelkeur_sidebar' => !!get_option('webwinkelkeur_sidebar'),
-            '_webwinkelkeur_tooltip' => !!get_option('webwinkelkeur_tooltip'),
         );
-
-        if($sidebar_position = get_option('webwinkelkeur_sidebar_position'))
-            $settings['_webwinkelkeur_sidebar_position'] = $sidebar_position;
-
-        $sidebar_top = get_option('webwinkelkeur_sidebar_top');
-        if(is_string($sidebar_top) && $sidebar_top != '')
-            $settings['_webwinkelkeur_sidebar_top'] = $sidebar_top;
 
         require dirname(__FILE__) . '/sidebar.php';
     }

@@ -32,19 +32,13 @@ class WebwinkelKeurAdmin {
         $fields = array(
             'wwk_shop_id',
             'wwk_api_key',
-            'sidebar',
-            'sidebar_position',
-            'sidebar_top',
             'invite',
             'invite_delay',
-            'tooltip',
             'javascript',
             'rich_snippet',
         );
         $config = array(
             'invite_delay'     => 3,
-            'sidebar_position' => 'left',
-            'tooltip'          => true,
             'javascript'       => true,
         );
 
