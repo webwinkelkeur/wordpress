@@ -29,7 +29,7 @@
                         <?php _e('Ja, voeg de WebwinkelKeur JavaScript toe aan mijn website.'); ?>
                     </label>
                     <p class="description">
-                    <?php _e('Gebruik de JavaScript-integratie om de sidebar en de tooltip op je site te plaatsen.<br>Alle instellingen voor de sidebar en de tooltip, vind je in het <a href="https://dashboard.webwinkelkeur.nl/integration" target="_blank">WebwinkelKeur Dashboard</a>.'); ?>
+                    <?php _e('Gebruik de JavaScript-integratie om de sidebar en de tooltip op uw site te plaatsen.<br>Alle instellingen voor de sidebar en de tooltip, vindt u in het <a href="https://dashboard.webwinkelkeur.nl/integration" target="_blank">WebwinkelKeur Dashboard</a>.'); ?>
                     </p>
                 </td>
             </tr> 
