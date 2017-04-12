@@ -11,7 +11,7 @@ class WebwinkelKeurAdmin {
     }
 
     public function admin_menu() {
-        add_submenu_page('plugins.php', __('WebwinkelKeur'), __('WebwinkelKeur'),
+        add_submenu_page('options-general.php', __('WebwinkelKeur'), __('WebwinkelKeur'),
                          'manage_options', 'webwinkelkeur', array($this, 'options_page'));
     }
 
