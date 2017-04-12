@@ -24,7 +24,7 @@ class WebwinkelKeurAPI {
         if($noremail)
             $parameters['noremail'] = true;
 
-        $url = $this->buildURL('https://www.webwinkelkeur.nl/api.php', $parameters);
+        $url = $this->buildURL('https://' . WEBWINKELKEUR_API_DOMAIN .'/api.php', $parameters);
 
         $retriever = new Peschar_URLRetriever();
         $response = $retriever->retrieve($url);
