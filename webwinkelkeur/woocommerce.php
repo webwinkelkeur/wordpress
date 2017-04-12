@@ -38,7 +38,7 @@ class WebwinkelKeurWooCommerce {
         $customername = get_post_meta($order_id, '_billing_first_name', true).' '.get_post_meta($order_id, '_billing_last_name', true);
 
         // lang
-        $lang = get_locale();
+        $lang = get_post_meta($order_id, 'wpml_language', true);
 
         // send invite
         $api = new WebwinkelKeurAPI($shop_id, $api_key);
