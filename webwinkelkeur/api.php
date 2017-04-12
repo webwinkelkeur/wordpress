@@ -16,7 +16,7 @@ class WebwinkelKeurAPI {
             'order'     => $order_id,
             'email'     => $email,
             'delay'     => $delay,
-            'lang'      => $lang,
+            'language'  => $lang,
             'customername' => $customername,
             'client'    => 'wordpress'
         );
