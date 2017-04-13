@@ -1,7 +1,8 @@
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: webwinkelkeur\n"
-"POT-Creation-Date: 2017-04-12 17:22+0200\n"
+"POT-Creation-Date: 2017-04-13 14:53+0200\n"
 "PO-Revision-Date: 2017-04-12 17:22+0200\n"
 "Last-Translator: \n"
 "Language-Team: KiboIT\n"
@@ -10,34 +11,191 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.8.12\n"
-"X-Poedit-Basepath: ..\n"
+"X-Poedit-Basepath: ../..\n"
 "X-Poedit-KeywordsList: _e;__\n"
-"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: common\n"
+"X-Poedit-SearchPath-1: evalor\n"
+"X-Poedit-SearchPath-2: webwinkelkeur\n"
 
-#: admin.php:18
-msgid "WebwinkelKeur"
-msgstr ""
-
-#: admin.php:24
+#: common/admin.php:34 evalor/common/admin.php:34
+#: webwinkelkeur/common/admin.php:34
 msgid "Settings"
 msgstr ""
 
-#: admin.php:52
+#: common/admin.php:62 evalor/common/admin.php:62
+#: webwinkelkeur/common/admin.php:62
 msgid "Uw webwinkel ID is verplicht."
 msgstr ""
 
-#: admin.php:54
+#: common/admin.php:64 evalor/common/admin.php:64
+#: webwinkelkeur/common/admin.php:64
 msgid "Uw webwinkel ID kan alleen cijfers bevatten."
 msgstr ""
 
-#: admin.php:57
+#: common/admin.php:67 evalor/common/admin.php:67
+#: webwinkelkeur/common/admin.php:67
 msgid "Om uitnodigingen te versturen is uw API key verplicht."
 msgstr ""
 
-#: admin.php:82
+#: common/admin.php:92 evalor/common/admin.php:92
+#: webwinkelkeur/common/admin.php:92
 msgid "Bij het versturen van de WebwinkelKeur uitnodiging is een fout opgetreden:"
 msgstr ""
 
-#: woocommerce.php:55
+#: common/woocommerce.php:56 evalor/common/woocommerce.php:56
+#: webwinkelkeur/common/woocommerce.php:56
 msgid "WebwinkelKeur uitnodiging kon niet worden verstuurd."
+msgstr ""
+
+#: evalor/options.php:4
+msgid "eValor"
+msgstr ""
+
+#: evalor/options.php:7
+msgid "Sus cambios han sido guardados."
+msgstr ""
+
+#: evalor/options.php:13
+msgid "ID de la tienda online"
+msgstr ""
+
+#: evalor/options.php:17
+msgid "Clave API"
+msgstr ""
+
+#: evalor/options.php:20
+msgid "Estos datos los encontrará al ingresar en <a href=\"https://www.evalor.es/tienda/\" target=\"_blank\">eValor.es</a>.<br />Haz click en \"Colocar sello\". Encontrará estos datos en la parte inferior de la página."
+msgstr ""
+
+#: evalor/options.php:25
+msgid "Mostrar sidebar"
+msgstr ""
+
+#: evalor/options.php:29
+msgid "Sí, añadir el sidebar de eValor a mi web."
+msgstr ""
+
+#: evalor/options.php:34
+msgid "Posición sidebar"
+msgstr ""
+
+#: evalor/options.php:39
+msgid "Izquierda"
+msgstr ""
+
+#: evalor/options.php:43
+msgid "Derecha"
+msgstr ""
+
+#: evalor/options.php:49
+msgid "Altura sidebar"
+msgstr ""
+
+#: evalor/options.php:52
+msgid "Número de pixeles desde arriba."
+msgstr ""
+
+#: evalor/options.php:57
+msgid "Enviar invitaciones"
+msgstr ""
+
+#: evalor/options.php:74
+msgid "Instale y active WooCommerce para poder utilizar esta función."
+msgstr ""
+
+#: evalor/options.php:76
+msgid "Esta función solo está disponible para socios PLUS."
+msgstr ""
+
+#: evalor/options.php:80
+msgid "Plazo para la invitación"
+msgstr ""
+
+#: evalor/options.php:83
+msgid "La invitación se envía una vez hayan pasado el número de días indicados después de enviar el pedido."
+msgstr ""
+
+#: evalor/options.php:88
+msgid "Mostrar logo desplegable"
+msgstr ""
+
+#: evalor/options.php:92
+msgid "Sí, añadir el logo desplegable eValor a mi sitio web."
+msgstr ""
+
+#: evalor/options.php:97
+msgid "Integración JavaScript"
+msgstr ""
+
+#: evalor/options.php:101
+msgid "Sí, añadir el JavaScript de eValor a mi sitio web."
+msgstr ""
+
+#: evalor/options.php:106
+msgid "Estrellas Rich Snippet"
+msgstr ""
+
+#: evalor/options.php:110
+msgid "Sí, añade un Rich Snippet al footer."
+msgstr ""
+
+#: webwinkelkeur/options.php:4
+msgid "WebwinkelKeur"
+msgstr ""
+
+#: webwinkelkeur/options.php:7
+msgid "Uw wijzigingen zijn opgeslagen."
+msgstr ""
+
+#: webwinkelkeur/options.php:13
+msgid "Webwinkel ID"
+msgstr ""
+
+#: webwinkelkeur/options.php:17
+msgid "API key"
+msgstr ""
+
+#: webwinkelkeur/options.php:20
+msgid "Deze gegevens vindt u na het inloggen op <a href=\"https://www.webwinkelkeur.nl/webwinkel/\" target=\"_blank\">WebwinkelKeur.nl</a>.<br />Klik op 'Keurmerk plaatsen'. De gegevens zijn vervolgens onderaan deze pagina te vinden."
+msgstr ""
+
+#: webwinkelkeur/options.php:25
+msgid "JavaScript-integratie"
+msgstr ""
+
+#: webwinkelkeur/options.php:29
+msgid "Ja, voeg de WebwinkelKeur JavaScript toe aan mijn website."
+msgstr ""
+
+#: webwinkelkeur/options.php:32
+msgid "Gebruik de JavaScript-integratie om de sidebar en de tooltip op uw site te plaatsen.<br>Alle instellingen voor de sidebar en de tooltip, vindt u in het <a href=\"https://dashboard.webwinkelkeur.nl/integration\" target=\"_blank\">WebwinkelKeur Dashboard</a>."
+msgstr ""
+
+#: webwinkelkeur/options.php:37
+msgid "Uitnodigingen versturen"
+msgstr ""
+
+#: webwinkelkeur/options.php:54
+msgid "Installeer en activeer WooCommerce om deze functionaliteit te kunnen gebruiken."
+msgstr ""
+
+#: webwinkelkeur/options.php:56
+msgid "Deze functionaliteit is alleen beschikbaar voor Plus-leden."
+msgstr ""
+
+#: webwinkelkeur/options.php:60
+msgid "Wachttijd voor uitnodiging"
+msgstr ""
+
+#: webwinkelkeur/options.php:63
+msgid "De uitnodiging wordt verstuurd nadat het opgegeven aantal dagen is verstreken na het verzenden van de bestelling."
+msgstr ""
+
+#: webwinkelkeur/options.php:68
+msgid "Rich snippet sterren"
+msgstr ""
+
+#: webwinkelkeur/options.php:72
+msgid "Ja, voeg een rich snippet toe aan de footer."
 msgstr ""
