@@ -21,4 +21,3 @@ class WebwinkelKeurAdmin extends WebwinkelKeurAdminCommon {
     }
 
 }
-new WebwinkelKeurAdmin;

@@ -8,9 +8,20 @@ Author: Albert Peschar
 Author URI: https://peschar.net/
 */
 
-define('WEBWINKELKEUR_PLUGIN_PATH', __DIR__);
-define('WEBWINKELKEUR_API_DOMAIN', 'www.evalor.es');
-define('WEBWINKELKEUR_ACTIVATION_HOOK', 'evalor/evalor.php');
+$settings = array(
+    'PLUGIN_PATH' => __DIR__,
+    'PLUGIN_SLUG' => 'evalor',
+    'PLUGIN_NAME' => 'eValor',
+    'PLUGIN_ENTRY' => 'evalor/evalor.php',
+    'API_DOMAIN' => 'www.evalor.es',
+    'ADMIN_CLASS' => 'EvalorAdmin',
+    'FRONTEND_CLASS' => 'EvalorFrontend'
+);
 
-require __DIR__ . '/common/init.php';
+$init = require __DIR__ . '/common/init.php';
+$init($settings);
 
+function evalor_load_plugin_text_domain() {
+    load_plugin_textdomain( 'webwinkelkeur', false, '/evalor/common/languages/' );
+}
+add_action( 'plugins_loaded', 'evalor_load_plugin_text_domain' );

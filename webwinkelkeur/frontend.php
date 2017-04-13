@@ -3,7 +3,7 @@
 class WebwinkelKeurFrontend extends WebwinkelKeurFrontendCommon {
 
     protected function is_sidebar_inactive() {
-        return !get_option('webwinkelkeur_javascript');
+        return !get_option($this->get_option_name('javascript'));
     }
 
     protected function get_sidebar_settings() {
@@ -13,4 +13,3 @@ class WebwinkelKeurFrontend extends WebwinkelKeurFrontendCommon {
     }
 
 }
-new WebwinkelKeurFrontend;

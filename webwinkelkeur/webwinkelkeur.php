@@ -8,8 +8,15 @@ Author: Albert Peschar
 Author URI: https://peschar.net/
 */
 
-define('WEBWINKELKEUR_PLUGIN_PATH', __DIR__);
-define('WEBWINKELKEUR_API_DOMAIN', 'www.webwinkelkeur.nl');
-define('WEBWINKELKEUR_ACTIVATION_HOOK', 'webwinkelkeur/webwinkelkeur.php');
+$settings = array(
+    'PLUGIN_PATH' => __DIR__,
+    'PLUGIN_SLUG' => 'webwinkelkeur',
+    'PLUGIN_NAME' => 'WebwinkelKeur',
+    'PLUGIN_ENTRY' => 'webwinkelkeur/webwinkelkeur.php',
+    'API_DOMAIN' => 'www.webwinkelkeur.nl',
+    'ADMIN_CLASS' => 'WebwinkelKeurAdmin',
+    'FRONTEND_CLASS' => 'WebwinkelKeurFrontend'
+);
 
-require __DIR__ . '/common/init.php';
+$init = require __DIR__ . '/common/init.php';
+$init($settings);

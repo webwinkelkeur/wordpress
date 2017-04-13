@@ -1,10 +1,12 @@
 <?php
 require_once dirname(__FILE__) . '/vendor/Peschar/URLRetriever.php';
 class WebwinkelKeurAPI {
+    private $api_domain;
     private $shop_id;
     private $api_key;
 
-    public function __construct($shop_id, $api_key) {
+    public function __construct($api_domain, $shop_id, $api_key) {
+        $this->api_domain = (string)$api_domain;
         $this->shop_id = (string) $shop_id;
         $this->api_key = (string) $api_key;
     }
@@ -24,7 +26,7 @@ class WebwinkelKeurAPI {
         if($noremail)
             $parameters['noremail'] = true;
 
-        $url = $this->buildURL('https://' . WEBWINKELKEUR_API_DOMAIN .'/api.php', $parameters);
+        $url = $this->buildURL('https://' . $this->api_domain .'/api.php', $parameters);
 
         $retriever = new Peschar_URLRetriever();
         $response = $retriever->retrieve($url);

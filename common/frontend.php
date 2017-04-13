@@ -1,6 +1,6 @@
 <?php
 
-abstract class WebwinkelKeurFrontendCommon {
+abstract class WebwinkelKeurFrontendCommon extends WebwinkelKeurCommon {
     protected $wwk_shop_id;
     private $script_printed = false;
     private $enable_rich_snippet = true;
@@ -9,8 +9,9 @@ abstract class WebwinkelKeurFrontendCommon {
 
     abstract protected function get_sidebar_settings();
 
-    public function __construct() {
-        $this->wwk_shop_id = (int) get_option('webwinkelkeur_wwk_shop_id');
+    public function __construct(array $settings) {
+        parent::__construct($settings);
+        $this->wwk_shop_id = (int) get_option($this->get_option_name('wwk_shop_id'));
         if(!$this->wwk_shop_id)
             return;
 
@@ -22,7 +23,7 @@ abstract class WebwinkelKeurFrontendCommon {
         ) as $action)
             add_action($action, array($this, 'sidebar'));
 
-        if(get_option('webwinkelkeur_rich_snippet')) {
+        if(get_option($this->get_option_name('rich_snippet'))) {
             add_action('wp_footer', array($this, 'rich_snippet'));
             add_action('woocommerce_before_single_product', array($this, 'disable_rich_snippet'));
         }
@@ -60,10 +61,11 @@ abstract class WebwinkelKeurFrontendCommon {
         if(!@is_writable($tmp_dir))
             return;
 
-        $url = sprintf('http://www.webwinkelkeur.nl/shop_rich_snippet.php?id=%s',
+        $url = sprintf('http://%s/shop_rich_snippet.php?id=%s',
+                       $this->settings['API_DOMAIN'],
                        (int) $this->wwk_shop_id);
 
-        $cache_file = $tmp_dir . DIRECTORY_SEPARATOR . 'WEBWINKELKEUR_'
+        $cache_file = $tmp_dir . DIRECTORY_SEPARATOR . $this->settings['PLUGIN_SLUG'] . '_'
             . md5(__FILE__) . '_' . md5($url);
 
         $fp = @fopen($cache_file, 'rb');

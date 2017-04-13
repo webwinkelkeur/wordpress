@@ -1,6 +1,6 @@
 <?php
 
-class WebwinkelKeurAdmin extends WebwinkelKeurAdminCommon {
+class EvalorAdmin extends WebwinkelKeurAdminCommon {
 
     protected function get_default_config() {
         return array(
@@ -27,4 +27,3 @@ class WebwinkelKeurAdmin extends WebwinkelKeurAdminCommon {
     }
 
 }
-new WebwinkelKeurAdmin;

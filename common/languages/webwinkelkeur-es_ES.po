@@ -1,0 +1,43 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: webwinkelkeur\n"
+"POT-Creation-Date: 2017-04-12 17:22+0200\n"
+"PO-Revision-Date: 2017-04-12 17:31+0200\n"
+"Last-Translator: \n"
+"Language-Team: KiboIT\n"
+"Language: sp\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.12\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-KeywordsList: _e;__\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: admin.php:18
+msgid "WebwinkelKeur"
+msgstr "eValor"
+
+#: admin.php:24
+msgid "Settings"
+msgstr "Settings"
+
+#: admin.php:52
+msgid "Uw webwinkel ID is verplicht."
+msgstr "Su ID de tienda es obligatorio."
+
+#: admin.php:54
+msgid "Uw webwinkel ID kan alleen cijfers bevatten."
+msgstr "Su ID de tienda solo puede contener números."
+
+#: admin.php:57
+msgid "Om uitnodigingen te versturen is uw API key verplicht."
+msgstr "Para enviar invitaciones es obligatoria su clave API."
+
+#: admin.php:82
+msgid "Bij het versturen van de WebwinkelKeur uitnodiging is een fout opgetreden:"
+msgstr "Ha habido un error al enviar la invitación de eValor."
+
+#: woocommerce.php:55
+msgid "WebwinkelKeur uitnodiging kon niet worden verstuurd."
+msgstr "La invitación de la tienda online no ha podido ser enviada."

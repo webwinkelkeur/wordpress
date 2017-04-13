@@ -1,13 +1,16 @@
 <?php
 
-abstract class WebwinkelKeurAdminCommon {
+abstract class WebwinkelKeurAdminCommon extends WebwinkelKeurCommon {
     private $woocommerce = false;
 
     abstract protected function get_default_config();
 
     abstract protected function get_config_fields();
 
-    public function __construct() {
+    public function __construct(array $settings) {
+
+        parent::__construct($settings);
+
         add_action('admin_menu', array($this, 'admin_menu'));
         add_action('plugin_action_links', array($this, 'plugin_action_links'), 10, 2);
         add_action('admin_notices', array($this, 'invite_error_notices'));
@@ -15,13 +18,20 @@ abstract class WebwinkelKeurAdminCommon {
     }
 
     public function admin_menu() {
-        add_submenu_page('options-general.php', __('WebwinkelKeur'), __('WebwinkelKeur'),
-                         'manage_options', 'webwinkelkeur', array($this, 'options_page'));
+        add_submenu_page(
+            'options-general.php',
+            $this->settings['PLUGIN_NAME'],
+            $this->settings['PLUGIN_NAME'],
+            'manage_options',
+            $this->settings['PLUGIN_SLUG'],
+            array($this, 'options_page')
+        );
     }
 
     public function plugin_action_links($links, $file) {
-        if($file == 'webwinkelkeur/webwinkelkeur.php') {
-            $links[] = '<a href="admin.php?page=webwinkelkeur">' . __('Settings') . '</a>';
+        if($file == $this->settings['PLUGIN_ENTRY']) {
+            $links[] = '<a href="admin.php?page=' . $this->settings['PLUGIN_SLUG'] . '">'
+                     . __('Settings', 'webwinkelkeur') . '</a>';
         }
         return $links;
     }
@@ -37,33 +47,33 @@ abstract class WebwinkelKeurAdminCommon {
         $config = $this->get_default_config();
 
         foreach($fields as $field_name) {
-            $value = get_option('webwinkelkeur_' . $field_name, false);
+            $value = get_option($this->get_option_name($field_name), false);
             if($value !== false)
                 $config[$field_name] = (string) $value;
             elseif(!isset($config[$field_name]))
                 $config[$field_name] = '';
         }
 
-        if(isset($_POST['webwinkelkeur_wwk_shop_id'])) {
+        if(isset($_POST[$this->get_option_name('wwk_shop_id')])) {
             foreach($fields as $field_name)
-                $config[$field_name] = (string) @$_POST['webwinkelkeur_' . $field_name];
+                $config[$field_name] = (string) @$_POST[$this->get_option_name($field_name)];
 
             if(empty($config['wwk_shop_id']))
-                $errors[] = __('Uw webwinkel ID is verplicht.');
+                $errors[] = __('Uw webwinkel ID is verplicht.', 'webwinkelkeur');
             elseif(!ctype_digit($config['wwk_shop_id']))
-                $errors[] = __('Uw webwinkel ID kan alleen cijfers bevatten.');
+                $errors[] = __('Uw webwinkel ID kan alleen cijfers bevatten.', 'webwinkelkeur');
 
             if($config['invite'] && !$config['wwk_api_key'])
-                $errors[] = __('Om uitnodigingen te versturen is uw API key verplicht.');
+                $errors[] = __('Om uitnodigingen te versturen is uw API key verplicht.', 'webwinkelkeur');
 
             if(!$errors) {
                 foreach($config as $name => $value)
-                    update_option('webwinkelkeur_' . $name, $value);
+                    update_option($this->get_option_name($name), $value);
                 $updated = true;
             }
         }
         
-        require WEBWINKELKEUR_PLUGIN_PATH . '/options.php';
+        require $this->settings['PLUGIN_PATH'] . '/options.php';
     }
 
     public function invite_error_notices() {
@@ -71,7 +81,7 @@ abstract class WebwinkelKeurAdminCommon {
 
         $errors = $wpdb->get_results("
             SELECT *
-            FROM {$wpdb->prefix}webwinkelkeur_invite_error
+            FROM {$this->invite_errs_table}
             WHERE reported = 0
             ORDER BY time
         ");
@@ -79,7 +89,7 @@ abstract class WebwinkelKeurAdminCommon {
         foreach($errors as $error) {
             ?>
             <div class="error"><p>
-                <?php _e('Bij het versturen van de WebwinkelKeur uitnodiging is een fout opgetreden:') ?><br/>
+                <?php _e('Bij het versturen van de WebwinkelKeur uitnodiging is een fout opgetreden:', 'webwinkelkeur') ?><br/>
                 <?php echo esc_html($error->response); ?>
             </p></div>
             <?php
@@ -91,10 +101,11 @@ abstract class WebwinkelKeurAdminCommon {
         }
         if($error_ids) {
             $wpdb->query("
-                UPDATE {$wpdb->prefix}webwinkelkeur_invite_error
+                UPDATE {$this->invite_errs_table}
                 SET reported = 1
                 WHERE id IN (" . implode(',', $error_ids) . ")
             ");
         }
     }
+
 }
