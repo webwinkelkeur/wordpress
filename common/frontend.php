@@ -11,6 +11,9 @@ abstract class WebwinkelKeurFrontendCommon extends WebwinkelKeurCommon {
 
     public function __construct(array $settings) {
         parent::__construct($settings);
+        if (basename($_SERVER['SCRIPT_FILENAME']) == 'wp-login.php') {
+            return;
+        }
         $this->wwk_shop_id = (int) get_option($this->get_option_name('wwk_shop_id'));
         if(!$this->wwk_shop_id)
             return;
