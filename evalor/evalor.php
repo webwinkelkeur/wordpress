@@ -20,8 +20,3 @@ $settings = array(
 
 $init = require __DIR__ . '/common/init.php';
 $init($settings);
-
-function evalor_load_plugin_text_domain() {
-    load_plugin_textdomain( 'webwinkelkeur', false, '/evalor/common/languages/' );
-}
-add_action( 'plugins_loaded', 'evalor_load_plugin_text_domain' );

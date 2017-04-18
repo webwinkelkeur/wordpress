@@ -38,4 +38,9 @@ return function ($settings) {
 
     require_once dirname(__FILE__) . '/woocommerce.php';
     new WebwinkelKeurWooCommerce($settings);
+
+    add_action('plugins_loaded', function() use ($settings) {
+        load_plugin_textdomain('webwinkelkeur', false, basename($settings['PLUGIN_PATH']) . '/common/languages/');
+    });
+
 };
