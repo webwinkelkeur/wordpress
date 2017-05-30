@@ -1,10 +1,36 @@
 #!/bin/bash
-set -eu
 
-cd `dirname "$0"`
-cd ..
+set -euo pipefail
+
+projects=( webwinkelkeur evalor )
+
+cd "$(dirname "$0")/.."
 
 rm -rf dist
 mkdir -p dist
+out="$(pwd)/dist"
 
-git archive -o dist/wordpress-webwinkelkeur.zip -9 master webwinkelkeur
+tmp="$(mktemp -d)"
+trap "cd /; rm -rf '$tmp'" EXIT
+
+git archive master | tar xf - -C "$tmp"
+
+cd "$tmp"
+
+for project in "${projects[@]}"; do
+    rm -f "$project/common"
+done
+
+last_project=""
+for project in "${projects[@]}"; do
+    if [[ $last_project = "" ]]; then
+        mv common "$project/"
+    else
+        mv "$last_project/common" "$project"
+    fi
+
+    zip -r9 out.zip "$project"
+    mv out.zip "$out/wordpress-$project.zip"
+
+    last_project="$project"
+done
