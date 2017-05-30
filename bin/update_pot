@@ -13,4 +13,6 @@ find common webwinkelkeur evalor -name '*.php' -type f -print0 | xargs -0 xgette
     --package-name=webwinkelkeur --package-version=1.0 --msgid-bugs-address=info@kiboit.com \
     --force-po --no-wrap
 
+perl -p -i -e 's/^#:( .*)$/$&\n#.$1/' $out_dir/$out_file_tmp
+
 mv $out_dir/$out_file_tmp $out_dir/$out_file
