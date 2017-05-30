@@ -11,15 +11,7 @@ Deze module integreert de WebwinkelKeur sidebar in uw WordPress website of WooCo
 
 == Description ==
 
-De WordPress module zorgt voor een eenvoudige integratie van het WebwinkelKeur
-binnen jouw WordPress website en WooCommerce webwinkel. Zo integreert de module
-automatisch de innovatieve [WebwinkelKeur Sidebar][1] binnen elke WordPress
-website of webwinkel.  Voor gebruikers van de WooCommerce plugin voor WordPress
-zorgt de module voor het automatisch uitnodigen van klanten voor het delen van
-een klantervaring. Deze functie is alleen beschikbaar voor PLUS leden.  Bij elke
-afgewerkte bestelling wordt automatisch een uitnodiging naar de klant verzonden
-waarin hij uitgenodigd wordt om zijn ervaring te delen. Zo vergroot je het
-vertrouwen en de conversie van jouw webwinkel.
+De WordPress module zorgt voor een eenvoudige integratie van het WebwinkelKeur binnen jouw WordPress website en WooCommerce webwinkel. Zo integreert de module automatisch de innovatieve [WebwinkelKeur Sidebar][1] binnen elke WordPress website of webwinkel.  Voor gebruikers van de WooCommerce plugin voor WordPress zorgt de module voor het automatisch uitnodigen van klanten voor het delen van een klantervaring. Deze functie is alleen beschikbaar voor PLUS leden.  Bij elke afgewerkte bestelling wordt automatisch een uitnodiging naar de klant verzonden waarin hij uitgenodigd wordt om zijn ervaring te delen. Zo vergroot je het vertrouwen en de conversie van jouw webwinkel.
 
 [Klik hier][2] voor meer informatie over de WordPress module.
 
