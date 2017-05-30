@@ -1,27 +1,38 @@
 #!/bin/bash
-set -eu
-set -x
-cd `dirname "$0"`
-cd ..
 
-root=$PWD
+set -euo pipefail
+
+projects=( webwinkelkeur evalor )
+
+cd "$(dirname "$0")/.."
+
+root="$PWD"
+
+tmp="$(mktemp -d)"
+trap "cd /; rm -rf '$tmp'" EXIT
 
 ./bin/package
 
-rm -rf tmp
-mkdir -p tmp/package tmp/svn
+for project in "${projects[@]}"; do
+    if [[ $# -eq 1 ]] && [[ $1 != $project ]]; then
+        continue
+    fi
 
-svn co http://plugins.svn.wordpress.org/webwinkelkeur tmp/svn
-cd tmp/svn
-svn rm --force trunk
-mkdir trunk
+    cd "$tmp"
 
-cd $root/tmp/package
-unzip $root/dist/wordpress-webwinkelkeur.zip
-rsync -a webwinkelkeur/ $root/tmp/svn/trunk/
+    rm -rf   package svn
+    mkdir -p package svn
 
-cd $root/tmp/svn
-svn add --force trunk
-svn ci -m 'Update plugin' --username apeschar --no-auth-cache
+    svn co "http://plugins.svn.wordpress.org/$project" svn
+    cd svn
+    svn rm --force trunk
+    mkdir trunk
 
-rm -rf $root/tmp
+    cd $tmp/package
+    unzip -q $root/dist/wordpress-$project.zip
+    mv $project/* $tmp/svn/trunk
+
+    cd $tmp/svn
+    svn add --force trunk
+    svn ci -m 'Update plugin' --username apeschar --no-auth-cache
+done
