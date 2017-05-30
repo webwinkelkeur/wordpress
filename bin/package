@@ -29,7 +29,7 @@ for project in "${projects[@]}"; do
         mv "$last_project/common" "$project"
     fi
 
-    zip -r9 out.zip "$project"
+    zip -r9q out.zip "$project"
     mv out.zip "$out/wordpress-$project.zip"
 
     last_project="$project"
