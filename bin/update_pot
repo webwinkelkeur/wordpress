@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+out_dir=common/languages
+out_file=webwinkelkeur.pot
+out_file_tmp=$out_file~
+
+find common webwinkelkeur evalor -name '*.php' -type f -print0 | xargs -0 xgettext \
+    --default-domain=webwinkelkeur --output-dir=$out_dir --output=$out_file_tmp \
+    --from-code=UTF-8 --keyword=__:1 --keyword=_e:1 \
+    --package-name=webwinkelkeur --package-version=1.0 --msgid-bugs-address=info@kiboit.com \
+    --force-po --no-wrap
+
+mv $out_dir/$out_file_tmp $out_dir/$out_file
