@@ -1,201 +1,207 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the webwinkelkeur package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: webwinkelkeur\n"
-"POT-Creation-Date: 2017-04-13 14:53+0200\n"
-"PO-Revision-Date: 2017-04-12 17:22+0200\n"
-"Last-Translator: \n"
-"Language-Team: KiboIT\n"
-"Language: sp\n"
+"Project-Id-Version: webwinkelkeur 1.0\n"
+"Report-Msgid-Bugs-To: info@kiboit.com\n"
+"POT-Creation-Date: 2017-05-30 15:13+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.12\n"
-"X-Poedit-Basepath: ../..\n"
-"X-Poedit-KeywordsList: _e;__\n"
-"X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-SearchPath-0: common\n"
-"X-Poedit-SearchPath-1: evalor\n"
-"X-Poedit-SearchPath-2: webwinkelkeur\n"
 
-#: common/admin.php:34 evalor/common/admin.php:34
-#: webwinkelkeur/common/admin.php:34
+#: common/admin.php:34
+#. common/admin.php:34
 msgid "Settings"
 msgstr ""
 
-#: common/admin.php:62 evalor/common/admin.php:62
-#: webwinkelkeur/common/admin.php:62
-msgid "Uw webwinkel ID is verplicht."
+#: common/admin.php:62
+#. common/admin.php:62
+msgid "Your shop ID is required."
 msgstr ""
 
-#: common/admin.php:64 evalor/common/admin.php:64
-#: webwinkelkeur/common/admin.php:64
-msgid "Uw webwinkel ID kan alleen cijfers bevatten."
+#: common/admin.php:64
+#. common/admin.php:64
+msgid "Your shop ID can only contain digits."
 msgstr ""
 
-#: common/admin.php:67 evalor/common/admin.php:67
-#: webwinkelkeur/common/admin.php:67
-msgid "Om uitnodigingen te versturen is uw API key verplicht."
+#: common/admin.php:67
+#. common/admin.php:67
+msgid "To send invitations, your API key is required."
 msgstr ""
 
-#: common/admin.php:92 evalor/common/admin.php:92
-#: webwinkelkeur/common/admin.php:92
-msgid "Bij het versturen van de WebwinkelKeur uitnodiging is een fout opgetreden:"
+#: common/admin.php:92
+#. common/admin.php:92
+#, php-format
+msgid "An error occurred while requesting the %s invitation:"
 msgstr ""
 
-#: common/woocommerce.php:56 evalor/common/woocommerce.php:56
-#: webwinkelkeur/common/woocommerce.php:56
-msgid "WebwinkelKeur uitnodiging kon niet worden verstuurd."
+#: common/woocommerce.php:56
+#. common/woocommerce.php:56
+#, php-format
+msgid "The %s invitation could not be sent."
 msgstr ""
 
-#: evalor/options.php:4
-msgid "eValor"
+#: webwinkelkeur/options.php:7 evalor/options.php:7
+#. webwinkelkeur/options.php:7 evalor/options.php:7
+msgid "Your changes have been saved."
 msgstr ""
 
-#: evalor/options.php:7
-msgid "Sus cambios han sido guardados."
+#: webwinkelkeur/options.php:13 evalor/options.php:13
+#. webwinkelkeur/options.php:13 evalor/options.php:13
+msgid "Shop ID"
 msgstr ""
 
-#: evalor/options.php:13
-msgid "ID de la tienda online"
-msgstr ""
-
-#: evalor/options.php:17
-msgid "Clave API"
-msgstr ""
-
-#: evalor/options.php:20
-msgid "Estos datos los encontrará al ingresar en <a href=\"https://www.evalor.es/tienda/\" target=\"_blank\">eValor.es</a>.<br />Haz click en \"Colocar sello\". Encontrará estos datos en la parte inferior de la página."
-msgstr ""
-
-#: evalor/options.php:25
-msgid "Mostrar sidebar"
-msgstr ""
-
-#: evalor/options.php:29
-msgid "Sí, añadir el sidebar de eValor a mi web."
-msgstr ""
-
-#: evalor/options.php:34
-msgid "Posición sidebar"
-msgstr ""
-
-#: evalor/options.php:39
-msgid "Izquierda"
-msgstr ""
-
-#: evalor/options.php:43
-msgid "Derecha"
-msgstr ""
-
-#: evalor/options.php:49
-msgid "Altura sidebar"
-msgstr ""
-
-#: evalor/options.php:52
-msgid "Número de pixeles desde arriba."
-msgstr ""
-
-#: evalor/options.php:57
-msgid "Enviar invitaciones"
-msgstr ""
-
-#: evalor/options.php:74
-msgid "Instale y active WooCommerce para poder utilizar esta función."
-msgstr ""
-
-#: evalor/options.php:76
-msgid "Esta función solo está disponible para socios PLUS."
-msgstr ""
-
-#: evalor/options.php:80
-msgid "Plazo para la invitación"
-msgstr ""
-
-#: evalor/options.php:83
-msgid "La invitación se envía una vez hayan pasado el número de días indicados después de enviar el pedido."
-msgstr ""
-
-#: evalor/options.php:88
-msgid "Mostrar logo desplegable"
-msgstr ""
-
-#: evalor/options.php:92
-msgid "Sí, añadir el logo desplegable eValor a mi sitio web."
-msgstr ""
-
-#: evalor/options.php:97
-msgid "Integración JavaScript"
-msgstr ""
-
-#: evalor/options.php:101
-msgid "Sí, añadir el JavaScript de eValor a mi sitio web."
-msgstr ""
-
-#: evalor/options.php:106
-msgid "Estrellas Rich Snippet"
-msgstr ""
-
-#: evalor/options.php:110
-msgid "Sí, añade un Rich Snippet al footer."
-msgstr ""
-
-#: webwinkelkeur/options.php:4
-msgid "WebwinkelKeur"
-msgstr ""
-
-#: webwinkelkeur/options.php:7
-msgid "Uw wijzigingen zijn opgeslagen."
-msgstr ""
-
-#: webwinkelkeur/options.php:13
-msgid "Webwinkel ID"
-msgstr ""
-
-#: webwinkelkeur/options.php:17
+#: webwinkelkeur/options.php:17 evalor/options.php:17
+#. webwinkelkeur/options.php:17 evalor/options.php:17
 msgid "API key"
 msgstr ""
 
-#: webwinkelkeur/options.php:20
-msgid "Deze gegevens vindt u na het inloggen op <a href=\"https://www.webwinkelkeur.nl/webwinkel/\" target=\"_blank\">WebwinkelKeur.nl</a>.<br />Klik op 'Keurmerk plaatsen'. De gegevens zijn vervolgens onderaan deze pagina te vinden."
+#: webwinkelkeur/options.php:20 evalor/options.php:20
+#. webwinkelkeur/options.php:20 evalor/options.php:20
+#, php-format
+msgid "You'll find this information after logging in on %s."
 msgstr ""
 
-#: webwinkelkeur/options.php:25
-msgid "JavaScript-integratie"
+#: webwinkelkeur/options.php:25 evalor/options.php:98
+#. webwinkelkeur/options.php:25 evalor/options.php:98
+msgid "JavaScript integration"
 msgstr ""
 
-#: webwinkelkeur/options.php:29
-msgid "Ja, voeg de WebwinkelKeur JavaScript toe aan mijn website."
+#: webwinkelkeur/options.php:29 evalor/options.php:102
+#. webwinkelkeur/options.php:29 evalor/options.php:102
+#, php-format
+msgid "Yes, add the %s JavaScript to my website."
 msgstr ""
 
 #: webwinkelkeur/options.php:32
-msgid "Gebruik de JavaScript-integratie om de sidebar en de tooltip op uw site te plaatsen.<br>Alle instellingen voor de sidebar en de tooltip, vindt u in het <a href=\"https://dashboard.webwinkelkeur.nl/integration\" target=\"_blank\">WebwinkelKeur Dashboard</a>."
+#. webwinkelkeur/options.php:32
+#, php-format
+msgid "Use the JavaScript integration to add the sidebar and the tooltip to your website.<br>All settings for the sidebar and tooltip are located on the %s."
 msgstr ""
 
-#: webwinkelkeur/options.php:37
-msgid "Uitnodigingen versturen"
+#: webwinkelkeur/options.php:32
+#. webwinkelkeur/options.php:32
+#, php-format
+msgid "%s Dashboard"
 msgstr ""
 
-#: webwinkelkeur/options.php:54
-msgid "Installeer en activeer WooCommerce om deze functionaliteit te kunnen gebruiken."
+#: webwinkelkeur/options.php:37 evalor/options.php:58
+#. webwinkelkeur/options.php:37 evalor/options.php:58
+msgid "Invitations"
 msgstr ""
 
-#: webwinkelkeur/options.php:56
-msgid "Deze functionaliteit is alleen beschikbaar voor Plus-leden."
+#: webwinkelkeur/options.php:42 evalor/options.php:63
+#. webwinkelkeur/options.php:42 evalor/options.php:63
+msgid "Yes, after every order."
 msgstr ""
 
-#: webwinkelkeur/options.php:60
-msgid "Wachttijd voor uitnodiging"
+#: webwinkelkeur/options.php:46 evalor/options.php:67
+#. webwinkelkeur/options.php:46 evalor/options.php:67
+msgid "Yes, after a customer's first order."
 msgstr ""
 
-#: webwinkelkeur/options.php:63
-msgid "De uitnodiging wordt verstuurd nadat het opgegeven aantal dagen is verstreken na het verzenden van de bestelling."
+#: webwinkelkeur/options.php:50 evalor/options.php:71
+#. webwinkelkeur/options.php:50 evalor/options.php:71
+msgid "No, don't send invitations."
 msgstr ""
 
-#: webwinkelkeur/options.php:68
-msgid "Rich snippet sterren"
+#: webwinkelkeur/options.php:54 evalor/options.php:75
+#. webwinkelkeur/options.php:54 evalor/options.php:75
+msgid "Install and activate WooCommerce to use this functionality."
 msgstr ""
 
-#: webwinkelkeur/options.php:72
-msgid "Ja, voeg een rich snippet toe aan de footer."
+#: webwinkelkeur/options.php:56 evalor/options.php:77
+#. webwinkelkeur/options.php:56 evalor/options.php:77
+msgid "This functionality is only available for Plus packages."
+msgstr ""
+
+#: webwinkelkeur/options.php:60 evalor/options.php:81
+#. webwinkelkeur/options.php:60 evalor/options.php:81
+msgid "Invitation delay"
+msgstr ""
+
+#: webwinkelkeur/options.php:63 evalor/options.php:84
+#. webwinkelkeur/options.php:63 evalor/options.php:84
+msgid "The invitation will be send after the specified amount of days since the order has been shipped."
+msgstr ""
+
+#: webwinkelkeur/options.php:68 evalor/options.php:107
+#. webwinkelkeur/options.php:68 evalor/options.php:107
+msgid "Add rich snippet"
+msgstr ""
+
+#: webwinkelkeur/options.php:72 evalor/options.php:111
+#. webwinkelkeur/options.php:72 evalor/options.php:111
+msgid "Yes, add a rich snippet to the footer of my website."
+msgstr ""
+
+#: webwinkelkeur/options.php:75 evalor/options.php:114
+#. webwinkelkeur/options.php:75 evalor/options.php:114
+msgid "This allows Google to show your rating in the search results. Use at your own risk."
+msgstr ""
+
+#: webwinkelkeur/options.php:76 evalor/options.php:115
+#. webwinkelkeur/options.php:76 evalor/options.php:115
+msgid "More information."
+msgstr ""
+
+#: evalor/options.php:21
+#. evalor/options.php:21
+#, php-format
+msgid "Click on \"%s\". You will find the needed information at the bottom of the page."
+msgstr ""
+
+#: evalor/options.php:26
+#. evalor/options.php:26
+msgid "Display sidebar"
+msgstr ""
+
+#: evalor/options.php:30
+#. evalor/options.php:30
+#, php-format
+msgid "Yes, add the %s sidebar to my website."
+msgstr ""
+
+#: evalor/options.php:35
+#. evalor/options.php:35
+msgid "Sidebar position"
+msgstr ""
+
+#: evalor/options.php:40
+#. evalor/options.php:40
+msgid "Left"
+msgstr ""
+
+#: evalor/options.php:44
+#. evalor/options.php:44
+msgid "Right"
+msgstr ""
+
+#: evalor/options.php:50
+#. evalor/options.php:50
+msgid "Sidebar top offset"
+msgstr ""
+
+#: evalor/options.php:53
+#. evalor/options.php:53
+msgid "The number of pixels between the top of the page and the sidebar."
+msgstr ""
+
+#: evalor/options.php:89
+#. evalor/options.php:89
+msgid "Display tooltip"
+msgstr ""
+
+#: evalor/options.php:93
+#. evalor/options.php:93
+#, php-format
+msgid "Yes, add the %s tooltip to my website."
 msgstr ""

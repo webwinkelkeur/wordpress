@@ -31,7 +31,7 @@ abstract class WebwinkelKeurAdminCommon extends WebwinkelKeurCommon {
     public function plugin_action_links($links, $file) {
         if($file == $this->settings['PLUGIN_ENTRY']) {
             $links[] = '<a href="admin.php?page=' . $this->settings['PLUGIN_SLUG'] . '">'
-                     . __('Settings', 'webwinkelkeur') . '</a>';
+                     . __('Settings') . '</a>';
         }
         return $links;
     }
@@ -59,12 +59,12 @@ abstract class WebwinkelKeurAdminCommon extends WebwinkelKeurCommon {
                 $config[$field_name] = (string) @$_POST[$this->get_option_name($field_name)];
 
             if(empty($config['wwk_shop_id']))
-                $errors[] = __('Uw webwinkel ID is verplicht.', 'webwinkelkeur');
+                $errors[] = __('Your shop ID is required.', 'webwinkelkeur');
             elseif(!ctype_digit($config['wwk_shop_id']))
-                $errors[] = __('Uw webwinkel ID kan alleen cijfers bevatten.', 'webwinkelkeur');
+                $errors[] = __('Your shop ID can only contain digits.', 'webwinkelkeur');
 
             if($config['invite'] && !$config['wwk_api_key'])
-                $errors[] = __('Om uitnodigingen te versturen is uw API key verplicht.', 'webwinkelkeur');
+                $errors[] = __('To send invitations, your API key is required.', 'webwinkelkeur');
 
             if(!$errors) {
                 foreach($config as $name => $value)
@@ -89,7 +89,7 @@ abstract class WebwinkelKeurAdminCommon extends WebwinkelKeurCommon {
         foreach($errors as $error) {
             ?>
             <div class="error"><p>
-                <?php _e('Bij het versturen van de WebwinkelKeur uitnodiging is een fout opgetreden:', 'webwinkelkeur') ?><br/>
+                <?php sprintf(__('An error occurred while requesting the %s invitation:', 'webwinkelkeur'), $this->settings['PLUGIN_NAME']); ?><br/>
                 <?php echo esc_html($error->response); ?>
             </p></div>
             <?php

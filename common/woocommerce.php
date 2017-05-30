@@ -53,7 +53,7 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
                 'response'  => $e->getMessage(),
                 'time'      => time(),
             ));
-            $this->insert_comment($order_id, __('WebwinkelKeur uitnodiging kon niet worden verstuurd.', 'webwinkelkeur') . ' ' . $e->getMessage());
+            $this->insert_comment($order_id, sprintf(__('The %s invitation could not be sent.', 'webwinkelkeur'), $this->settings['PLUGIN_NAME']) . ' ' . $e->getMessage());
         }
     }
 
