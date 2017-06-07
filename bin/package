@@ -17,8 +17,12 @@ git archive master | tar xf - -C "$tmp"
 
 cd "$tmp"
 
+make
+
 for project in "${projects[@]}"; do
-    rm -f "$project/common"
+    cd "$project"
+    rm -f common project.yml
+    cd ..
 done
 
 last_project=""
