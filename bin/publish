@@ -34,5 +34,5 @@ for project in "${projects[@]}"; do
 
     cd $tmp/svn
     svn add --force trunk
-    svn ci -m 'Update plugin' --username apeschar --no-auth-cache
+    svn ci -m 'Update plugin' --username apeschar
 done
