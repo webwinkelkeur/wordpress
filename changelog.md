@@ -1,5 +1,5 @@
 = 1.4.3 =
-* Added this changelog.
+* Add this changelog.
 * Use order number for invitations, not order ID. (This is usually the same.)
 
 = 1.4.2 =
