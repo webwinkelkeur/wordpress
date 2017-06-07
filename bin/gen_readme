@@ -1,0 +1,47 @@
+#!/usr/bin/env php
+<?php
+
+if (sizeof($argv) != 2) {
+    fwrite(STDERR, "Usage: {$argv[0]} <project>\n");
+    exit(1);
+}
+
+require_once __DIR__ . '/../dev/Spyc.php';
+
+$project = $argv[1];
+
+$yaml = file_get_contents(__DIR__ . '/../' . $project . '/project.yml');
+
+if ($yaml === false) {
+    fwrite(STDERR, "Failed to read $project/project.yml. Does it exist?\n");
+    exit(2);
+}
+
+$info = spyc_load($yaml);
+
+$changelog = file_get_contents(__DIR__ . '/../changelog.md');
+
+echo <<<EOF
+=== {$info['name']} for WordPress ===
+Contributors: apeschar
+Tags: {$info['readme']['tags']}
+Requires at least: 3.5
+Tested up to: 4.7.5
+Stable tag: trunk
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+
+{$info['readme']['intro']}
+
+== Description ==
+
+{$info['readme']['description']}
+
+== Installation ==
+
+{$info['readme']['installation']}
+
+== Changelog ==
+
+{$changelog}
+EOF;
