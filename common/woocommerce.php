@@ -11,6 +11,13 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
     public function order_completed($order_id) {
         global $wpdb;
 
+        $order = wc_get_order($order_id);
+        if(!$order)
+            return;
+
+        // order number
+        $order_number = $order->get_order_number();
+
         // invites enabled?
         if(!get_option($this->get_option_name('invite')))
             return;
@@ -47,7 +54,7 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
         // send invite
         $api = new WebwinkelKeurAPI($this->settings['API_DOMAIN'], $shop_id, $api_key);
         try {
-            $api->invite($order_id, $email, $invite_delay, $lang, $customername, $noremail);
+            $api->invite($order_number, $email, $invite_delay, $lang, $customername, $noremail);
         } catch(WebwinkelKeurAPIAlreadySentError $e) {
             // that's okay
         } catch(WebwinkelKeurAPIError $e) {
