@@ -47,6 +47,9 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
 
         // lang
         $lang = get_post_meta($order_id, 'wpml_language', true);
+        if (!$lang) {
+            $lang = get_locale();
+        }
 
         // send invite
         $api = new WebwinkelKeurAPI($this->settings['API_DOMAIN'], $shop_id, $api_key);
