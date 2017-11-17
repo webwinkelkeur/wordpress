@@ -11,35 +11,50 @@ class WebwinkelKeurAPI {
         $this->api_key = (string) $api_key;
     }
 
-    public function invite($order_id, $email, $delay, $lang, $customername, $noremail = false) {
-        $parameters = array(
-            'id'        => $this->shop_id,
-            'password'  => $this->api_key,
+    public function invite($order_id, $email, $delay, $lang, $customer_name, $noremail = false) {
+        $credentials = array(
+            'id'   => $this->shop_id,
+            'code' => $this->api_key
+        );
+        $post = array(
             'order'     => $order_id,
             'email'     => $email,
             'delay'     => $delay,
             'language'  => $lang,
-            'customername' => $customername,
-            'client'    => 'wordpress'
+            'client'    => 'wordpress',
+            'customer_name' => $customer_name,
         );
 
         if($noremail)
-            $parameters['noremail'] = true;
+            $post['max_invitations_per_email'] = 1;
 
-        $url = $this->buildURL('https://' . $this->api_domain .'/api.php', $parameters);
+        $url = $this->buildURL('https://dashboard.webwinkelkeur.nl/api/1.0/invitations.json', $credentials);
 
-        $retriever = new Peschar_URLRetriever();
-        $response = $retriever->retrieve($url);
+        $ch = curl_init($url);
+        curl_setopt_array($ch, array(
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => http_build_query($post),
+            CURLOPT_SSL_VERIFYPEER => false
+        ));
+        $response = curl_exec($ch);
+        curl_close($ch);
 
         if(!$response) {
             throw new WebwinkelKeurAPIError($url, 'API not reachable.');
-        } elseif(preg_match('|^\s*Success:|', $response)) {
-            return true;
-        } elseif(preg_match('|invite already sent|', $response)) {
-            throw new WebwinkelKeurAPIAlreadySentError($url, $response);
-        } else {
-            throw new WebwinkelKeurAPIError($url, $response);
         }
+
+        $result = json_decode($response);
+        if (isset ($result->status) && $result->status == 'success') {
+            return true;
+        }
+        if(preg_match('|already sent|', $result->message)) {
+            throw new WebwinkelKeurAPIAlreadySentError($url, $response);
+        }
+        if(preg_match('|limit hit|', $result->message)) {
+            throw new WebwinkelKeurAPIAlreadySentError($url, $response);
+        }
+        throw new WebwinkelKeurAPIError($url, $response);
     }
 
     private function buildURL($address, $parameters) {
