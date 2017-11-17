@@ -1,32 +1,19 @@
 <?php
 require_once dirname(__FILE__) . '/vendor/Peschar/URLRetriever.php';
 class WebwinkelKeurAPI {
-    private $api_domain;
     private $shop_id;
     private $api_key;
 
-    public function __construct($api_domain, $shop_id, $api_key) {
-        $this->api_domain = (string)$api_domain;
+    public function __construct($shop_id, $api_key) {
         $this->shop_id = (string) $shop_id;
         $this->api_key = (string) $api_key;
     }
 
-    public function invite($order_id, $email, $delay, $lang, $customer_name, $noremail = false) {
+    public function invite(array $data) {
         $credentials = array(
             'id'   => $this->shop_id,
             'code' => $this->api_key
         );
-        $post = array(
-            'order'     => $order_id,
-            'email'     => $email,
-            'delay'     => $delay,
-            'language'  => $lang,
-            'client'    => 'wordpress',
-            'customer_name' => $customer_name,
-        );
-
-        if($noremail)
-            $post['max_invitations_per_email'] = 1;
 
         $url = $this->buildURL('https://dashboard.webwinkelkeur.nl/api/1.0/invitations.json', $credentials);
 
@@ -34,7 +21,7 @@ class WebwinkelKeurAPI {
         curl_setopt_array($ch, array(
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => http_build_query($post),
+            CURLOPT_POSTFIELDS => http_build_query($data),
             CURLOPT_SSL_VERIFYPEER => false
         ));
         $response = curl_exec($ch);

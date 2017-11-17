@@ -11,47 +11,51 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
     public function order_completed($order_id) {
         global $wpdb;
 
-        $order = wc_get_order($order_id);
-        if(!$order)
-            return;
-
-        // order number
-        $order_number = $order->get_order_number();
-
         // invites enabled?
         if(!get_option($this->get_option_name('invite')))
             return;
 
-        // noremail?
-        $noremail = get_option($this->get_option_name('invite')) == 2;
-
-        // API credentials
         $shop_id = get_option($this->get_option_name('wwk_shop_id'));
         $api_key = get_option($this->get_option_name('wwk_api_key'));
 
         if(!$shop_id || !$api_key)
             return;
 
-        // invite delay
-        $invite_delay = (int) get_option($this->get_option_name('invite_delay'));
-        if($invite_delay < 0)
-            $invite_delay = 0;
+        $order = wc_get_order($order_id);
+        if(!$order)
+            return;
 
-        // e-mail
+        $order_number = $order->get_order_number();
+
         $email = get_post_meta($order_id, '_billing_email', true);
         if(!preg_match('|@|', $email))
             return;
 
-        // billing name
-        $customername = get_post_meta($order_id, '_billing_first_name', true).' '.get_post_meta($order_id, '_billing_last_name', true);
+        $invite_delay = (int) get_option($this->get_option_name('invite_delay'));
+        if($invite_delay < 0)
+            $invite_delay = 0;
 
-        // lang
+        $customer_name = get_post_meta($order_id, '_billing_first_name', true)
+                         .' '.get_post_meta($order_id, '_billing_last_name', true);
+
         $lang = get_post_meta($order_id, 'wpml_language', true);
 
+        $data = array(
+            'order'     => $order_number,
+            'email'     => $email,
+            'delay'     => $invite_delay,
+            'language'  => $lang,
+            'client'    => 'wordpress',
+            'customer_name' => $customer_name
+        );
+        if (get_option($this->get_option_name('invite')) == 2) {
+            $data['max_invitations_per_email'] = 1;
+        }
+
         // send invite
-        $api = new WebwinkelKeurAPI($this->settings['API_DOMAIN'], $shop_id, $api_key);
+        $api = new WebwinkelKeurAPI($shop_id, $api_key);
         try {
-            $api->invite($order_number, $email, $invite_delay, $lang, $customername, $noremail);
+            $api->invite($data);
         } catch(WebwinkelKeurAPIAlreadySentError $e) {
             // that's okay
         } catch(WebwinkelKeurAPIError $e) {
