@@ -1,10 +1,12 @@
 <?php
 require_once dirname(__FILE__) . '/vendor/Peschar/URLRetriever.php';
 class WebwinkelKeurAPI {
+    private $api_domain;
     private $shop_id;
     private $api_key;
 
-    public function __construct($shop_id, $api_key) {
+    public function __construct($api_domain, $shop_id, $api_key) {
+        $this->api_domain = (string)$api_domain;
         $this->shop_id = (string) $shop_id;
         $this->api_key = (string) $api_key;
     }
@@ -15,7 +17,7 @@ class WebwinkelKeurAPI {
             'code' => $this->api_key
         );
 
-        $url = $this->buildURL('https://dashboard.webwinkelkeur.nl/api/1.0/invitations.json', $credentials);
+        $url = $this->buildURL('https://' . $this->api_domain . '/api/1.0/invitations.json', $credentials);
 
         $ch = curl_init($url);
         curl_setopt_array($ch, array(

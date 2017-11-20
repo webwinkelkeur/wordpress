@@ -15,6 +15,7 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
         if(!get_option($this->get_option_name('invite')))
             return;
 
+        $api_domain = $this->settings['API_DOMAIN'];
         $shop_id = get_option($this->get_option_name('wwk_shop_id'));
         $api_key = get_option($this->get_option_name('wwk_api_key'));
 
@@ -92,7 +93,7 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
         $data['order_data'] = json_encode($this->filter_data($order_data));
 
         // send invite
-        $api = new WebwinkelKeurAPI($shop_id, $api_key);
+        $api = new WebwinkelKeurAPI($api_domain, $shop_id, $api_key);
         try {
             $api->invite($data);
         } catch(WebwinkelKeurAPIAlreadySentError $e) {

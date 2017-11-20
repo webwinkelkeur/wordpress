@@ -13,6 +13,7 @@ $settings = array(
     'PLUGIN_SLUG' => 'webwinkelkeur',
     'PLUGIN_NAME' => 'WebwinkelKeur',
     'PLUGIN_ENTRY' => 'webwinkelkeur/webwinkelkeur.php',
+    'API_DOMAIN' => 'dashboard.webwinkelkeur.nl',
     'ADMIN_CLASS' => 'WebwinkelKeurAdmin',
     'FRONTEND_CLASS' => 'WebwinkelKeurFrontend'
 );
