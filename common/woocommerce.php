@@ -18,7 +18,6 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
         $api_domain = $this->settings['API_DOMAIN'];
         $shop_id = get_option($this->get_option_name('wwk_shop_id'));
         $api_key = get_option($this->get_option_name('wwk_api_key'));
-        $with_order_data = !get_option($this->get_option_name('limit_order_data'));
 
         if(!$shop_id || !$api_key)
             return;
@@ -37,8 +36,16 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
         if($invite_delay < 0)
             $invite_delay = 0;
 
-        $customer_name = $order->get_billing_first_name('edit')
-                         .' '. $order->get_billing_last_name('edit');
+        $invoice_address = $order->get_address('billing');
+        $customer_name = $invoice_address['first_name']
+                         .' '. $invoice_address['last_name'];
+
+        $delivery_address = $order->get_address('shipping');
+        $phones = [
+            $invoice_address['phone'],
+            $delivery_address['phone']
+        ];
+        $data['phone_numbers'] = array_filter(array_unique($phones));
 
         $lang = get_post_meta($order_id, 'wpml_language', true);
 
@@ -56,21 +63,10 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
             $data['max_invitations_per_email'] = 1;
         }
 
-        $order_arr = $order->get_data();
-        $customer_arr = $order_arr['customer_id'] ? (new WC_Customer($order_arr['customer_id']))->get_data() : [];
-        $invoice_address = $order->get_address('billing');
-        $delivery_address = $order->get_address('shipping');
-        $phones = [
-            $invoice_address['phone'],
-            $delivery_address['phone']
-        ];
-        if (isset ($customer_arr['billing'])) {
-            $phones[] = $customer_arr['billing']['phone'];
-        }
-
-        $data['phone_numbers'] = array_filter(array_unique($phones));
-
+        $with_order_data = !get_option($this->get_option_name('limit_order_data')) && is_callable([$order, 'get_data']);
         if ($with_order_data) {
+            $order_arr = $order->get_data();
+            $customer_arr = $order_arr['customer_id'] ? (new WC_Customer($order_arr['customer_id']))->get_data() : [];
             $pf = new WC_Product_Factory();
             foreach ($order_arr['line_items'] as $line_item) {
                 $product = $pf->get_product($line_item['product_id']);
