@@ -53,7 +53,6 @@
                     <?php if(!$this->woocommerce): ?>
                     <p class="description"><?php _e('Install and activate WooCommerce to use this functionality.', 'webwinkelkeur'); ?></p>
                     <?php endif; ?>
-                    <p class="description"><?php _e('This functionality is only available for Plus packages.', 'webwinkelkeur'); ?></p>
                 </td>
             </tr> 
             <tr valign="top">
