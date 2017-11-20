@@ -15,6 +15,7 @@ class WebwinkelKeurAdmin extends WebwinkelKeurAdminCommon {
             'wwk_api_key',
             'invite',
             'invite_delay',
+            'limit_order_data',
             'javascript',
             'rich_snippet',
         );

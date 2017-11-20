@@ -54,7 +54,21 @@
                     <p class="description"><?php _e('Install and activate WooCommerce to use this functionality.', 'webwinkelkeur'); ?></p>
                     <?php endif; ?>
                 </td>
-            </tr> 
+            </tr>
+            <tr>
+                <th scope="row"></th>
+                <td>
+                    <fieldset>
+                        <label>
+                            <input type="checkbox" name="<?php echo $this->get_option_name('limit_order_data');?>" value="1" <?php if($config['limit_order_data']) echo 'checked ';?> />
+                            <?php _e('Do not send order information to WebwinkelKeur', 'webwinkelkeur');?>
+                            <p class="description">
+                                <?php _e('Please note: not all WebwinkelKeur functionality will be available if you check this option!', 'webwinkelkeur');?>
+                            </p>
+                        </label>
+                    </fieldset>
+                </td>
+            </tr>
             <tr valign="top">
                 <th scope="row"><label for="webwinkelkeur-invite-delay"><?php _e('Invitation delay', 'webwinkelkeur'); ?></label></th>
                 <td><input name="<?php echo $this->get_option_name('invite_delay');?>" type="text" id="webwinkelkeur-invite-delay" value="<?php echo esc_html($config['invite_delay']); ?>" class="small-text" />

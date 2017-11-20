@@ -18,6 +18,7 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
         $api_domain = $this->settings['API_DOMAIN'];
         $shop_id = get_option($this->get_option_name('wwk_shop_id'));
         $api_key = get_option($this->get_option_name('wwk_api_key'));
+        $with_order_data = !get_option($this->get_option_name('limit_order_data'));
 
         if(!$shop_id || !$api_key)
             return;
@@ -69,27 +70,29 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
 
         $data['phone_numbers'] = array_filter(array_unique($phones));
 
-        $pf = new WC_Product_Factory();
-        foreach ($order_arr['line_items'] as $line_item) {
-            $product = $pf->get_product($line_item['product_id']);
-            if ($product) {
-                continue;
+        if ($with_order_data) {
+            $pf = new WC_Product_Factory();
+            foreach ($order_arr['line_items'] as $line_item) {
+                $product = $pf->get_product($line_item['product_id']);
+                if ($product) {
+                    continue;
+                }
+                $product_arr = $product->get_data();
+                $images = get_attached_media('image', $product->get_id());
+                foreach ($images as $image) {
+                    $product_arr['product_image'][] = wp_get_attachment_image_src($image->ID, 'full')[0];
+                }
             }
-            $product_arr = $product->get_data();
-            $images = get_attached_media('image', $product->get_id());
-            foreach ($images as $image) {
-                $product_arr['product_image'][] = wp_get_attachment_image_src($image->ID, 'full')[0];
-            }
-        }
-        $order_data = [
-            'order' => $order_arr,
-            'customer' => $customer_arr,
-            'products' => $product_arr,
-            'invoice_address' => $invoice_address,
-            'delivery_address' => $delivery_address,
-        ];
+            $order_data = [
+                'order' => $order_arr,
+                'customer' => $customer_arr,
+                'products' => $product_arr,
+                'invoice_address' => $invoice_address,
+                'delivery_address' => $delivery_address,
+            ];
 
-        $data['order_data'] = json_encode($this->filter_data($order_data));
+            $data['order_data'] = json_encode($this->filter_data($order_data));
+        }
 
         // send invite
         $api = new WebwinkelKeurAPI($api_domain, $shop_id, $api_key);
