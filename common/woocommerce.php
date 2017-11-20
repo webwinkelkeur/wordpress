@@ -35,8 +35,8 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
         if($invite_delay < 0)
             $invite_delay = 0;
 
-        $customer_name = get_post_meta($order_id, '_billing_first_name', true)
-                         .' '.get_post_meta($order_id, '_billing_last_name', true);
+        $customer_name = $order->get_billing_first_name('edit')
+                         .' '. $order->get_billing_last_name('edit');
 
         $lang = get_post_meta($order_id, 'wpml_language', true);
 
@@ -53,6 +53,38 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
         if (get_option($this->get_option_name('invite')) == 2) {
             $data['max_invitations_per_email'] = 1;
         }
+
+        $order_data = $order->get_data();
+        $data['order_data'] = [
+            'order' => $order_data,
+            'customer' => $order_data['customer_id'] ? (new WC_Customer($order_data['customer_id']))->get_data() : [],
+            'invoice_address' => $order->get_address('billing'),
+            'delivery_address' => $order->get_address('shipping'),
+        ];
+        $pf = new WC_Product_Factory();
+        foreach ($order_data['line_items'] as $line_item) {
+            $product = $pf->get_product($line_item['product_id']);
+            if ($product) {
+                continue;
+            }
+            $productArr = $product->get_data();
+            $images = get_attached_media('image', $product->get_id());
+            foreach ($images as $image) {
+                $productArr['product_image'][] = wp_get_attachment_image_src($image->ID, 'full')[0];
+            }
+            $data['order_data']['products'][] =  $productArr;
+        }
+
+        $phones = [
+            $data['order_data']['invoice_address']['phone'],
+            $data['order_data']['billing_address']['phone']
+        ];
+        if (isset ($data['order_data']['customer']['billing'])) {
+            $phones[] = $data['order_data']['customer']['billing']['phone'];
+        }
+
+        $data['order_data'] = json_encode($this->filter_data($data['order_data']));
+        $data['phone_numbers'] = array_filter(array_unique($phones));
 
         // send invite
         $api = new WebwinkelKeurAPI($shop_id, $api_key);
@@ -94,5 +126,24 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
             'comment_agent'     => $this->settings['PLUGIN_NAME'],
             'comment_type'      => 'order_note',
         ));
+    }
+
+    private function filter_data(array $value) {
+        return array_filter(array_map(function ($item) {
+            return is_array($item) ? $this->filter_data($item) : $this->filter_scalar($item);
+        }, $value));
+    }
+
+    private function filter_scalar($value) {
+        if (is_object($value) && method_exists($value, 'get_data')) {
+            return $this->filter_data($value->get_data());
+        }
+        if (is_callable([$value, '__toString'])) {
+            return (string)$value;
+        }
+        if (is_object($value)) {
+            return null;
+        }
+        return $value;
     }
 }
