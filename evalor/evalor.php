@@ -14,6 +14,7 @@ $settings = array(
     'PLUGIN_NAME' => 'eValor',
     'PLUGIN_ENTRY' => 'evalor/evalor.php',
     'API_DOMAIN' => 'www.evalor.es',
+    'JS_SIDEBAR_DOMAIN' => 'www.evalor.es',
     'ADMIN_CLASS' => 'EvalorAdmin',
     'FRONTEND_CLASS' => 'EvalorFrontend'
 );
