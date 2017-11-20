@@ -59,6 +59,16 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
         $customer_arr = $order_arr['customer_id'] ? (new WC_Customer($order_arr['customer_id']))->get_data() : [];
         $invoice_address = $order->get_address('billing');
         $delivery_address = $order->get_address('shipping');
+        $phones = [
+            $invoice_address['phone'],
+            $delivery_address['phone']
+        ];
+        if (isset ($customer_arr['billing'])) {
+            $phones[] = $customer_arr['billing']['phone'];
+        }
+
+        $data['phone_numbers'] = array_filter(array_unique($phones));
+
         $pf = new WC_Product_Factory();
         foreach ($order_arr['line_items'] as $line_item) {
             $product = $pf->get_product($line_item['product_id']);
@@ -70,22 +80,11 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
             foreach ($images as $image) {
                 $product_arr['product_image'][] = wp_get_attachment_image_src($image->ID, 'full')[0];
             }
-            $order_data['products'][] =  $product_arr;
         }
-
-        $phones = [
-            $invoice_address['phone'],
-            $delivery_address['phone']
-        ];
-        if (isset ($customer_arr['billing'])) {
-            $phones[] = $customer_arr['billing']['phone'];
-        }
-
-        $data['phone_numbers'] = array_filter(array_unique($phones));
-
         $order_data = [
             'order' => $order_arr,
             'customer' => $customer_arr,
+            'products' => $product_arr,
             'invoice_address' => $invoice_address,
             'delivery_address' => $delivery_address,
         ];
