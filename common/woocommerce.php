@@ -74,7 +74,7 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
             $pf = new WC_Product_Factory();
             foreach ($order_arr['line_items'] as $line_item) {
                 $product = $pf->get_product($line_item['product_id']);
-                if ($product) {
+                if (!$product) {
                     continue;
                 }
                 $product_arr = $product->get_data();
