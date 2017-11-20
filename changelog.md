@@ -1,3 +1,7 @@
+= 1.5.0 =
+* Use new WebwinkelKeur API.
+* Add sending additional order information feature
+
 = 1.4.4 =
 * Do not send interface language to WebwinkelKeur API.
 
