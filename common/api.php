@@ -19,15 +19,8 @@ class WebwinkelKeurAPI {
 
         $url = $this->buildURL('https://' . $this->api_domain . '/api/1.0/invitations.json', $credentials);
 
-        $ch = curl_init($url);
-        curl_setopt_array($ch, array(
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => http_build_query($data),
-            CURLOPT_SSL_VERIFYPEER => false
-        ));
-        $response = curl_exec($ch);
-        curl_close($ch);
+        $retriever = new Peschar_URLRetriever();
+        $response = $retriever->retrieve($url, $data);
 
         if(!$response) {
             throw new WebwinkelKeurAPIError($url, 'API not reachable.');
