@@ -1,3 +1,7 @@
+= 1.6.0 =
+* Send order totals.
+* Fix phones sending
+
 = 1.5.0 =
 * Use new WebwinkelKeur API.
 * Add sending additional order information feature

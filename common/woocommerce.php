@@ -22,6 +22,7 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
         if(!$shop_id || !$api_key)
             return;
 
+        /** @var WC_Order $order */
         $order = wc_get_order($order_id);
         if(!$order)
             return;
@@ -45,7 +46,6 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
             $invoice_address['phone'],
             $delivery_address['phone']
         ];
-        $data['phone_numbers'] = array_filter(array_unique($phones));
 
         $lang = get_post_meta($order_id, 'wpml_language', true);
 
@@ -56,6 +56,8 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
             'language'  => $lang,
             'client'    => 'wordpress',
             'customer_name' => $customer_name,
+            'phone_numbers' => array_values(array_filter(array_unique($phones))),
+            'order_total'   => $order->get_total(),
             'plugin_version' => $this->get_plugin_version('webwinkelkeur'),
             'platform_version' => 'wp-' . $wp_version . '-wc-' . $this->get_plugin_version('woocommerce')
         );
