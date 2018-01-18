@@ -64,7 +64,7 @@ abstract class WebwinkelKeurFrontendCommon extends WebwinkelKeurCommon {
         if(!@is_writable($tmp_dir))
             return;
 
-        $url = sprintf('http://%s/shop_rich_snippet.php?id=%s',
+        $url = sprintf('https://%s/webshops/rich_snippet?id=%s',
                        $this->settings['API_DOMAIN'],
                        (int) $this->wwk_shop_id);
 
@@ -82,6 +82,7 @@ abstract class WebwinkelKeurFrontendCommon extends WebwinkelKeurCommon {
         } else {
             $context = @stream_context_create(array(
                 'http' => array('timeout' => 3),
+                'ssl' => array('verify_peer' => false),
             ));
             $json = @file_get_contents($url, false, $context);
             if(!$json) return;
