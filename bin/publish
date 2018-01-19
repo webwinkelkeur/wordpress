@@ -1,10 +1,27 @@
 #!/bin/bash
 
 set -euo pipefail
+cd "$(dirname "$0")/.."
 
 projects=( webwinkelkeur evalor )
 
-cd "$(dirname "$0")/.."
+if [[ $# -eq 0 ]]; then :
+elif [[ $# -eq 1 ]]; then
+    ok=0
+    for project in "${projects[@]}"; do
+        if [[ $project = $1 ]]; then
+            projects=( "$project" )
+            ok=1
+        fi
+    done
+    if [[ $ok -eq 0 ]]; then
+        echo "Unknown project: $1" >&2
+        exit 1
+    fi
+else
+    echo "Usage: $0 [project]" >&2
+    exit 1
+fi
 
 root="$PWD"
 
