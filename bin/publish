@@ -42,7 +42,13 @@ for project in "${projects[@]}"; do
 
     svn co "http://plugins.svn.wordpress.org/$project" svn
     cd svn
-    svn rm --force trunk
+
+    if [[ `svn status | wc -l` -gt 0 ]]; then
+        echo "svn status wasn't empty after checkout (?)" >&2
+        exit 1
+    fi
+
+    rm -rf trunk
     mkdir trunk
 
     cd $tmp/package
@@ -50,6 +56,14 @@ for project in "${projects[@]}"; do
     mv $project/* $tmp/svn/trunk
 
     cd $tmp/svn
+
+    svn status | awk '/^!/ {print $2}' | xargs -r svn rm --force -q
     svn add --force trunk
+
+    if [[ `svn status | wc -l` -eq 0 ]]; then
+        echo "$project: Nothing changed" >&2
+        continue
+    fi
+
     svn ci -m 'Update plugin' --username apeschar
 done
