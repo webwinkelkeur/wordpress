@@ -13,9 +13,17 @@ out="$(pwd)/dist"
 tmp="$(mktemp -d)"
 trap "cd /; rm -rf '$tmp'" EXIT
 
+version="$(git tag --points-at HEAD)"
+if [[ $version = "" ]]; then
+    echo "Warning: No tag points at the current HEAD!" >&2
+    version=HEAD
+fi
+
 git archive master | tar xf - -C "$tmp"
 
 cd "$tmp"
+
+perl -p -i -e 's/\$VERSION\$/'"$version"'/g' */*.php
 
 make
 
