@@ -26,6 +26,7 @@ echo <<<EOF
 Contributors: apeschar
 Tags: {$info['readme']['tags']}
 Requires at least: 4.4
+Requires PHP: 5.6
 Tested up to: 4.9
 Stable tag: trunk
 License: GPLv2 or later

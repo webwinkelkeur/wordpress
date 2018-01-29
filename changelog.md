@@ -1,3 +1,6 @@
+= 1.6.1 =
+* Note required PHP version.
+
 = 1.6.0 =
 * Send order totals.
 * Fix phones sending
