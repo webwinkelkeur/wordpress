@@ -134,15 +134,14 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
         ));
     }
 
-    private function filter_data(array $value) {
-        return array_map(function ($item) {
-            return is_array($item) ? $this->filter_data($item) : $this->filter_scalar($item);
-        }, $value);
-    }
-
-    private function filter_scalar($value) {
+    private function filter_data($value) {
+        if (is_array($value)) {
+            return array_map(function ($item) {
+                return $this->filter_data($item);
+            }, $value);
+        }
         if (is_callable([$value, 'get_data'])) {
-            return $this->filter_data($value->get_data());
+            return $this->filter_data(@$value->get_data());
         }
         if (is_callable([$value, '__toString'])) {
             return (string)$value;
