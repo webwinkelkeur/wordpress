@@ -1,3 +1,16 @@
+= 1.6.5 =
+* Update changelog.
+
+= 1.6.4 =
+* Bump WordPress, WooCommerce compatibility.
+* Fix error messages.
+
+= 1.6.3 =
+* Fix compatibility with some plug-ins that mess up get_data().
+
+= 1.6.2 =
+* Require PHP 5.6
+
 = 1.6.1 =
 * Note required PHP version.
 
