@@ -3,6 +3,12 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
+version="$(git tag --points-at HEAD)"
+if [[ $version = "" ]]; then
+    echo "No tag points at the current HEAD!" >&2
+    exit 1
+fi
+
 projects=( webwinkelkeur evalor )
 
 if [[ $# -eq 0 ]]; then :
