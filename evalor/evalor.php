@@ -6,6 +6,7 @@ Description: El módulo WordPress facilita la integración del innovador sidebar
 Version: $VERSION$
 Author: Albert Peschar
 Author URI: https://peschar.net/
+WC tested up to: 3.99
 */
 
 $settings = array(
