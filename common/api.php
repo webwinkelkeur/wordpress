@@ -31,12 +31,13 @@ class WebwinkelKeurAPI {
             return true;
         }
         if(preg_match('|already sent|', $result->message)) {
-            throw new WebwinkelKeurAPIAlreadySentError($url, $response);
+            throw new WebwinkelKeurAPIAlreadySentError($url, $result->message);
         }
         if(preg_match('|limit hit|', $result->message)) {
-            throw new WebwinkelKeurAPIAlreadySentError($url, $response);
+            throw new WebwinkelKeurAPIAlreadySentError($url, $result->message);
         }
-        throw new WebwinkelKeurAPIError($url, $response);
+        throw new WebwinkelKeurAPIError(
+            $url, isset($result->message) ? $result->message : $response);
     }
 
     private function buildURL($address, $parameters) {
