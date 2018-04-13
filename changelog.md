@@ -1,3 +1,6 @@
+= 1.6.6 =
+* Log rich snippet errors to the developer console.
+
 = 1.6.5 =
 * Update changelog.
 
