@@ -62,7 +62,7 @@ abstract class WebwinkelKeurFrontendCommon extends WebwinkelKeurCommon {
         if(!@is_writable($tmp_dir))
             $tmp_dir = '/tmp';
         if(!@is_writable($tmp_dir))
-            return;
+            return $this->log_error("The temporary directory $tmp_dir is not writable.");
 
         $url = sprintf('https://%s/webshops/rich_snippet?id=%s',
                        $this->settings['API_DOMAIN'],
@@ -85,10 +85,12 @@ abstract class WebwinkelKeurFrontendCommon extends WebwinkelKeurCommon {
                 'ssl' => array('verify_peer' => false),
             ));
             $json = @file_get_contents($url, false, $context);
-            if(!$json) return;
+            if(!$json)
+                return $this->log_error("Failed to retrieve rich snippet data from $url");
 
             $data = @json_decode($json, true);
-            if(empty($data['result'])) return;
+            if(empty($data['result']))
+                return $this->log_error("Failed to decode rich snippet data from $url");
 
             $new_file = $cache_file . '.' . uniqid();
             if(@file_put_contents($new_file, $json))
@@ -97,8 +99,16 @@ abstract class WebwinkelKeurFrontendCommon extends WebwinkelKeurCommon {
 
         if($fp)
             @fclose($fp);
-        
-        if($data['result'] == 'ok')
-            return $data['content'];
+
+        if($data['result'] != 'ok')
+            return $this->log_error("Did not get a succesful response from $url");
+
+        return $data['content'];
     }
+
+    private function log_error($message) {
+        return sprintf('<script>console.error(%s)</script>',
+                       json_encode("WebwinkelKeur: $message"));
+    }
+
 }
