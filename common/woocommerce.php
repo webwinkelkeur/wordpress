@@ -67,24 +67,26 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
 
         $with_order_data = !get_option($this->get_option_name('limit_order_data')) && is_callable([$order, 'get_data']);
         if ($with_order_data) {
-            $order_arr = $order->get_data();
-            $customer_arr = $order_arr['customer_id'] ? (new WC_Customer($order_arr['customer_id']))->get_data() : [];
+            $order_arr = $this->get_data($order, []);
+            $customer_arr = !empty($order_arr['customer_id']) ? $this->get_data(new WC_Customer($order_arr['customer_id']), []) : [];
             $pf = new WC_Product_Factory();
+            $products = [];
             foreach ($order_arr['line_items'] as $line_item) {
                 $product = $pf->get_product($line_item['product_id']);
                 if (!$product) {
                     continue;
                 }
-                $product_arr = $product->get_data();
+                $product_arr = $this->get_data($product, []);
                 $images = get_attached_media('image', $product->get_id());
                 foreach ($images as $image) {
                     $product_arr['product_image'][] = wp_get_attachment_image_src($image->ID, 'full')[0];
                 }
+                $products[] = $product_arr;
             }
             $order_data = [
                 'order' => $order_arr,
                 'customer' => $customer_arr,
-                'products' => $product_arr,
+                'products' => $products,
                 'invoice_address' => $invoice_address,
                 'delivery_address' => $delivery_address,
             ];
@@ -141,7 +143,7 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
             }, $value);
         }
         if (is_callable([$value, 'get_data'])) {
-            return $this->filter_data(@$value->get_data());
+            return $this->get_data($value);
         }
         if (is_callable([$value, '__toString'])) {
             return (string)$value;
@@ -150,5 +152,16 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
             return new \stdClass();
         }
         return $value;
+    }
+
+    private function get_data($value, $default = null) {
+        if (!is_callable([$value, 'get_data']) || !is_object($value)) {
+            return $default;
+        }
+        $method = new ReflectionMethod($value, 'get_data');
+        if ($method->getNumberOfRequiredParameters() > 0) {
+            return $default;
+        }
+        return @$value->get_data();
     }
 }
