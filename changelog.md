@@ -1,3 +1,6 @@
+= 1.6.7 =
+* Check required parameters before calling get_data().
+
 = 1.6.6 =
 * Log rich snippet errors to the developer console.
 
