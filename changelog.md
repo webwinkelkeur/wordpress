@@ -1,3 +1,6 @@
+= 1.6.8 =
+* Bump WordPress compatibility to 5.2.
+
 = 1.6.7 =
 * Check required parameters before calling get_data().
 
