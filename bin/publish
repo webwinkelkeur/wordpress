@@ -36,6 +36,9 @@ trap "cd /; rm -rf '$tmp'" EXIT
 
 ./bin/package
 
+git push github master
+git push github --tags
+
 for project in "${projects[@]}"; do
     if [[ $# -eq 1 ]] && [[ $1 != $project ]]; then
         continue
