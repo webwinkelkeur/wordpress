@@ -1,3 +1,6 @@
+= 1.6.9 =
+* Fix fatal error when order contains incomplete unserialized objects.
+
 = 1.6.8 =
 * Bump WordPress compatibility to 5.2.
 
