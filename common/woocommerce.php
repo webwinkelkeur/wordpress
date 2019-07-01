@@ -142,12 +142,12 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
                 return $this->filter_data($item);
             }, $value);
         }
-        if (is_callable([$value, 'get_data'])) {
-            return $this->get_data($value);
-        }
-        if (is_callable([$value, '__toString'])) {
-            return (string)$value;
-        }
+        try {
+            return $this->call_method($value, 'get_data');
+        } catch (Exception $e) {}
+        try {
+            return $this->call_method($value, '__toString');
+        } catch (Exception $e) {}
         if (is_object($value)) {
             return new \stdClass();
         }
@@ -155,13 +155,18 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
     }
 
     private function get_data($value, $default = null) {
-        if (!is_callable([$value, 'get_data']) || !is_object($value)) {
+        try {
+            return $this->call_method($value, 'get_data');
+        } catch (Exception $e) {
             return $default;
         }
-        $method = new ReflectionMethod($value, 'get_data');
+    }
+
+    private function call_method($obj, $name) {
+        $method = new ReflectionMethod($obj, $name);
         if ($method->getNumberOfRequiredParameters() > 0) {
-            return $default;
+            throw new RuntimeException("Method requires parameters");
         }
-        return @$value->get_data();
+        return $method->invoke($obj);
     }
 }
