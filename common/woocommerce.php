@@ -167,6 +167,6 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
         if ($method->getNumberOfRequiredParameters() > 0) {
             throw new RuntimeException("Method requires parameters");
         }
-        return $method->invoke($obj);
+        return @$method->invoke($obj);
     }
 }
