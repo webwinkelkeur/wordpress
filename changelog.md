@@ -1,3 +1,6 @@
+= 1.6.10 =
+* Restore error silencing when invoking get_data.
+
 = 1.6.9 =
 * Fix fatal error when order contains incomplete unserialized objects.
 
