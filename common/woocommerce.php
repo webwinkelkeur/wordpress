@@ -33,6 +33,9 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
         if(!preg_match('|@|', $email))
             return;
 
+        if (!apply_filters('webwinkelkeur_request_invitation', true, $order))
+            return;
+
         $invite_delay = (int) get_option($this->get_option_name('invite_delay'));
         if($invite_delay < 0)
             $invite_delay = 0;
