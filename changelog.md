@@ -1,3 +1,7 @@
+= 1.6.11 =
+* Add webwinkelkeur_request_invitation hook.
+* Only request invitations for orders with type `shop_order`.
+
 = 1.6.10 =
 * Restore error silencing when invoking get_data.
 

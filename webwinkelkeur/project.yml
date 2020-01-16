@@ -21,3 +21,17 @@ readme:
         1. De plugin kan nu worden geactiveerd in de administratieinterface. Ga daarvoor naar Plugins en klik op Activeren bij de WebwinkelKeur plugin.
         1. Klik op Instellingen om de plugin te configureren.
         1. Controleer of de sidebar op uw site wordt getoond.
+
+    faq: |
+        = Kan ik voorkomen dat voor bepaalde orders uitnodingen worden aangevraagd? =
+
+        Dat kan door de hook `webwinkelkeur_request_invitation` te implementeren:
+
+        ~~~
+        add_filter('webwinkelkeur_request_invitation', function ($should_invite, WC_Order $order) {
+            if ($order->get_total() < 10) {
+                return false;
+            }
+            return $should_invite;
+        }
+        ~~~
