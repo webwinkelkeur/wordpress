@@ -27,6 +27,9 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
         if(!$order)
             return;
 
+        if($order->get_type() !== 'shop_order')
+            return;
+
         $order_number = $order->get_order_number();
 
         $email = get_post_meta($order_id, '_billing_email', true);
