@@ -33,5 +33,5 @@ readme:
                 return false;
             }
             return $should_invite;
-        }
+        }, 10, 2);
         ~~~
