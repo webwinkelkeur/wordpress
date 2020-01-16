@@ -9,7 +9,7 @@ if [[ $version = "" ]]; then
     exit 1
 fi
 
-projects=( webwinkelkeur evalor )
+projects=( webwinkelkeur )
 
 if [[ $# -eq 0 ]]; then :
 elif [[ $# -eq 1 ]]; then

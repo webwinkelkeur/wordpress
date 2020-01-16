@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-projects=( webwinkelkeur evalor )
+projects=( webwinkelkeur )
 
 cd "$(dirname "$0")/.."
 
