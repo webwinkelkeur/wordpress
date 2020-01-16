@@ -14,6 +14,7 @@ tmp="$(mktemp -d)"
 trap "cd /; rm -rf '$tmp'" EXIT
 
 version="$(git describe --tags --match='v*')"
+version="${version#v}"
 
 git archive master | tar xf - -C "$tmp"
 
