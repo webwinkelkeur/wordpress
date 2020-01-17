@@ -1,4 +1,7 @@
-= 1.6.11 =
+= 1.8 =
+* Add `[webwinkelkeur_rich_snippet]` shortcode.
+
+= 1.7 =
 * Add webwinkelkeur_request_invitation hook.
 * Only request invitations for orders with type `shop_order`.
 
