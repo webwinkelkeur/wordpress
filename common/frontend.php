@@ -18,6 +18,10 @@ abstract class WebwinkelKeurFrontendCommon extends WebwinkelKeurCommon {
         if(!$this->wwk_shop_id)
             return;
 
+        add_shortcode('webwinkel_rich_snippet', function() {
+            return $this->get_rich_snippet();
+        });
+
         foreach(array(
             'wp_head',
             'wp_meta',
