@@ -1,20 +1,35 @@
-name: WebwinkelKeur
+name: WebwinkelKeur: Webshop keurmerk & Reviews
 
 readme:
 
     tags: |
-        webwinkelkeur, sidebar, review, reviews, woocommerce, webwinkel, keur, keurmerk, waardering
+        webwinkelkeur, sidebar, review, reviews, woocommerce, webwinkel keurmerk, webshop keurmerk, keurmerk
 
     intro: |
-        Deze module integreert de WebwinkelKeur sidebar in uw WordPress website of WooCommerce webshop.
+        Reviews verzamelen voor je WordPress website of WooCommerce webshop doe je met WebwinkelKeur.
 
     description: |
-        De WordPress module zorgt voor een eenvoudige integratie van het WebwinkelKeur binnen jouw WordPress website en WooCommerce webwinkel. Zo integreert de module automatisch de innovatieve [WebwinkelKeur Sidebar][1] binnen elke WordPress website of webwinkel.  Voor gebruikers van de WooCommerce plugin voor WordPress zorgt de module voor het automatisch uitnodigen van klanten voor het delen van een klantervaring. Deze functie is alleen beschikbaar voor PLUS leden.  Bij elke afgewerkte bestelling wordt automatisch een uitnodiging naar de klant verzonden waarin hij uitgenodigd wordt om zijn ervaring te delen. Zo vergroot je het vertrouwen en de conversie van jouw webwinkel.
+        WebwinkelKeur is hét (grootste) keurmerk en reviewsysteem voor webwinkels. Met ons zorg je ervoor dat de omzet van jouw webwinkel wordt verhoogd.
+        
+        Webwinkel keurmerk
+        Bemachtig ons [webshop keurmerk][3] en laat net als meer dan 6.000 andere webshops zien dat je webwinkel betrouwbaar is. Verdien aanvullende badges en blijf daarmee de concurrentie voor.
+        
+        Reviews voor webshops
+        Geen webshop kan zonder het pro-actief verzamelen van reviews. Het verzamelen en tonen van betrouwbare reviews zorgt ervoor dat de conversie van je webwinkel flink verbeterd. Met WebwinkelKeur verzamel eenvoudig en automatisch reviews. We bieden je daarvoor [innovatieve review software][4] die het voor de klanten zo eenvoudig mogelijk maakt om reviews te plaatsen. WebwinkelKeur draagt daarbij zorg voor het eerlijk verzamelen van reviews, wat de betrouwbaarheid ten goede komt.
+        
+        Over de plugin
+        De WordPress plugin zorgt voor een eenvoudige integratie van het WebwinkelKeur binnen jouw WordPress website en WooCommerce webwinkel. Zo integreert de module automatisch de innovatieve [WebwinkelKeur Sidebar][1] binnen elke WordPress website of webwinkel.  Voor gebruikers van de WooCommerce plugin voor WordPress zorgt de module voor het automatisch versturen van reviewverzoeken aan je klanten. Bij elke afgewerkte bestelling wordt automatisch een uitnodiging naar de klant verzonden waarin hij uitgenodigd wordt om zijn ervaring te delen. Zo vergroot je het vertrouwen en de conversie van jouw webwinkel.
 
         [Klik hier][2] voor meer informatie over de WordPress module.
+        
+        WebwinkelKeur lidmaatschap
+        Deze plugin is geheel gratis te gebruiken, lidmaatschap van WebwinkelKeur is wel noodzakelijk. Bekijk onze [pakketten][5] voor meer informatie.
 
-        [1]: https://www.webwinkelkeur.nl/webwinkel/mogelijkheden/sidebar/
-        [2]: https://www.webwinkelkeur.nl/webwinkel/mogelijkheden/wordpress-module/
+        [1]: https://www.webwinkelkeur.nl/kennisbank/eenvoudige-integratie/integratie-mogelijkheden/sidebar/
+        [2]: https://www.webwinkelkeur.nl/kennisbank/eenvoudige-integratie/modules/wordpress-woocommerce
+        [3]: https://www.webwinkelkeur.nl/keurmerk
+        [4]: https://www.webwinkelkeur.nl/klantbeoordelingen
+        [5]: https://www.webwinkelkeur.nl/pakketten
 
     installation: |
         1. Plaats de map "webwinkelkeur" in de map "wp-content/plugins" op de webserver.
