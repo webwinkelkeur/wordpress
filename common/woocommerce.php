@@ -6,6 +6,13 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
     public function __construct(array $settings) {
         parent::__construct($settings);
         add_action('woocommerce_order_status_completed', array($this, 'order_completed'), 10, 1);
+        add_action('woocommerce_checkout_update_order_meta', [$this, 'set_order_language']);
+    }
+
+    public function set_order_language($order_id) {
+        if (!get_post_meta($order_id, 'wpml_language')) {
+            update_post_meta($order_id, 'wpml_language', ICL_LANGUAGE_CODE);
+        }
     }
 
     public function order_completed($order_id) {
