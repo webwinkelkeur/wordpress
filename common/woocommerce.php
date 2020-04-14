@@ -10,7 +10,7 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
     }
 
     public function set_order_language($order_id) {
-        if (!get_post_meta($order_id, 'wpml_language')) {
+        if (!get_post_meta($order_id, 'wpml_language') && !empty(ICL_LANGUAGE_CODE)) {
             update_post_meta($order_id, 'wpml_language', ICL_LANGUAGE_CODE);
         }
     }
