@@ -6,7 +6,7 @@ Description: De WordPress plugin zorgt voor een eenvoudige integratie van het We
 Version: $VERSION$
 Author: Albert Peschar
 Author URI: https://peschar.net/
-WC tested up to: 3.99
+WC tested up to: 4.99
 */
 
 $settings = array(
