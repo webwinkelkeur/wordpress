@@ -2,16 +2,14 @@
 
 set -euo pipefail
 
-projects=( webwinkelkeur )
-
 cd "$(dirname "$0")/.."
 
-rm -rf dist
 mkdir -p dist
 out="$(pwd)/dist"
 
 tmp="$(mktemp -d)"
-trap "cd /; rm -rf '$tmp'" EXIT
+cleanup() { rm -rf "$tmp"; }
+trap cleanup EXIT
 
 version="$(git describe --tags --match='v*')"
 version="${version#v}"
@@ -24,22 +22,9 @@ perl -p -i -e 's/\$VERSION\$/'"$version"'/g' */*.php
 
 make
 
-for project in "${projects[@]}"; do
-    cd "$project"
-    rm -f common project.yml
-    cd ..
-done
-
-last_project=""
-for project in "${projects[@]}"; do
-    if [[ $last_project = "" ]]; then
-        mv common "$project/"
-    else
-        mv "$last_project/common" "$project"
-    fi
-
-    zip -r9q out.zip "$project"
-    mv out.zip "$out/wordpress-$project.zip"
-
-    last_project="$project"
+for project_yml in */project.yml; do
+    project="$(dirname "$project_yml")"
+    rm -f "$project/project.yml"
+    zip -r9 out.zip "$project"
+    mv out.zip "$out/wordpress-$project-$version.zip"
 done
