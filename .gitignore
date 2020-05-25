@@ -1,5 +1,7 @@
 /dist
+/.phan
 /*/readme.txt
 /svn
 .*.swp
 .vagrant
+/www

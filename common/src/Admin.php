@@ -1,16 +1,31 @@
 <?php
+namespace Valued\WordPress;
 
-abstract class WebwinkelKeurAdminCommon extends WebwinkelKeurCommon {
+class Admin {
+    private $plugin;
     private $woocommerce = false;
 
-    abstract protected function get_default_config();
+    protected function get_default_config() {
+        return array(
+            'invite_delay'     => 3,
+            'javascript'       => true,
+        );
+    }
 
-    abstract protected function get_config_fields();
+    protected function get_config_fields() {
+        return array(
+            'wwk_shop_id',
+            'wwk_api_key',
+            'invite',
+            'invite_delay',
+            'limit_order_data',
+            'javascript',
+            'rich_snippet',
+        );
+    }
 
-    public function __construct(array $settings) {
-
-        parent::__construct($settings);
-
+    public function __construct(BasePlugin $plugin) {
+        $this->plugin = $plugin;
         add_action('admin_menu', array($this, 'admin_menu'));
         add_action('plugin_action_links', array($this, 'plugin_action_links'), 10, 2);
         add_action('admin_notices', array($this, 'invite_error_notices'));
@@ -20,17 +35,18 @@ abstract class WebwinkelKeurAdminCommon extends WebwinkelKeurCommon {
     public function admin_menu() {
         add_submenu_page(
             'options-general.php',
-            $this->settings['PLUGIN_NAME'],
-            $this->settings['PLUGIN_NAME'],
+            $this->plugin->getName(),
+            $this->plugin->getName(),
             'manage_options',
-            $this->settings['PLUGIN_SLUG'],
+            $this->plugin->getSlug(),
             array($this, 'options_page')
         );
     }
 
     public function plugin_action_links($links, $file) {
-        if($file == $this->settings['PLUGIN_ENTRY']) {
-            $links[] = '<a href="admin.php?page=' . $this->settings['PLUGIN_SLUG'] . '">'
+        $path = "{$this->plugin->getSlug()}/{$this->plugin->getSlug()}.php";
+        if($file == $path) {
+            $links[] = '<a href="admin.php?page=' . $this->plugin->getSlug() . '">'
                      . __('Settings') . '</a>';
         }
         return $links;
@@ -47,16 +63,16 @@ abstract class WebwinkelKeurAdminCommon extends WebwinkelKeurCommon {
         $config = $this->get_default_config();
 
         foreach($fields as $field_name) {
-            $value = get_option($this->get_option_name($field_name), false);
+            $value = get_option($this->plugin->getOptionName($field_name), false);
             if($value !== false)
                 $config[$field_name] = (string) $value;
             elseif(!isset($config[$field_name]))
                 $config[$field_name] = '';
         }
 
-        if(isset($_POST[$this->get_option_name('wwk_shop_id')])) {
+        if(isset($_POST[$this->plugin->getOptionName('wwk_shop_id')])) {
             foreach($fields as $field_name)
-                $config[$field_name] = (string) @$_POST[$this->get_option_name($field_name)];
+                $config[$field_name] = (string) @$_POST[$this->plugin->getOptionName($field_name)];
 
             if(empty($config['wwk_shop_id']))
                 $errors[] = __('Your shop ID is required.', 'webwinkelkeur');
@@ -68,12 +84,12 @@ abstract class WebwinkelKeurAdminCommon extends WebwinkelKeurCommon {
 
             if(!$errors) {
                 foreach($config as $name => $value)
-                    update_option($this->get_option_name($name), $value);
+                    update_option($this->plugin->getOptionName($name), $value);
                 $updated = true;
             }
         }
-        
-        require $this->settings['PLUGIN_PATH'] . '/options.php';
+
+        require __DIR__ . '/../templates/options.php';
     }
 
     public function invite_error_notices() {
@@ -81,7 +97,7 @@ abstract class WebwinkelKeurAdminCommon extends WebwinkelKeurCommon {
 
         $errors = $wpdb->get_results("
             SELECT *
-            FROM {$this->invite_errs_table}
+            FROM {$this->plugin->getInviteErrorsTable()}
             WHERE reported = 0
             ORDER BY time
         ");
@@ -89,7 +105,10 @@ abstract class WebwinkelKeurAdminCommon extends WebwinkelKeurCommon {
         foreach($errors as $error) {
             ?>
             <div class="error"><p>
-                <?php sprintf(__('An error occurred while requesting the %s invitation:', 'webwinkelkeur'), $this->settings['PLUGIN_NAME']); ?><br/>
+                <?php sprintf(
+                    __('An error occurred while requesting the %s invitation:', 'webwinkelkeur'),
+                    $this->plugin->getName()
+                ); ?><br/>
                 <?php echo esc_html($error->response); ?>
             </p></div>
             <?php
@@ -101,7 +120,7 @@ abstract class WebwinkelKeurAdminCommon extends WebwinkelKeurCommon {
         }
         if($error_ids) {
             $wpdb->query("
-                UPDATE {$this->invite_errs_table}
+                UPDATE {$this->plugin->getInviteErrorsTable()}
                 SET reported = 1
                 WHERE id IN (" . implode(',', $error_ids) . ")
             ");

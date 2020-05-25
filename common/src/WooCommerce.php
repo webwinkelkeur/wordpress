@@ -1,10 +1,17 @@
 <?php
+namespace Valued\WordPress;
 
-require_once dirname(__FILE__) . '/api.php';
+use Exception;
+use ReflectionMethod;
+use RuntimeException;
+use WC_Customer;
+use WC_Product_Factory;
 
-class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
-    public function __construct(array $settings) {
-        parent::__construct($settings);
+class WooCommerce {
+    private $plugin;
+
+    public function __construct(BasePlugin $plugin) {
+        $this->plugin = $plugin;
         add_action('woocommerce_order_status_completed', array($this, 'order_completed'), 10, 1);
         add_action('woocommerce_checkout_update_order_meta', [$this, 'set_order_language']);
     }
@@ -19,12 +26,12 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
         global $wpdb, $wp_version;
 
         // invites enabled?
-        if(!get_option($this->get_option_name('invite')))
+        if(!get_option($this->plugin->getOptionName('invite')))
             return;
 
-        $api_domain = $this->settings['API_DOMAIN'];
-        $shop_id = get_option($this->get_option_name('wwk_shop_id'));
-        $api_key = get_option($this->get_option_name('wwk_api_key'));
+        $api_domain = $this->plugin->getDashboardDomain();
+        $shop_id = get_option($this->plugin->getOptionName('wwk_shop_id'));
+        $api_key = get_option($this->plugin->getOptionName('wwk_api_key'));
 
         if(!$shop_id || !$api_key)
             return;
@@ -46,7 +53,7 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
         if (!apply_filters('webwinkelkeur_request_invitation', true, $order))
             return;
 
-        $invite_delay = (int) get_option($this->get_option_name('invite_delay'));
+        $invite_delay = (int) get_option($this->plugin->getOptionName('invite_delay'));
         if($invite_delay < 0)
             $invite_delay = 0;
 
@@ -74,11 +81,11 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
             'plugin_version' => $this->get_plugin_version('webwinkelkeur'),
             'platform_version' => 'wp-' . $wp_version . '-wc-' . $this->get_plugin_version('woocommerce')
         );
-        if (get_option($this->get_option_name('invite')) == 2) {
+        if (get_option($this->plugin->getOptionName('invite')) == 2) {
             $data['max_invitations_per_email'] = 1;
         }
 
-        $with_order_data = !get_option($this->get_option_name('limit_order_data')) && is_callable([$order, 'get_data']);
+        $with_order_data = !get_option($this->plugin->getOptionName('limit_order_data')) && is_callable([$order, 'get_data']);
         if ($with_order_data) {
             $order_arr = $this->get_data($order, []);
             $customer_arr = !empty($order_arr['customer_id']) ? $this->get_data(new WC_Customer($order_arr['customer_id']), []) : [];
@@ -108,18 +115,24 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
         }
 
         // send invite
-        $api = new WebwinkelKeurAPI($api_domain, $shop_id, $api_key);
+        $api = new API($api_domain, $shop_id, $api_key);
         try {
             $api->invite($data);
         } catch(WebwinkelKeurAPIAlreadySentError $e) {
             // that's okay
         } catch(WebwinkelKeurAPIError $e) {
-            $wpdb->insert($this->invite_errs_table, array(
+            $wpdb->insert($this->plugin->getInviteErrorsTable(), array(
                 'url'       => $e->getURL(),
                 'response'  => $e->getMessage(),
                 'time'      => time(),
             ));
-            $this->insert_comment($order_id, sprintf(__('The %s invitation could not be sent.', 'webwinkelkeur'), $this->settings['PLUGIN_NAME']) . ' ' . $e->getMessage());
+            $this->insert_comment(
+                $order_id,
+                sprintf(
+                    __('The %s invitation could not be sent.', 'webwinkelkeur'),
+                    $this->plugin->getName()
+                ) . ' ' . $e->getMessage()
+            );
         }
     }
 
@@ -142,9 +155,9 @@ class WebwinkelKeurWooCommerce extends WebwinkelKeurCommon {
     private function insert_comment($order_id, $content) {
         wp_insert_comment(array(
             'comment_post_ID'   => $order_id,
-            'comment_author'    => $this->settings['PLUGIN_NAME'],
+            'comment_author'    => $this->plugin->getName(),
             'comment_content'   => $content,
-            'comment_agent'     => $this->settings['PLUGIN_NAME'],
+            'comment_agent'     => $this->plugin->getName(),
             'comment_type'      => 'order_note',
         ));
     }

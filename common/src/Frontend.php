@@ -1,20 +1,30 @@
 <?php
+namespace Valued\WordPress;
 
-abstract class WebwinkelKeurFrontendCommon extends WebwinkelKeurCommon {
+class Frontend {
+    private $plugin;
     protected $wwk_shop_id;
     private $script_printed = false;
     private $enable_rich_snippet = true;
 
-    abstract protected function is_sidebar_inactive();
+    protected function is_sidebar_inactive() {
+        return !get_option($this->plugin->getOptionName('javascript'));
+    }
 
-    abstract protected function get_sidebar_settings();
+    protected function get_sidebar_settings() {
+        return array(
+            '_webwinkelkeur_id' => $this->wwk_shop_id,
+        );
+    }
 
-    public function __construct(array $settings) {
-        parent::__construct($settings);
+    public function __construct(BasePlugin $plugin) {
+        $this->plugin = $plugin;
+
         if (basename($_SERVER['SCRIPT_FILENAME']) == 'wp-login.php') {
             return;
         }
-        $this->wwk_shop_id = (int) get_option($this->get_option_name('wwk_shop_id'));
+
+        $this->wwk_shop_id = (int) get_option($this->plugin->getOptionName('wwk_shop_id'));
         if(!$this->wwk_shop_id)
             return;
 
@@ -30,7 +40,7 @@ abstract class WebwinkelKeurFrontendCommon extends WebwinkelKeurCommon {
         ) as $action)
             add_action($action, array($this, 'sidebar'));
 
-        if(get_option($this->get_option_name('rich_snippet'))) {
+        if(get_option($this->plugin->getOptionName('rich_snippet'))) {
             add_action('wp_footer', array($this, 'rich_snippet'));
             add_action('woocommerce_before_single_product', array($this, 'disable_rich_snippet'));
         }
@@ -47,7 +57,7 @@ abstract class WebwinkelKeurFrontendCommon extends WebwinkelKeurCommon {
 
         $settings = $this->get_sidebar_settings();
 
-        require dirname(__FILE__) . '/sidebar.php';
+        require __DIR__ . '/../templates/sidebar.php';
     }
 
     public function rich_snippet() {
@@ -68,18 +78,16 @@ abstract class WebwinkelKeurFrontendCommon extends WebwinkelKeurCommon {
         if(!@is_writable($tmp_dir))
             return $this->log_error("The temporary directory $tmp_dir is not writable.");
 
-        $url = sprintf('https://%s/webshops/rich_snippet?id=%s',
-                       $this->settings['API_DOMAIN'],
+        $url = sprintf('https://%s/webshops/rich_snippet?id=%d',
+                       $this->plugin->getDashboardDomain(),
                        (int) $this->wwk_shop_id);
 
-        $cache_file = $tmp_dir . DIRECTORY_SEPARATOR . $this->settings['PLUGIN_SLUG'] . '_'
+        $cache_file = $tmp_dir . DIRECTORY_SEPARATOR . $this->plugin->getSlug() . '_'
             . md5(__FILE__) . '_' . md5($url);
 
         $fp = @fopen($cache_file, 'rb');
-        if($fp)
-            $stat = @fstat($fp);
 
-        if($fp && $stat && $stat['mtime'] > time() - 7200
+        if($fp && ($stat = @fstat($fp)) && $stat['mtime'] > time() - 7200
            && ($json = @stream_get_contents($fp))
         ) {
             $data = json_decode($json, true);
@@ -104,7 +112,7 @@ abstract class WebwinkelKeurFrontendCommon extends WebwinkelKeurCommon {
         if($fp)
             @fclose($fp);
 
-        if($data['result'] != 'ok')
+        if(empty($data) || $data['result'] != 'ok')
             return $this->log_error("Did not get a succesful response from $url");
 
         return $data['content'];
@@ -112,7 +120,7 @@ abstract class WebwinkelKeurFrontendCommon extends WebwinkelKeurCommon {
 
     private function log_error($message) {
         return sprintf('<script>console.error(%s)</script>',
-                       json_encode("WebwinkelKeur: $message"));
+                       json_encode("{$this->plugin->getName()}: $message"));
     }
 
 }

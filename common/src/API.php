@@ -1,6 +1,10 @@
 <?php
-require_once dirname(__FILE__) . '/vendor/Peschar/URLRetriever.php';
-class WebwinkelKeurAPI {
+namespace Valued\WordPress;
+
+use Exception;
+use Requests;
+
+class API {
     private $api_domain;
     private $shop_id;
     private $api_key;
@@ -19,14 +23,10 @@ class WebwinkelKeurAPI {
 
         $url = $this->buildURL('https://' . $this->api_domain . '/api/1.0/invitations.json', $credentials);
 
-        $retriever = new Peschar_URLRetriever();
-        $response = $retriever->retrieve($url, $data);
+        $response = Requests::post($url, [], $data);
+        $response->throw_for_status();
 
-        if(!$response) {
-            throw new WebwinkelKeurAPIError($url, 'API not reachable.');
-        }
-
-        $result = json_decode($response);
+        $result = json_decode($response->body);
         if (isset ($result->status) && $result->status == 'success') {
             return true;
         }
@@ -37,7 +37,7 @@ class WebwinkelKeurAPI {
             throw new WebwinkelKeurAPIAlreadySentError($url, $result->message);
         }
         throw new WebwinkelKeurAPIError(
-            $url, isset($result->message) ? $result->message : $response);
+            $url, isset($result->message) ? $result->message : $response->body);
     }
 
     private function buildURL($address, $parameters) {

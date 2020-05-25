@@ -5,7 +5,8 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 mkdir -p dist
-out="$(pwd)/dist"
+relout="dist"
+out="$PWD/$relout"
 
 tmp="$(mktemp -d)"
 cleanup() { rm -rf "$tmp"; }
@@ -20,11 +21,13 @@ cd "$tmp"
 
 perl -p -i -e 's/\$VERSION\$/'"$version"'/g' */*.php
 
-make
+make >&2
 
 for project_yml in */project.yml; do
     project="$(dirname "$project_yml")"
+    file="wordpress-$project-$version.zip"
     rm -f "$project/project.yml"
-    zip -r9 out.zip "$project"
-    mv out.zip "$out/wordpress-$project-$version.zip"
+    zip -r9 out.zip "$project" >&2
+    mv out.zip "$out/$file"
+    echo "$relout/$file"
 done

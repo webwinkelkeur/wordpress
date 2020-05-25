@@ -3,24 +3,12 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-if ! version="$(git describe --tags --exact-match --match 'v*')"; then
-    echo "No tag points at the current HEAD!" >&2
-    exit 1
-fi
-
-projects=( webwinkelkeur )
-
-if [[ $# -eq 0 ]]; then :
+if [[ $# -eq 0 ]]; then
+    only_project=
 elif [[ $# -eq 1 ]]; then
-    ok=0
-    for project in "${projects[@]}"; do
-        if [[ $project = $1 ]]; then
-            projects=( "$project" )
-            ok=1
-        fi
-    done
-    if [[ $ok -eq 0 ]]; then
-        echo "Unknown project: $1" >&2
+    only_project="$1"
+    if [[ ! $only_project =~ ^[a-z]+$ ]] || [[ ! -f $only_project/project.yml ]]; then
+        echo "No such project: $only_project" >&2
         exit 1
     fi
 else
@@ -28,53 +16,57 @@ else
     exit 1
 fi
 
+if ! version="$(git describe --tags --exact-match --match 'v*')"; then
+    echo "No tag points at the current HEAD!" >&2
+    exit 1
+fi
+version="${version#v}"
+
 root="$PWD"
 
 tmp="$(mktemp -d)"
-trap "cd /; rm -rf '$tmp'" EXIT
-
-./bin/package
+cleanup() { rm -rf "$tmp"; }
+trap cleanup EXIT
 
 git push git@github.com:webwinkelkeur/wordpress master --tags
 
-for project in "${projects[@]}"; do
-    if [[ $# -eq 1 ]] && [[ $1 != $project ]]; then
+./bin/package
+
+for project_yml in */project.yml; do
+    project="$(dirname "$project_yml")"
+
+    if [[ ! -z $only_project ]] && [[ $only_project != $project ]]; then
         continue
     fi
 
     repo="http://plugins.svn.wordpress.org/$project"
+    svn="$root/svn/$project"
 
-    cd "$tmp"
+    if [[ ! -d $svn/.svn ]]; then
+        mkdir -p "$svn"
+        svn co "$repo" "$svn"
+    fi
 
-    rm -rf   package svn
-    mkdir -p package svn
-
-    svn co "$repo" svn
-    cd svn
-
-    if [[ `svn status | wc -l` -gt 0 ]]; then
-        echo "svn status wasn't empty after checkout (?)" >&2
+    if [[ ! -z $(svn status) ]]; then
+        echo "Error: svn status isn't empty after checkout:" >&2
+        svn status >&2
         exit 1
     fi
 
-    rm -rf trunk
-    mkdir trunk
+    rm -rf "$svn/trunk"
+    mkdir "$svn/trunk"
 
-    cd $tmp/package
-    unzip -q $root/dist/wordpress-$project.zip
-    mv $project/* $tmp/svn/trunk
+    bsdtar xf "dist/$project-${version}.zip" -C "$svn/trunk" --strip-components 1 "$project"
 
-    cd $tmp/svn
-
+    pushd $tmp/svn
     svn status | awk '/^!/ {print $2}' | xargs -r svn rm --force -q
     svn add --force trunk
 
-    if [[ `svn status | wc -l` -eq 0 ]]; then
+    if [[ -z "$(svn status | wc -l)" ]]; then
         echo "$project: Nothing changed" >&2
         continue
     fi
 
-    svn ci -m 'Update plugin' --username apeschar
-
-    svn copy "$repo/trunk" "$repo/tags/${version#v}" -m "Tag ${version#v} release"
+    echo svn ci -m 'Update plugin' --username apeschar
+    echo svn copy "$repo/trunk" "$repo/tags/${version}" -m "Tag ${version} release"
 done
