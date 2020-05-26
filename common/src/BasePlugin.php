@@ -4,11 +4,12 @@ namespace Valued\WordPress;
 use ReflectionClass;
 
 abstract class BasePlugin {
-
     protected static $instances = [];
 
     public $admin;
+
     public $frontend;
+
     public $woocommerce;
 
     /** @return string */
@@ -48,8 +49,8 @@ abstract class BasePlugin {
     public function activatePlugin() {
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-        dbDelta("
-            CREATE TABLE `" . $this->getInviteErrorsTable() . "` (
+        dbDelta('
+            CREATE TABLE `' . $this->getInviteErrorsTable() . '` (
                 `id` int NOT NULL AUTO_INCREMENT,
                 `url` varchar(255) NOT NULL,
                 `response` text NOT NULL,
@@ -59,7 +60,7 @@ abstract class BasePlugin {
                 KEY `time` (`time`),
                 KEY `reported` (`reported`)
             )
-        ");
+        ');
     }
 
     public function loadTranslations() {
@@ -100,5 +101,4 @@ abstract class BasePlugin {
         require __DIR__ . '/../templates/' . $__template . '.php';
         return ob_get_clean();
     }
-
 }

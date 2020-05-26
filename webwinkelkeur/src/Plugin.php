@@ -4,7 +4,6 @@ namespace WebwinkelKeur\WordPress;
 use Valued\WordPress\BasePlugin;
 
 class Plugin extends BasePlugin {
-
     public function getName() {
         return 'WebwinkelKeur';
     }
@@ -16,5 +15,4 @@ class Plugin extends BasePlugin {
     public function getDashboardDomain() {
         return 'dashboard.webwinkelkeur.nl';
     }
-
 }

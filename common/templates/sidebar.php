@@ -1,5 +1,5 @@
 <script>
-<?php foreach($settings as $name => $value): ?>
+<?php foreach ($settings as $name => $value): ?>
 <?= $name; ?> = <?= json_encode($value); ?>;
 <?php endforeach; ?>
 </script>

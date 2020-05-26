@@ -3,10 +3,12 @@
         <?php screen_icon(); ?>
         <h2><?= $plugin->getName(); ?></h2>
         <?php
-        if($updated)
-            echo "<div class=updated><p>", _e('Your changes have been saved.', 'webwinkelkeur'), "</p></div>";
-        foreach($errors as $error)
-            echo "<div class=error><p>", $error, "</p></div>";
+        if ($updated) {
+            echo '<div class=updated><p>', _e('Your changes have been saved.', 'webwinkelkeur'), '</p></div>';
+        }
+        foreach ($errors as $error) {
+            echo '<div class=error><p>', $error, '</p></div>';
+        }
         ?>
         <table class="form-table">
             <tr valign="top">
@@ -18,13 +20,13 @@
                 <td><input name="<?= $plugin->getOptionName('wwk_api_key');?>" type="text" id="wwk-api-key" value="<?= esc_html($config['wwk_api_key']); ?>" class="regular-text" />
                 <p class="description">
                 <?php printf(
-                    __('You\'ll find this information after logging in on %s.', 'webwinkelkeur'),
-                    sprintf(
+            __('You\'ll find this information after logging in on %s.', 'webwinkelkeur'),
+            sprintf(
                         '<a href="%s" target="_blank">%s</a>',
                         "https://{$plugin->getDashboardDomain()}/?ref=wordpress",
                         $plugin->getName()
                     )
-                ); ?>
+        ); ?>
                 </p>
                 </td>
             </tr>
@@ -32,18 +34,20 @@
                 <th scope="row"><label for="webwinkelkeur-javascript"><?php _e('JavaScript integration', 'webwinkelkeur'); ?></label></th>
                 <td>
                     <label>
-                        <input type="checkbox" id="webwinkelkeur-javascript" name="<?= $plugin->getOptionName('javascript');?>" value="1" <?php if($config['javascript']) echo 'checked'; ?> />
+                        <input type="checkbox" id="webwinkelkeur-javascript" name="<?= $plugin->getOptionName('javascript');?>" value="1" <?php if ($config['javascript']) {
+                    echo 'checked';
+                } ?> />
                         <?php printf(__('Yes, add the %s JavaScript to my website.', 'webwinkelkeur'), $plugin->getName()); ?>
                     </label>
                     <p class="description">
                     <?php printf(
-                        __('Use the JavaScript integration to add the sidebar and the tooltip to your website.<br>All settings for the sidebar and tooltip are located on the %s.', 'webwinkelkeur'),
-                        sprintf(
+                    __('Use the JavaScript integration to add the sidebar and the tooltip to your website.<br>All settings for the sidebar and tooltip are located on the %s.', 'webwinkelkeur'),
+                    sprintf(
                             '<a href="%s" target="_blank">%s</a>',
                             "https://{$plugin->getDashboardDomain()}/integration",
                             sprintf(__('%s Dashboard', 'webwinkelkeur'), $plugin->getName())
                         )
-                    ); ?>
+                ); ?>
                     </p>
                 </td>
             </tr>
@@ -52,19 +56,25 @@
                 <td>
                     <fieldset>
                         <label>
-                            <input type="radio" name="<?= $plugin->getOptionName('invite');?>" value="1" <?php if($config['invite'] == 1) echo 'checked'; ?> />
+                            <input type="radio" name="<?= $plugin->getOptionName('invite');?>" value="1" <?php if ($config['invite'] == 1) {
+                        echo 'checked';
+                    } ?> />
                             <?php _e('Yes, after every order.', 'webwinkelkeur'); ?>
                         </label><br>
                         <label>
-                            <input type="radio" name="<?= $plugin->getOptionName('invite');?>" value="2" <?php if($config['invite'] == 2) echo 'checked'; ?> />
+                            <input type="radio" name="<?= $plugin->getOptionName('invite');?>" value="2" <?php if ($config['invite'] == 2) {
+                        echo 'checked';
+                    } ?> />
                             <?php _e('Yes, after a customer\'s first order.', 'webwinkelkeur'); ?>
                         </label><br>
                         <label>
-                            <input type="radio" name="<?= $plugin->getOptionName('invite');?>" value="0" <?php if(!$config['invite']) echo 'checked'; ?> />
+                            <input type="radio" name="<?= $plugin->getOptionName('invite');?>" value="0" <?php if (!$config['invite']) {
+                        echo 'checked';
+                    } ?> />
                             <?php _e('No, don\'t send invitations.', 'webwinkelkeur'); ?>
                         </label>
                     </fieldset>
-                    <?php if(!$plugin->woocommerce): ?>
+                    <?php if (!$plugin->woocommerce): ?>
                     <p class="description"><?php _e('Install and activate WooCommerce to use this functionality.', 'webwinkelkeur'); ?></p>
                     <?php endif; ?>
                 </td>
@@ -74,16 +84,18 @@
                 <td>
                     <fieldset>
                         <label>
-                            <input type="checkbox" name="<?= $plugin->getOptionName('limit_order_data');?>" value="1" <?php if($config['limit_order_data']) echo 'checked ';?> />
+                            <input type="checkbox" name="<?= $plugin->getOptionName('limit_order_data');?>" value="1" <?php if ($config['limit_order_data']) {
+                        echo 'checked ';
+                    }?> />
                             <?= esc_html(sprintf(
-                                __('Do not send order information to %s', 'webwinkelkeur'),
-                                $plugin->getName()
-                            )); ?>
+                        __('Do not send order information to %s', 'webwinkelkeur'),
+                        $plugin->getName()
+                    )); ?>
                             <p class="description">
                                 <?= esc_html(sprintf(
-                                    __('Please note: not all %s functionality will be available if you check this option!', 'webwinkelkeur'),
-                                    $plugin->getName()
-                                )); ?>
+                                __('Please note: not all %s functionality will be available if you check this option!', 'webwinkelkeur'),
+                                $plugin->getName()
+                            )); ?>
                             </p>
                         </label>
                     </fieldset>
@@ -101,7 +113,9 @@
                 <th scope="row"><label for="webwinkelkeur-javascript"><?php _e('Add rich snippet', 'webwinkelkeur'); ?></label></th>
                 <td>
                     <label>
-                        <input type="checkbox" id="webwinkelkeur-rich-snippet" name="<?= $plugin->getOptionName('rich_snippet');?>" value="1" <?php if($config['rich_snippet']) echo 'checked'; ?> />
+                        <input type="checkbox" id="webwinkelkeur-rich-snippet" name="<?= $plugin->getOptionName('rich_snippet');?>" value="1" <?php if ($config['rich_snippet']) {
+                                    echo 'checked';
+                                } ?> />
                         <?php _e('Yes, add a rich snippet to the footer of my website.', 'webwinkelkeur'); ?>
                     </label>
                     <p class="description">

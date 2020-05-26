@@ -16,7 +16,7 @@ require __DIR__ . '/src/Plugin.php';
 
 Plugin::getInstance()->init();
 
-$settings = array(
+$settings = [
     'PLUGIN_PATH' => __DIR__,
     'PLUGIN_SLUG' => 'webwinkelkeur',
     'PLUGIN_NAME' => 'WebwinkelKeur',
@@ -24,5 +24,5 @@ $settings = array(
     'API_DOMAIN' => 'dashboard.webwinkelkeur.nl',
     'JS_SIDEBAR_DOMAIN' => 'www.webwinkelkeur.nl',
     'ADMIN_CLASS' => 'WebwinkelKeurAdmin',
-    'FRONTEND_CLASS' => 'WebwinkelKeurFrontend'
-);
+    'FRONTEND_CLASS' => 'WebwinkelKeurFrontend',
+];

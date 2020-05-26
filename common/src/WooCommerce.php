@@ -12,7 +12,7 @@ class WooCommerce {
 
     public function __construct(BasePlugin $plugin) {
         $this->plugin = $plugin;
-        add_action('woocommerce_order_status_completed', array($this, 'order_completed'), 10, 1);
+        add_action('woocommerce_order_status_completed', [$this, 'order_completed'], 10, 1);
         add_action('woocommerce_checkout_update_order_meta', [$this, 'set_order_language']);
     }
 
@@ -26,50 +26,57 @@ class WooCommerce {
         global $wpdb, $wp_version;
 
         // invites enabled?
-        if(!get_option($this->plugin->getOptionName('invite')))
+        if (!get_option($this->plugin->getOptionName('invite'))) {
             return;
+        }
 
         $api_domain = $this->plugin->getDashboardDomain();
         $shop_id = get_option($this->plugin->getOptionName('wwk_shop_id'));
         $api_key = get_option($this->plugin->getOptionName('wwk_api_key'));
 
-        if(!$shop_id || !$api_key)
+        if (!$shop_id || !$api_key) {
             return;
+        }
 
         /** @var WC_Order $order */
         $order = wc_get_order($order_id);
-        if(!$order)
+        if (!$order) {
             return;
+        }
 
-        if($order->get_type() !== 'shop_order')
+        if ($order->get_type() !== 'shop_order') {
             return;
+        }
 
         $order_number = $order->get_order_number();
 
         $email = get_post_meta($order_id, '_billing_email', true);
-        if(!preg_match('|@|', $email))
+        if (!preg_match('|@|', $email)) {
             return;
+        }
 
-        if (!apply_filters('webwinkelkeur_request_invitation', true, $order))
+        if (!apply_filters('webwinkelkeur_request_invitation', true, $order)) {
             return;
+        }
 
         $invite_delay = (int) get_option($this->plugin->getOptionName('invite_delay'));
-        if($invite_delay < 0)
+        if ($invite_delay < 0) {
             $invite_delay = 0;
+        }
 
         $invoice_address = $order->get_address('billing');
         $customer_name = $invoice_address['first_name']
-                         .' '. $invoice_address['last_name'];
+                         . ' ' . $invoice_address['last_name'];
 
         $delivery_address = $order->get_address('shipping');
         $phones = [
             $invoice_address['phone'],
-            $delivery_address['phone']
+            $delivery_address['phone'],
         ];
 
         $lang = get_post_meta($order_id, 'wpml_language', true);
 
-        $data = array(
+        $data = [
             'order'     => $order_number,
             'email'     => $email,
             'delay'     => $invite_delay,
@@ -79,8 +86,8 @@ class WooCommerce {
             'phone_numbers' => array_values(array_filter(array_unique($phones))),
             'order_total'   => $order->get_total(),
             'plugin_version' => $this->get_plugin_version('webwinkelkeur'),
-            'platform_version' => 'wp-' . $wp_version . '-wc-' . $this->get_plugin_version('woocommerce')
-        );
+            'platform_version' => 'wp-' . $wp_version . '-wc-' . $this->get_plugin_version('woocommerce'),
+        ];
         if (get_option($this->plugin->getOptionName('invite')) == 2) {
             $data['max_invitations_per_email'] = 1;
         }
@@ -118,14 +125,14 @@ class WooCommerce {
         $api = new API($api_domain, $shop_id, $api_key);
         try {
             $api->invite($data);
-        } catch(WebwinkelKeurAPIAlreadySentError $e) {
+        } catch (WebwinkelKeurAPIAlreadySentError $e) {
             // that's okay
-        } catch(WebwinkelKeurAPIError $e) {
-            $wpdb->insert($this->plugin->getInviteErrorsTable(), array(
+        } catch (WebwinkelKeurAPIError $e) {
+            $wpdb->insert($this->plugin->getInviteErrorsTable(), [
                 'url'       => $e->getURL(),
                 'response'  => $e->getMessage(),
                 'time'      => time(),
-            ));
+            ]);
             $this->insert_comment(
                 $order_id,
                 sprintf(
@@ -153,13 +160,13 @@ class WooCommerce {
     }
 
     private function insert_comment($order_id, $content) {
-        wp_insert_comment(array(
+        wp_insert_comment([
             'comment_post_ID'   => $order_id,
             'comment_author'    => $this->plugin->getName(),
             'comment_content'   => $content,
             'comment_agent'     => $this->plugin->getName(),
             'comment_type'      => 'order_note',
-        ));
+        ]);
     }
 
     private function filter_data($value) {
@@ -170,10 +177,12 @@ class WooCommerce {
         }
         try {
             return $this->call_method($value, 'get_data');
-        } catch (Exception $e) {}
+        } catch (Exception $e) {
+        }
         try {
             return $this->call_method($value, '__toString');
-        } catch (Exception $e) {}
+        } catch (Exception $e) {
+        }
         if (is_object($value)) {
             return new \stdClass();
         }
@@ -191,7 +200,7 @@ class WooCommerce {
     private function call_method($obj, $name) {
         $method = new ReflectionMethod($obj, $name);
         if ($method->getNumberOfRequiredParameters() > 0) {
-            throw new RuntimeException("Method requires parameters");
+            throw new RuntimeException('Method requires parameters');
         }
         return @$method->invoke($obj);
     }
