@@ -1,5 +1,6 @@
 /dist
 /.phan
+.php_cs.cache
 /*/readme.txt
 /svn
 .*.swp

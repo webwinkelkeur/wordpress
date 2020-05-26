@@ -1,6 +1,8 @@
 <?php
 namespace Valued\WordPress;
 
+use ReflectionClass;
+
 abstract class BasePlugin {
 
     protected static $instances = [];
@@ -10,10 +12,10 @@ abstract class BasePlugin {
     public $woocommerce;
 
     /** @return string */
-    abstract public function getPluginFile();
+    abstract public function getName();
 
     /** @return string */
-    abstract public function getName();
+    abstract public function getMainDomain();
 
     /** @return string */
     abstract public function getDashboardDomain();
@@ -35,7 +37,12 @@ abstract class BasePlugin {
             $this->frontend = new Frontend($this);
         }
 
-        $this->woocommerce = new WooCommerce($settings);
+        $this->woocommerce = new WooCommerce($this);
+    }
+
+    public function getPluginFile() {
+        $reflect = new ReflectionClass(static::class);
+        return $reflect->getFileName();
     }
 
     public function activatePlugin() {
@@ -80,6 +87,18 @@ abstract class BasePlugin {
     public function getSlug() {
         $file = basename($this->getPluginFile());
         return preg_replace('/\.php$/', '', $file);
+    }
+
+    /**
+     * @param string $__template
+     * @param array $__scope
+     * @return string
+     **/
+    public function render($__template, array $__scope) {
+        extract($__scope);
+        ob_start();
+        require __DIR__ . '/../templates/' . $__template . '.php';
+        return ob_get_clean();
     }
 
 }

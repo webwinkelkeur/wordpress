@@ -9,6 +9,13 @@ Author URI: https://peschar.net/
 WC tested up to: 4.99
 */
 
+namespace WebwinkelKeur\WordPress;
+
+require __DIR__ . '/common/autoload.php';
+require __DIR__ . '/src/Plugin.php';
+
+Plugin::getInstance()->init();
+
 $settings = array(
     'PLUGIN_PATH' => __DIR__,
     'PLUGIN_SLUG' => 'webwinkelkeur',
@@ -19,6 +26,3 @@ $settings = array(
     'ADMIN_CLASS' => 'WebwinkelKeurAdmin',
     'FRONTEND_CLASS' => 'WebwinkelKeurFrontend'
 );
-
-$init = require __DIR__ . '/common/init.php';
-$init($settings);

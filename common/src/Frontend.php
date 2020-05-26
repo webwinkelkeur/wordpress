@@ -57,7 +57,10 @@ class Frontend {
 
         $settings = $this->get_sidebar_settings();
 
-        require __DIR__ . '/../templates/sidebar.php';
+        echo $this->plugin->render('sidebar', [
+            'plugin' => $this->plugin,
+            'settings' => $settings,
+        ]);
     }
 
     public function rich_snippet() {

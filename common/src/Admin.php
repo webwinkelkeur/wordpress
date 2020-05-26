@@ -89,7 +89,12 @@ class Admin {
             }
         }
 
-        require __DIR__ . '/../templates/options.php';
+        echo $this->plugin->render('options', [
+            'plugin' => $this->plugin,
+            'errors' => $errors,
+            'updated' => $updated,
+            'config' => $config,
+        ]);
     }
 
     public function invite_error_notices() {
