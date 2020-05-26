@@ -4,6 +4,10 @@ namespace TrustProfile\WordPress;
 use Valued\WordPress\BasePlugin;
 
 class Plugin extends BasePlugin {
+    public function getSlug() {
+        return 'trustprofile';
+    }
+
     public function getName() {
         return 'TrustProfile';
     }

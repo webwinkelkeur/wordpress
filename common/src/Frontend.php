@@ -16,7 +16,7 @@ class Frontend {
 
     protected function get_sidebar_settings() {
         return [
-            '_webwinkelkeur_id' => $this->wwk_shop_id,
+            "_{$this->plugin->getSlug()}_id" => $this->wwk_shop_id,
         ];
     }
 
@@ -32,7 +32,7 @@ class Frontend {
             return;
         }
 
-        add_shortcode('webwinkelkeur_rich_snippet', function () {
+        add_shortcode("{$this->plugin->getSlug()}_rich_snippet", function () {
             return $this->get_rich_snippet();
         });
 
@@ -58,7 +58,7 @@ class Frontend {
         $this->script_printed = true;
 
         if ($this->is_sidebar_inactive()) {
-            echo '<!-- WebwinkelKeur: sidebar niet geactiveerd -->';
+            echo "<!-- {$this->plugin->getName()}: sidebar not activated -->";
             return;
         }
 

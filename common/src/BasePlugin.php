@@ -41,11 +41,6 @@ abstract class BasePlugin {
         $this->woocommerce = new WooCommerce($this);
     }
 
-    public function getPluginFile() {
-        $reflect = new ReflectionClass(static::class);
-        return $reflect->getFileName();
-    }
-
     public function activatePlugin() {
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
@@ -84,12 +79,6 @@ abstract class BasePlugin {
         return $GLOBALS['wpdb']->prefix . $this->getSlug() . '_invite_error';
     }
 
-    /** @return string */
-    public function getSlug() {
-        $file = basename($this->getPluginFile());
-        return preg_replace('/\.php$/', '', $file);
-    }
-
     /**
      * @param string $__template
      * @param array $__scope
@@ -100,5 +89,10 @@ abstract class BasePlugin {
         ob_start();
         require __DIR__ . '/../templates/' . $__template . '.php';
         return ob_get_clean();
+    }
+
+    public function getPluginFile() {
+        $reflect = new ReflectionClass($this);
+        return dirname(dirname($reflect->getFilename())) . '/' . $this->getSlug() . '.php';
     }
 }
