@@ -1,3 +1,11 @@
+= 2.0 =
+* Release TrustProfile integration.
+
+= 1.9 =
+* Set `wpml_language` on orders, in case WooCommerce Multilingual plugin is
+  missing.
+* Bump WordPress, WooCommerce version compatibility.
+
 = 1.8 =
 * Add `[webwinkelkeur_rich_snippet]` shortcode.
 
