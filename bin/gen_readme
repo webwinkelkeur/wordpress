@@ -19,9 +19,14 @@ if ($yaml === false) {
 
 $info = spyc_load($yaml);
 
-$changelog = file_get_contents(__DIR__ . '/../changelog.md');
+$sections = [
+    'Description' => $info['readme']['description'] ?? '',
+    'Installation' => $info['readme']['installation'] ?? '',
+    'Frequently' => $info['readme']['faq'] ?? '',
+    'Changelog' => file_get_contents(__DIR__ . '/../changelog.md'),
+];
 
-echo <<<EOF
+$parts = [trim("
 === {$info['name']} for WordPress ===
 Contributors: apeschar
 Tags: {$info['readme']['tags']}
@@ -33,20 +38,15 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 {$info['readme']['intro']}
+")];
 
-== Description ==
+foreach ($sections as $label => $section) {
+    $section = trim($section);
+    if (!$section) {
+        continue;
+    }
 
-{$info['readme']['description']}
+    $parts[] = "=== {$label} ===\n\n{$section}";
+}
 
-== Installation ==
-
-{$info['readme']['installation']}
-
-== Frequently Asked Questions ==
-
-{$info['readme']['faq']}
-
-== Changelog ==
-
-{$changelog}
-EOF;
+echo implode("\n\n", $parts) . "\n";
