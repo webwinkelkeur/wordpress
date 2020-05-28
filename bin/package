@@ -4,9 +4,11 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
+root="$PWD"
+
 mkdir -p dist
 relout="dist"
-out="$PWD/$relout"
+out="$root/$relout"
 
 tmp="$(mktemp -d)"
 cleanup() { rm -rf "$tmp"; }
@@ -27,6 +29,7 @@ for project_yml in */project.yml; do
     project="$(dirname "$project_yml")"
     file="wordpress-$project-$version.zip"
     rm -f "$project/project.yml"
+    "$root/bin/gen_readme" "$project" > "$project/readme.txt"
     zip -r9 out.zip "$project" >&2
     mv out.zip "$out/$file"
     echo "$relout/$file"
