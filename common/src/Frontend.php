@@ -1,6 +1,9 @@
 <?php
 namespace Valued\WordPress;
 
+use RuntimeException;
+use WP_Error;
+
 class Frontend {
     private $plugin;
 
@@ -85,56 +88,50 @@ class Frontend {
     }
 
     private function get_rich_snippet() {
-        $tmp_dir = @sys_get_temp_dir();
-        if (!@is_writable($tmp_dir)) {
-            $tmp_dir = '/tmp';
-        }
-        if (!@is_writable($tmp_dir)) {
-            return $this->log_error("The temporary directory $tmp_dir is not writable.");
-        }
-
         $url = sprintf(
             'https://%s/webshops/rich_snippet?id=%d',
             $this->plugin->getDashboardDomain(),
             (int) $this->wwk_shop_id
         );
 
-        $cache_file = $tmp_dir . DIRECTORY_SEPARATOR . $this->plugin->getSlug() . '_'
-            . md5(__FILE__) . '_' . md5($url);
+        $transient = implode(':', [$this->plugin->getSlug(), 'rich_snippet', md5($url)]);
 
-        $fp = @fopen($cache_file, 'rb');
-
-        if ($fp && ($stat = @fstat($fp)) && $stat['mtime'] > time() - 7200
-           && ($json = @stream_get_contents($fp))
-        ) {
-            $data = json_decode($json, true);
-        } else {
-            $context = @stream_context_create([
-                'http' => ['timeout' => 3],
-                'ssl' => ['verify_peer' => false],
-            ]);
-            $json = @file_get_contents($url, false, $context);
-            if (!$json) {
-                return $this->log_error("Failed to retrieve rich snippet data from $url");
-            }
-
-            $data = @json_decode($json, true);
-            if (empty($data['result'])) {
-                return $this->log_error("Failed to decode rich snippet data from $url");
-            }
-
-            $new_file = $cache_file . '.' . uniqid();
-            if (@file_put_contents($new_file, $json)) {
-                @rename($new_file, $cache_file) or @unlink($new_file);
-            }
+        if ($result = get_transient($transient)) {
+            return $result;
         }
 
-        if ($fp) {
-            @fclose($fp);
+        try {
+            $result = $this->fetchRichSnippet($url);
+        } catch (RuntimeException $e) {
+            return $this->log_error($e->getMessage());
         }
 
-        if (empty($data) || $data['result'] != 'ok') {
-            return $this->log_error("Did not get a succesful response from $url");
+        set_transient($transient, $result, 7200);
+
+        return $result;
+    }
+
+    private function fetchRichSnippet($url) {
+        $response = wp_remote_get($url);
+
+        if ($response instanceof WP_Error) {
+            throw new RuntimeException(
+                "Rich snippet fetch from {$url} failed: {$response->get_error_message()}"
+            );
+        }
+
+        if (empty($response['body'])) {
+            throw new RuntimeException("Rich snippet response from {$url} is empty");
+        }
+
+        $data = json_decode($response['body'], true);
+
+        if (empty($data['result'])) {
+            throw new RuntimeException("Failed to decode rich snippet data from {$url}");
+        }
+
+        if ($data['result'] != 'ok') {
+            throw new RuntimeException("Did not get a succesful response from {$url}");
         }
 
         return $data['content'];

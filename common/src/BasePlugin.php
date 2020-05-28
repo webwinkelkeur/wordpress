@@ -13,6 +13,9 @@ abstract class BasePlugin {
     public $woocommerce;
 
     /** @return string */
+    abstract public function getSlug();
+
+    /** @return string */
     abstract public function getName();
 
     /** @return string */
