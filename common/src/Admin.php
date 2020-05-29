@@ -90,7 +90,7 @@ class Admin {
                     $config[$field_name] = $sanitize($value);
                 } catch (ValidationException $e) {
                     $errors[] = $e->getMessage();
-                    $config[$field_name] = $value;
+                    $config[$field_name] = '';
                 }
             }
 
