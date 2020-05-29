@@ -13,18 +13,6 @@ class Admin {
         ];
     }
 
-    protected function get_config_fields() {
-        return [
-            'wwk_shop_id',
-            'wwk_api_key',
-            'invite',
-            'invite_delay',
-            'limit_order_data',
-            'javascript',
-            'rich_snippet',
-        ];
-    }
-
     public function __construct(BasePlugin $plugin) {
         $this->plugin = $plugin;
         add_action('admin_menu', [$this, 'admin_menu']);
@@ -60,10 +48,33 @@ class Admin {
     public function options_page() {
         $errors = [];
         $updated = false;
-        $fields = $this->get_config_fields();
+
+        $fields = [
+            'wwk_shop_id' => function ($value) {
+                if ($value == '') {
+                    throw new ValidationException(__('Your shop ID is required.', 'webwinkelkeur'));
+                }
+                if (!ctype_digit($value)) {
+                    throw new ValidationException(__('Your shop ID can only contain digits.', 'webwinkelkeur'));
+                }
+                return $value;
+            },
+            'wwk_api_key' => function ($value) {
+                if ($value != '' && !preg_match('/^[a-z0-9.]+$/', $value)) {
+                    throw new ValidationException(__('This is not a valid API key.', 'webwinkelkeur'));
+                }
+                return $value;
+            },
+            'invite' => 'boolval',
+            'invite_delay' => 'intval',
+            'limit_order_data' => 'intval',
+            'javascript' => 'boolval',
+            'rich_snippet' => 'boolval',
+        ];
+
         $config = $this->get_default_config();
 
-        foreach ($fields as $field_name) {
+        foreach (array_keys($fields) as $field_name) {
             $value = get_option($this->plugin->getOptionName($field_name), false);
             if ($value !== false) {
                 $config[$field_name] = (string) $value;
@@ -73,14 +84,14 @@ class Admin {
         }
 
         if (isset($_POST[$this->plugin->getOptionName('wwk_shop_id')])) {
-            foreach ($fields as $field_name) {
-                $config[$field_name] = (string) @$_POST[$this->plugin->getOptionName($field_name)];
-            }
-
-            if (empty($config['wwk_shop_id'])) {
-                $errors[] = __('Your shop ID is required.', 'webwinkelkeur');
-            } elseif (!ctype_digit($config['wwk_shop_id'])) {
-                $errors[] = __('Your shop ID can only contain digits.', 'webwinkelkeur');
+            foreach ($fields as $field_name => $sanitize) {
+                $value = (string) @$_POST[$this->plugin->getOptionName($field_name)];
+                try {
+                    $config[$field_name] = $sanitize($value);
+                } catch (ValidationException $e) {
+                    $errors[] = $e->getMessage();
+                    $config[$field_name] = $value;
+                }
             }
 
             if ($config['invite'] && !$config['wwk_api_key']) {
