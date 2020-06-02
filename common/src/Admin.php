@@ -85,9 +85,9 @@ class Admin {
 
         if (isset($_POST[$this->plugin->getOptionName('wwk_shop_id')])) {
             foreach ($fields as $field_name => $sanitize) {
-                $value = (string) @$_POST[$this->plugin->getOptionName($field_name)];
                 try {
-                    $config[$field_name] = $sanitize($value);
+                    $config[$field_name] =
+                        $sanitize((string) @$_POST[$this->plugin->getOptionName($field_name)]);
                 } catch (ValidationException $e) {
                     $errors[] = $e->getMessage();
                     $config[$field_name] = '';
