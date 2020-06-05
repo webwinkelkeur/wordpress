@@ -33,6 +33,8 @@ git push git@github.com:webwinkelkeur/wordpress master --tags
 ./bin/package
 
 for project_yml in */project.yml; do
+    cd "$root"
+
     project="$(dirname "$project_yml")"
 
     if [[ ! -z $only_project ]] && [[ $only_project != $project ]]; then
@@ -41,11 +43,20 @@ for project_yml in */project.yml; do
 
     repo="http://plugins.svn.wordpress.org/$project"
     svn="$root/svn/$project"
+    svn_options=()
+
+    if [[ $project = trustprofile ]]; then
+        svn_options+=( --username "$project" )
+    else
+        svn_options+=( --username apeschar )
+    fi
 
     if [[ ! -d $svn/.svn ]]; then
         mkdir -p "$svn"
-        svn co "$repo" "$svn"
+        svn co "${svn_options[@]}" "$repo" "$svn"
     fi
+
+    cd "$svn"
 
     if [[ ! -z $(svn status) ]]; then
         echo "Error: svn status isn't empty after checkout:" >&2
@@ -53,12 +64,11 @@ for project_yml in */project.yml; do
         exit 1
     fi
 
-    rm -rf "$svn/trunk"
-    mkdir "$svn/trunk"
+    rm -rf "trunk"
+    mkdir "trunk"
 
-    bsdtar xf "dist/$project-${version}.zip" -C "$svn/trunk" --strip-components 1 "$project"
+    bsdtar xf "$root/dist/wordpress-$project-${version}.zip" -C trunk --strip-components 1 "$project"
 
-    pushd $tmp/svn
     svn status | awk '/^!/ {print $2}' | xargs -r svn rm --force -q
     svn add --force trunk
 
@@ -67,6 +77,6 @@ for project_yml in */project.yml; do
         continue
     fi
 
-    echo svn ci -m 'Update plugin' --username apeschar
-    echo svn copy "$repo/trunk" "$repo/tags/${version}" -m "Tag ${version} release"
+    svn ci "${svn_options[@]}" -m 'Update plugin'
+    svn copy "${svn_options[@]}" "$repo/trunk" "$repo/tags/${version}" -m "Tag ${version} release"
 done
