@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: TrustProfile
-Plugin URI: https://trustprofile.io
+Plugin URI: https://trustprofile.io?ref=wp-plugin
 Description: Collect reviews and earn trust badges to show on your webshop. Don't keep losing revenue. Show you can be trusted!
 Version: $VERSION$
-Author: Albert Peschar
-Author URI: https://peschar.net
+Author: TrustProfile
+Author URI: https://trustprofile.io?ref=wp-author
 WC tested up to: 4.99
 */
 
