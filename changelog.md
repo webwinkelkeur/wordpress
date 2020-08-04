@@ -1,3 +1,6 @@
+= 2.1 =
+* Bump **Tested up to** to WordPress 5.5.
+
 = 2.0 =
 * Release TrustProfile integration.
 
