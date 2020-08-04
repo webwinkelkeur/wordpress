@@ -41,19 +41,12 @@ for project_yml in */project.yml; do
         continue
     fi
 
-    repo="http://plugins.svn.wordpress.org/$project"
+    repo="https://plugins.svn.wordpress.org/$project"
     svn="$root/svn/$project"
-    svn_options=()
-
-    if [[ $project = trustprofile ]]; then
-        svn_options+=( --username "$project" )
-    else
-        svn_options+=( --username apeschar )
-    fi
 
     if [[ ! -d $svn/.svn ]]; then
         mkdir -p "$svn"
-        svn co "${svn_options[@]}" "$repo" "$svn"
+        svn co "$repo" "$svn"
     fi
 
     cd "$svn"
@@ -77,6 +70,6 @@ for project_yml in */project.yml; do
         continue
     fi
 
-    svn ci "${svn_options[@]}" -m 'Update plugin'
-    svn copy "${svn_options[@]}" "$repo/trunk" "$repo/tags/${version}" -m "Tag ${version} release"
+    svn ci -m 'Update plugin'
+    svn copy "$repo/trunk" "$repo/tags/${version}" -m "Tag ${version} release"
 done
