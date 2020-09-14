@@ -1,6 +1,1 @@
-<script>
-<?php foreach ($settings as $name => $value): ?>
-<?= $name; ?> = <?= json_encode($value); ?>;
-<?php endforeach; ?>
-</script>
-<script async src="https://<?= $plugin->getMainDomain(); ?>/js/sidebar.js"></script>
+<script>(function(url,id){var script=document.createElement('script');script.async=true;script.src='https://'+url+'/sidebar.js?id='+id+'&c='+cachebuster(10,id);var ref=document.getElementsByTagName('script')[0];ref.parentNode.insertBefore(script,ref);function cachebuster(refreshMinutes,id){var now=Date.now();var interval=refreshMinutes*60e3;var shift=(Math.sin(id)||0)*interval;return Math.floor((now+shift)/interval);}})(<?= json_encode($plugin->getDashboardDomain()); ?>,<?= $id; ?>);</script>

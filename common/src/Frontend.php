@@ -17,12 +17,6 @@ class Frontend {
         return !get_option($this->plugin->getOptionName('javascript'));
     }
 
-    protected function get_sidebar_settings() {
-        return [
-            "_{$this->plugin->getSlug()}_id" => $this->wwk_shop_id,
-        ];
-    }
-
     public function __construct(BasePlugin $plugin) {
         $this->plugin = $plugin;
 
@@ -65,11 +59,9 @@ class Frontend {
             return;
         }
 
-        $settings = $this->get_sidebar_settings();
-
         echo $this->plugin->render('sidebar', [
             'plugin' => $this->plugin,
-            'settings' => $settings,
+            'id' => (int) $this->wwk_shop_id
         ]);
     }
 
