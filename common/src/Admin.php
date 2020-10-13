@@ -70,6 +70,7 @@ class Admin {
             },
             'invite' => 'boolval',
             'invite_delay' => 'intval',
+            'product_reviews' => 'intval',
             'limit_order_data' => 'intval',
             'javascript' => 'boolval',
             'order_statuses' => function ($value) {

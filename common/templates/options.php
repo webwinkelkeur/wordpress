@@ -109,7 +109,7 @@
             echo 'checked ';
         }?> />
                             <?= esc_html(sprintf(
-            __('Do not send order information to %s', 'webwinkelkeur'),
+            __('Do not send order information to %s(required for product reviews)', 'webwinkelkeur'),
             $plugin->getName()
         )); ?>
                             <p class="description">
@@ -128,6 +128,26 @@
                 <p class="description">
                 <?php _e('The invitation will be send after the specified amount of days since the order has been shipped.', 'webwinkelkeur'); ?>
                 </p>
+                </td>
+            </tr>
+            <tr valign="top">
+                <th scope="row"><?php _e('Product reviews', 'webwinkelkeur'); ?></th>
+                <td>
+                    <fieldset>
+                        <label>
+                            <input type="checkbox" name="<?= $plugin->getOptionName('product_reviews');?>" value="1" <?php if ($config['product_reviews']) {
+                                echo 'checked ';
+                            }?> />
+                            <?= esc_html(
+                                __('Enable import of product reviews')
+                            ); ?>
+                            <p class="description">
+                                <?= esc_html(
+                                    __('Example description text for product reviews')
+                                ); ?>
+                            </p>
+                        </label>
+                    </fieldset>
                 </td>
             </tr>
             <tr valign="top">
