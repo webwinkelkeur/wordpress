@@ -114,6 +114,7 @@ class WooCommerce {
                 foreach ($images as $image) {
                     $product_arr['product_image'][] = wp_get_attachment_image_src($image->ID, 'full')[0];
                 }
+                $product_arr['product_url'] = get_permalink($product->get_id());
                 $products[] = $product_arr;
             }
             $order_data = [
