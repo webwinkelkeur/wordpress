@@ -139,11 +139,11 @@
                                 echo 'checked ';
                             }?> />
                             <?= esc_html(
-                                __('Enable import of product reviews')
+                                __('Import product reviews to WooCommerce.')
                             ); ?>
                             <p class="description">
                                 <?= esc_html(
-                                    __('Example description text for product reviews')
+                                    __(sprintf('Automatically display product reviews collected using %s on your WooCommerce shop.', $plugin->getName()))
                                 ); ?>
                             </p>
                         </label>
