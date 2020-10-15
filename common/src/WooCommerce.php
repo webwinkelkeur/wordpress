@@ -14,6 +14,8 @@ class WooCommerce {
         $this->plugin = $plugin;
         add_action('woocommerce_order_status_changed', [$this, 'orderStatusChanged'], 10, 3);
         add_action('woocommerce_checkout_update_order_meta', [$this, 'set_order_language']);
+        add_action( 'woocommerce_product_options_sku', array( $this, 'gtin_product_option'));
+        add_action( 'woocommerce_admin_process_product_object', array( $this, 'save_gtin_product_option'));
     }
 
     public function orderStatusChanged(int $order_id, string $old_status, string $new_status): void {
@@ -147,6 +149,25 @@ class WooCommerce {
                     $this->plugin->getName()
                 ) . ' ' . $e->getMessage()
             );
+        }
+    }
+
+    public function gtin_product_option() {
+        $label = 'GTIN';
+        echo '<div class="options_group">';
+        woocommerce_wp_text_input(array(
+            'id' => '_wwk_gtin_code',
+            'label' => sprintf(__('%s Code:', 'product-gtin-ean-upc-isbn-for-woocommerce'), $label),
+            'placeholder' => '',
+            'desc_tip' => true,
+            'description' => sprintf(__('Add the %s code for this product', 'product-gtin-ean-upc-isbn-for-woocommerce'), $label),
+        ));
+        echo '</div>';
+    }
+
+    public function save_gtin_product_option($product) {
+        if (isset($_POST['_wwk_gtin_code'])) {
+            $product->update_meta_data('_wwk_gtin_code', wc_clean(wp_unslash($_POST['_wwk_gtin_code'])));
         }
     }
 
