@@ -156,7 +156,7 @@ class WooCommerce {
         $label = 'GTIN';
         echo '<div class="options_group">';
         woocommerce_wp_text_input(array(
-            'id' => '_wwk_gtin_code',
+            'id' => '_product_gtin_code',
             'label' => sprintf(__('%s Code:', 'product-gtin-ean-upc-isbn-for-woocommerce'), $label),
             'placeholder' => '',
             'desc_tip' => true,
@@ -166,8 +166,8 @@ class WooCommerce {
     }
 
     public function save_gtin_product_option($product) {
-        if (isset($_POST['_wwk_gtin_code'])) {
-            $product->update_meta_data('_wwk_gtin_code', wc_clean(wp_unslash($_POST['_wwk_gtin_code'])));
+        if (isset($_POST['_product_gtin_code'])) {
+            $product->update_meta_data('_product_gtin_code', wc_clean(wp_unslash($_POST['_product_gtin_code'])));
         }
     }
 
