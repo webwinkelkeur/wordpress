@@ -14,8 +14,8 @@ class WooCommerce {
         $this->plugin = $plugin;
         add_action('woocommerce_order_status_changed', [$this, 'orderStatusChanged'], 10, 3);
         add_action('woocommerce_checkout_update_order_meta', [$this, 'set_order_language']);
-        add_action( 'woocommerce_product_options_sku', array( $this, 'gtin_product_option'));
-        add_action( 'woocommerce_admin_process_product_object', array( $this, 'save_gtin_product_option'));
+        add_action('woocommerce_product_options_sku', array($this, 'gtin_product_option'));
+        add_action('woocommerce_admin_process_product_object', array($this, 'save_gtin_product_option'));
     }
 
     public function orderStatusChanged(int $order_id, string $old_status, string $new_status): void {
@@ -85,14 +85,14 @@ class WooCommerce {
         $lang = get_post_meta($order_id, 'wpml_language', true);
 
         $data = [
-            'order'     => $order_number,
-            'email'     => $email,
-            'delay'     => $invite_delay,
-            'language'  => $lang,
-            'client'    => 'wordpress',
+            'order' => $order_number,
+            'email' => $email,
+            'delay' => $invite_delay,
+            'language' => $lang,
+            'client' => 'wordpress',
             'customer_name' => $customer_name,
             'phone_numbers' => array_values(array_filter(array_unique($phones))),
-            'order_total'   => $order->get_total(),
+            'order_total' => $order->get_total(),
             'plugin_version' => $this->get_plugin_version('webwinkelkeur'),
             'platform_version' => 'wp-' . $wp_version . '-wc-' . $this->get_plugin_version('woocommerce'),
         ];
@@ -104,21 +104,7 @@ class WooCommerce {
         if ($with_order_data) {
             $order_arr = $this->get_data($order, []);
             $customer_arr = !empty($order_arr['customer_id']) ? $this->get_data(new WC_Customer($order_arr['customer_id']), []) : [];
-            $pf = new WC_Product_Factory();
-            $products = [];
-            foreach ($order_arr['line_items'] as $line_item) {
-                $product = $pf->get_product($line_item['product_id']);
-                if (!$product) {
-                    continue;
-                }
-                $product_arr = $this->get_data($product, []);
-                $images = get_attached_media('image', $product->get_id());
-                foreach ($images as $image) {
-                    $product_arr['product_image'][] = wp_get_attachment_image_src($image->ID, 'full')[0];
-                }
-                $product_arr['product_url'] = get_permalink($product->get_id());
-                $products[] = $product_arr;
-            }
+            $products = $this->get_product_data($order_arr);
             $order_data = [
                 'order' => $order_arr,
                 'customer' => $customer_arr,
@@ -138,9 +124,9 @@ class WooCommerce {
             // that's okay
         } catch (WebwinkelKeurAPIError $e) {
             $wpdb->insert($this->plugin->getInviteErrorsTable(), [
-                'url'       => $e->getURL(),
-                'response'  => $e->getMessage(),
-                'time'      => time(),
+                'url' => $e->getURL(),
+                'response' => $e->getMessage(),
+                'time' => time(),
             ]);
             $this->insert_comment(
                 $order_id,
@@ -189,11 +175,11 @@ class WooCommerce {
 
     private function insert_comment($order_id, $content) {
         wp_insert_comment([
-            'comment_post_ID'   => $order_id,
-            'comment_author'    => $this->plugin->getName(),
-            'comment_content'   => $content,
-            'comment_agent'     => $this->plugin->getName(),
-            'comment_type'      => 'order_note',
+            'comment_post_ID' => $order_id,
+            'comment_author' => $this->plugin->getName(),
+            'comment_content' => $content,
+            'comment_agent' => $this->plugin->getName(),
+            'comment_type' => 'order_note',
         ]);
     }
 
@@ -241,5 +227,29 @@ class WooCommerce {
             }
         }
         return false;
+    }
+
+    private function get_product_data(array $order_arr) {
+        $pf = new WC_Product_Factory();
+        $products = [];
+        foreach ($order_arr['line_items'] as $line_item) {
+            $product = $pf->get_product($line_item['product_id']);
+            if (!$product) {
+                continue;
+            }
+            $images = [];
+            foreach (get_attached_media('image', $product->get_id()) as $image) {
+                $images[] = wp_get_attachment_image_src($image->ID, 'full')[0];
+            }
+            $products[] = [
+                'id' => $product->get_id(),
+                'name' => $product->get_name(),
+                'url' => get_permalink($product->get_id()),
+                'image_url' => $images[0] ?? null,
+                'sku' => $product->get_sku(),
+                'reviews_allowed' => $product->get_reviews_allowed(),
+            ];
+        }
+        return $products;
     }
 }
