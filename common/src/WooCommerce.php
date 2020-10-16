@@ -14,8 +14,8 @@ class WooCommerce {
         $this->plugin = $plugin;
         add_action('woocommerce_order_status_changed', [$this, 'orderStatusChanged'], 10, 3);
         add_action('woocommerce_checkout_update_order_meta', [$this, 'set_order_language']);
-        add_action('woocommerce_product_options_sku', array($this, 'gtin_product_option'));
-        add_action('woocommerce_admin_process_product_object', array($this, 'save_gtin_product_option'));
+        add_action('woocommerce_product_options_sku', [$this, 'gtin_product_option']);
+        add_action('woocommerce_admin_process_product_object', [$this, 'save_gtin_product_option']);
     }
 
     public function orderStatusChanged(int $order_id, string $old_status, string $new_status): void {
