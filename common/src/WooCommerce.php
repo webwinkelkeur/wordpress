@@ -6,6 +6,7 @@ use ReflectionMethod;
 use RuntimeException;
 use WC_Customer;
 use WC_Product_Factory;
+use WC_Product;
 
 class WooCommerce {
     private $plugin;
@@ -230,7 +231,7 @@ class WooCommerce {
 
     private function getProductImage(WP_Product $product) {
         foreach (get_attached_media('image', $product->get_id()) as $image) {
-            return wp_get_attachment_image_src($image->ID, 'full');
+            return wp_get_attachment_image_src($image->ID, 'full')[0] ?? null;
         }
     }
 }
