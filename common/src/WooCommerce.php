@@ -216,19 +216,21 @@ class WooCommerce {
             if (!$product) {
                 continue;
             }
-            $images = [];
-            foreach (get_attached_media('image', $product->get_id()) as $image) {
-                $images[] = wp_get_attachment_image_src($image->ID, 'full')[0];
-            }
             $products[] = [
                 'id' => $product->get_id(),
                 'name' => $product->get_name(),
                 'url' => get_permalink($product->get_id()),
-                'image_url' => $images[0] ?? null,
+                'image_url' => $this->getProductImage($product),
                 'sku' => $product->get_sku(),
                 'reviews_allowed' => $product->get_reviews_allowed(),
             ];
         }
         return $products;
+    }
+
+    private function getProductImage(WP_Product $product) {
+        foreach (get_attached_media('image', $product->get_id()) as $image) {
+            return wp_get_attachment_image_src($image->ID, 'full');
+        }
     }
 }
