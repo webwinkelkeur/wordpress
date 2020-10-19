@@ -109,7 +109,7 @@
             echo 'checked ';
         }?> />
                             <?= esc_html(sprintf(
-            __('Do not send order information to %s(required for product reviews)', 'webwinkelkeur'),
+            __('Do not send order information to %s (required for product reviews)', 'webwinkelkeur'),
             $plugin->getName()
         )); ?>
                             <p class="description">
@@ -135,15 +135,15 @@
                 <td>
                     <fieldset>
                         <label>
-                            <input type="checkbox" name="<?= $plugin->getOptionName('product_reviews');?>" value="1" <?php if ($config['product_reviews']) {
+                            <input type="checkbox" name="<?= $plugin->getOptionName('product_reviews'); ?>" value="1" <?php if ($config['product_reviews']) {
                                 echo 'checked ';
-                            }?> />
+                            } ?> />
                             <?= esc_html(
-                                __('Import product reviews to WooCommerce.')
+                                __('Import product reviews to WooCommerce.', 'webwinkelkeur')
                             ); ?>
                             <p class="description">
                                 <?= esc_html(
-                                    __(sprintf('Automatically display product reviews collected using %s on your WooCommerce shop.', $plugin->getName()))
+                                    sprintf(__('Automatically display product reviews collected using %s on your WooCommerce shop.', 'webwinkelkeur'), $plugin->getName())
                                 ); ?>
                             </p>
                         </label>
