@@ -229,7 +229,7 @@ class WooCommerce {
         return $products;
     }
 
-    private function getProductImage(WP_Product $product) {
+    private function getProductImage(WC_Product $product) {
         foreach (get_attached_media('image', $product->get_id()) as $image) {
             return wp_get_attachment_image_src($image->ID, 'full')[0] ?? null;
         }
