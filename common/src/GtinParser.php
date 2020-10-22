@@ -6,8 +6,7 @@ namespace Valued\WordPress;
 
 class GtinHandler {
 	private $supported_plugings = [
-		'product_feed'                    => 'handleProductFeed()',
-		'webwinkelkeur/webwinkelkeur.php' => 'handleWWK'
+		'woocommerce-product-feeds/woocommerce-gpf.php' => 'handleWWK'
 	];
 	private $product;
 
@@ -15,7 +14,7 @@ class GtinHandler {
 		$this->product = $product;
 	}
 
-	private function getActivePluging() {
+	private function getActivePlugin() {
 		$apl = get_option('active_plugins');
 		$plugins = get_plugins();
 		foreach ($apl as $p) {
@@ -25,20 +24,17 @@ class GtinHandler {
 		}
 	}
 
-	public function getGTIN() {
-		$active_plugin = $this->getActivePluging();
+	public function getGTIN(): ?string {
+		$active_plugin = $this->getActivePlugin();
 		if ($active_plugin) {
 			return call_user_func([$this, $active_plugin]);
 		}
-		return  get_post_meta($this->product->get_id(), 'wwk_gtin_id');
+		$wwk_gtin = get_post_meta($this->product->get_id(), 'wwk_gtin');
+		return $wwk_gtin ?: null;
 	}
 
-	private function handleProductFeed(): int {
-		return 123;
-	}
-
-	private function handleWWK(): int {
-//		return woocommerce_gpf_show_element( 'gtin', $this->product);
-		return 120;
+	private function handleWWK(): ?string {
+		$gtin = woocommerce_gpf_show_element('gtin', $this->product->post);
+		return $gtin ?: null;
 	}
 }
