@@ -15,6 +15,8 @@ class WooCommerce {
         $this->plugin = $plugin;
         add_action('woocommerce_order_status_changed', [$this, 'orderStatusChanged'], 10, 3);
         add_action('woocommerce_checkout_update_order_meta', [$this, 'set_order_language']);
+	    add_action('woocommerce_product_options_sku', [$this, 'gtin_product_option']);
+	    add_action('woocommerce_admin_process_product_object', [$this, 'save_gtin_product_option']);
     }
 
     public function orderStatusChanged(int $order_id, string $old_status, string $new_status): void {
@@ -137,6 +139,29 @@ class WooCommerce {
         }
     }
 
+	public function gtin_product_option() {
+		$gtin_handler  = new GtinHandler();
+		if (!empty( $gtin_handler->getActivePlugin() ) ) {
+			return;
+		}
+		$label = 'GTIN';
+		echo '<div class="options_group">';
+		woocommerce_wp_text_input(array(
+			'id' => '_product_gtin_code',
+			'label' => sprintf(__('%s Code:', 'product-gtin-ean-upc-isbn-for-woocommerce', 'webwinkelkeur'), $label),
+			'placeholder' => '',
+			'desc_tip' => true,
+			'description' => sprintf(__('Add the %s code for this product', 'product-gtin-ean-upc-isbn-for-woocommerce', 'webwinkelkeur'), $label),
+		));
+		echo '</div>';
+	}
+
+	public function save_gtin_product_option($product) {
+		if (isset($_POST['_product_gtin_code'])) {
+			$product->update_meta_data('_product_gtin_code', wc_clean(wp_unslash($_POST['_product_gtin_code'])));
+		}
+	}
+
     private function get_plugin_version($plugin_name) {
         if (!function_exists('get_plugins')) {
             require_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -209,25 +234,27 @@ class WooCommerce {
         return false;
     }
 
-    private function get_product_data(array $order_arr) {
-        $pf = new WC_Product_Factory();
-        $products = [];
-        foreach ($order_arr['line_items'] as $line_item) {
-            $product = $pf->get_product($line_item['product_id']);
-            if (!$product) {
-                continue;
-            }
-            $products[] = [
-                'id' => $product->get_id(),
-                'name' => $product->get_name(),
-                'url' => get_permalink($product->get_id()),
-                'image_url' => $this->getProductImage($product),
-                'sku' => $product->get_sku(),
-                'reviews_allowed' => $product->get_reviews_allowed(),
-            ];
-        }
-        return $products;
-    }
+	private function get_product_data(array $order_arr) {
+		$pf = new WC_Product_Factory();
+		$products = [];
+		foreach ($order_arr['line_items'] as $line_item) {
+			$product = $pf->get_product($line_item['product_id']);
+			if (!$product) {
+				continue;
+			}
+			$gtin_handler  = new GtinHandler($product);
+			$products[] = [
+				'id' => $product->get_id(),
+				'name' => $product->get_name(),
+				'url' => get_permalink($product->get_id()),
+				'image_url' => $this->getProductImage($product),
+				'sku' => $product->get_sku(),
+				'gtin' => $gtin_handler->getGTIN(),
+				'reviews_allowed' => $product->get_reviews_allowed(),
+			];
+		}
+		return $products;
+	}
 
     private function getProductImage(WC_Product $product) {
         foreach (get_attached_media('image', $product->get_id()) as $image) {
