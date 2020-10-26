@@ -86,14 +86,14 @@ class WooCommerce {
         $lang = get_post_meta($order_id, 'wpml_language', true);
 
         $data = [
-            'order' => $order_number,
-            'email' => $email,
-            'delay' => $invite_delay,
-            'language' => $lang,
-            'client' => 'wordpress',
+	        'order'    => $order_number,
+	        'email'    => $email,
+	        'delay'    => $invite_delay,
+	        'language' => $lang,
+	        'client'   => 'wordpress',
             'customer_name' => $customer_name,
             'phone_numbers' => array_values(array_filter(array_unique($phones))),
-            'order_total' => $order->get_total(),
+	        'order_total'   => $order->get_total(),
             'plugin_version' => $this->get_plugin_version('webwinkelkeur'),
             'platform_version' => 'wp-' . $wp_version . '-wc-' . $this->get_plugin_version('woocommerce'),
         ];
@@ -125,9 +125,9 @@ class WooCommerce {
             // that's okay
         } catch (WebwinkelKeurAPIError $e) {
             $wpdb->insert($this->plugin->getInviteErrorsTable(), [
-                'url' => $e->getURL(),
-                'response' => $e->getMessage(),
-                'time' => time(),
+	            'url'      => $e->getURL(),
+	            'response' => $e->getMessage(),
+	            'time'     => time(),
             ]);
             $this->insert_comment(
                 $order_id,
@@ -180,11 +180,11 @@ class WooCommerce {
 
     private function insert_comment($order_id, $content) {
         wp_insert_comment([
-            'comment_post_ID' => $order_id,
-            'comment_author' => $this->plugin->getName(),
-            'comment_content' => $content,
-            'comment_agent' => $this->plugin->getName(),
-            'comment_type' => 'order_note',
+	        'comment_post_ID' => $order_id,
+	        'comment_author'  => $this->plugin->getName(),
+	        'comment_content' => $content,
+	        'comment_agent'   => $this->plugin->getName(),
+	        'comment_type'    => 'order_note',
         ]);
     }
 
