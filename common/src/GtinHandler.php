@@ -1,8 +1,5 @@
 <?php
-
-
 namespace Valued\WordPress;
-
 
 class GtinHandler {
 	private $supported_plugings = [
@@ -25,7 +22,7 @@ class GtinHandler {
 	];
 	private $product;
 
-	public function __construct($product = null) {
+	public function __construct(\WC_Product $product = null) {
 		$this->product = $product;
 	}
 
@@ -47,11 +44,11 @@ class GtinHandler {
 		return $this->getGtinFromMeta('_wwk_gtin_code');
 	}
 
-	private function getGtinFromMeta($key) {
+	private function getGtinFromMeta(string $key): ?string {
 		return get_post_meta($this->product->get_id(), $key)[0] ?? null;
 	}
 
-	private function handleGpf($key): ?string {
+	private function handleGpf(string $key): ?string {
 		return woocommerce_gpf_show_element($key, $this->product->post) ?: null;
 	}
 }
