@@ -148,10 +148,10 @@ class WooCommerce {
 		echo '<div class="options_group">';
 		woocommerce_wp_text_input(array(
 			'id' => '_wwk_gtin_code',
-			'label' => sprintf(__('%s Code:', 'product-gtin-ean-upc-isbn-for-woocommerce', 'webwinkelkeur'), $label),
+			'label' => sprintf(__('%s Code:', 'wwk-product-gtin-for-woocommerce', 'webwinkelkeur'), $label),
 			'placeholder' => '',
 			'desc_tip' => true,
-			'description' => sprintf(__('Add the %s code for this product', 'product-gtin-ean-upc-isbn-for-woocommerce', 'webwinkelkeur'), $label),
+			'description' => sprintf(__('Add the %s code for this product', 'wwk-product-gtin-for-woocommerce', 'webwinkelkeur'), $label),
 		));
 		echo '</div>';
 	}
