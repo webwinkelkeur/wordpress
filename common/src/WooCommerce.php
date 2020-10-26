@@ -124,11 +124,11 @@ class WooCommerce {
         } catch (WebwinkelKeurAPIAlreadySentError $e) {
             // that's okay
         } catch (WebwinkelKeurAPIError $e) {
-            $wpdb->insert($this->plugin->getInviteErrorsTable(), [
-	            'url'       => $e->getURL(),
-	            'response'  => $e->getMessage(),
-	            'time'      => time(),
-            ]);
+	        $wpdb->insert($this->plugin->getInviteErrorsTable(), [
+		        'url'       => $e->getURL(),
+		        'response'  => $e->getMessage(),
+		        'time'      => time(),
+	        ]);
             $this->insert_comment(
                 $order_id,
                 sprintf(
