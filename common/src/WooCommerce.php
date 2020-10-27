@@ -141,7 +141,7 @@ class WooCommerce {
 
 	public function gtin_wwk_option() {
 		$gtin_handler  = new GtinHandler();
-		if (!empty( $gtin_handler->getActivePlugin() ) ) {
+		if ($gtin_handler->hasActivePlugin()) {
 			return;
 		}
 		$label = 'GTIN';
@@ -180,7 +180,7 @@ class WooCommerce {
 
     private function insert_comment($order_id, $content) {
 	    wp_insert_comment([
-		    'comment_post_ID'   => $order_id,
+	    	'comment_post_ID'   => $order_id,
 		    'comment_author'    => $this->plugin->getName(),
 		    'comment_content'   => $content,
 		    'comment_agent'     => $this->plugin->getName(),
