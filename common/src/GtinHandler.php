@@ -1,4 +1,5 @@
 <?php
+
 namespace Valued\WordPress;
 
 class GtinHandler {
@@ -32,12 +33,16 @@ class GtinHandler {
 		if (is_plugin_active('woocommerce-product-feeds/woocommerce-gpf.php')) {
 			return $this->handleGpf();
 		}
+		return $this->getGtinFromMeta($this->getGtinMetaKey());
+	}
+
+	private function getGtinMetaKey(): string {
 		foreach (self::GTIN_META_KEYS as $plugin => $key) {
 			if (is_plugin_active($plugin)) {
-				return $this->getGtinFromMeta($key);
+				return $key;
 			}
 		}
-		return $this->getGtinFromMeta('_wwk_gtin_code');
+		return '_wwk_gtin_code';
 	}
 
 	private function getGtinFromMeta(string $key): ?string {
