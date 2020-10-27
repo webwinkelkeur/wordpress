@@ -4,12 +4,7 @@ namespace Valued\WordPress;
 
 class GtinHandler {
     const SUPPORTED_PLUGINS = [
-        'woocommerce-product-feeds/woocommerce-gpf.php',
-        'customer-reviews-woocommerce/ivole.php',
-        'product-gtin-ean-upc-isbn-for-woocommerce/product-gtin-ean-upc-isbn-for-woocommerce.php',
-        'woo-product-feed-pro/woocommerce-sea.php',
-    ];
-    const GTIN_META_KEYS = [
+        'woocommerce-product-feeds/woocommerce-gpf.php' => null,
         'customer-reviews-woocommerce/ivole.php' => '_cr_gtin',
         'product-gtin-ean-upc-isbn-for-woocommerce/product-gtin-ean-upc-isbn-for-woocommerce.php' => '_wpm_gtin_code',
         'woo-product-feed-pro/woocommerce-sea.php' => '_woosea_gtin',
@@ -37,7 +32,7 @@ class GtinHandler {
     }
 
     private function getGtinMetaKey(): string {
-        foreach (self::GTIN_META_KEYS as $plugin => $key) {
+        foreach (array_filter(self::SUPPORTED_PLUGINS, 'strlen')  as $plugin => $key) {
             if (is_plugin_active($plugin)) {
                 return $key;
             }
