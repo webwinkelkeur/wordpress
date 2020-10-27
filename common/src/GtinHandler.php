@@ -46,7 +46,7 @@ class GtinHandler {
     }
 
     private function getGtinFromMeta(string $key): ?string {
-        return (string) get_post_meta($this->product->get_id(), $key)[0] ?? null;
+        return (string) get_post_meta($this->product->get_id(), $key, true) ?: null;
     }
 
     private function handleGpf(): ?string {
