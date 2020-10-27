@@ -85,18 +85,18 @@ class WooCommerce {
 
         $lang = get_post_meta($order_id, 'wpml_language', true);
 
-	    $data = [
-		    'order'     => $order_number,
-		    'email'     => $email,
-		    'delay'     => $invite_delay,
-		    'language'  => $lang,
-		    'client'    => 'wordpress',
-		    'customer_name' => $customer_name,
-		    'phone_numbers' => array_values(array_filter(array_unique($phones))),
-		    'order_total'   => $order->get_total(),
-		    'plugin_version' => $this->get_plugin_version('webwinkelkeur'),
-		    'platform_version' => 'wp-' . $wp_version . '-wc-' . $this->get_plugin_version('woocommerce'),
-	    ];
+        $data = [
+            'order'     => $order_number,
+            'email'     => $email,
+            'delay'     => $invite_delay,
+            'language'  => $lang,
+            'client'    => 'wordpress',
+            'customer_name' => $customer_name,
+            'phone_numbers' => array_values(array_filter(array_unique($phones))),
+            'order_total'   => $order->get_total(),
+            'plugin_version' => $this->get_plugin_version('webwinkelkeur'),
+            'platform_version' => 'wp-' . $wp_version . '-wc-' . $this->get_plugin_version('woocommerce'),
+        ];
         if (get_option($this->plugin->getOptionName('invite')) == 2) {
             $data['max_invitations_per_email'] = 1;
         }
@@ -124,11 +124,11 @@ class WooCommerce {
         } catch (WebwinkelKeurAPIAlreadySentError $e) {
             // that's okay
         } catch (WebwinkelKeurAPIError $e) {
-	        $wpdb->insert($this->plugin->getInviteErrorsTable(), [
-		        'url'       => $e->getURL(),
-		        'response'  => $e->getMessage(),
-		        'time'      => time(),
-	        ]);
+            $wpdb->insert($this->plugin->getInviteErrorsTable(), [
+                'url'       => $e->getURL(),
+                'response'  => $e->getMessage(),
+                'time'      => time(),
+            ]);
             $this->insert_comment(
                 $order_id,
                 sprintf(
@@ -139,28 +139,28 @@ class WooCommerce {
         }
     }
 
-	public function gtin_wwk_option() {
-		$gtin_handler  = new GtinHandler();
-		if ($gtin_handler->hasActivePlugin() || !get_option($this->plugin->getOptionName('product_reviews'))) {
-			return;
-		}
-		$label = 'GTIN';
-		echo '<div class="options_group">';
-		woocommerce_wp_text_input([
-			'id'          => '_wwk_gtin_code',
-			'label'       => sprintf(__('%s Code:', 'webwinkelkeur'), $label),
-			'placeholder' => '',
-			'desc_tip'    => true,
-			'description' => sprintf(__('Add the %s code for this product', 'webwinkelkeur'), $label),
-		]);
-		echo '</div>';
-	}
+    public function gtin_wwk_option() {
+        $gtin_handler = new GtinHandler();
+        if ($gtin_handler->hasActivePlugin() || !get_option($this->plugin->getOptionName('product_reviews'))) {
+            return;
+        }
+        $label = 'GTIN';
+        echo '<div class="options_group">';
+        woocommerce_wp_text_input([
+            'id' => '_wwk_gtin_code',
+            'label' => sprintf(__('%s Code:', 'webwinkelkeur'), $label),
+            'placeholder' => '',
+            'desc_tip' => true,
+            'description' => sprintf(__('Add the %s code for this product', 'webwinkelkeur'), $label),
+        ]);
+        echo '</div>';
+    }
 
-	public function save_gtin_wwk_option($product) {
-		if (isset($_POST['_wwk_gtin_code'])) {
-			$product->update_meta_data('_wwk_gtin_code', wc_clean(wp_unslash($_POST['_wwk_gtin_code'])));
-		}
-	}
+    public function save_gtin_wwk_option($product) {
+        if (isset($_POST['_wwk_gtin_code'])) {
+            $product->update_meta_data('_wwk_gtin_code', wc_clean(wp_unslash($_POST['_wwk_gtin_code'])));
+        }
+    }
 
     private function get_plugin_version($plugin_name) {
         if (!function_exists('get_plugins')) {
@@ -179,13 +179,13 @@ class WooCommerce {
     }
 
     private function insert_comment($order_id, $content) {
-	    wp_insert_comment([
-	    	'comment_post_ID'   => $order_id,
-		    'comment_author'    => $this->plugin->getName(),
-		    'comment_content'   => $content,
-		    'comment_agent'     => $this->plugin->getName(),
-		    'comment_type'      => 'order_note',
-	    ]);
+        wp_insert_comment([
+            'comment_post_ID'   => $order_id,
+            'comment_author'    => $this->plugin->getName(),
+            'comment_content'   => $content,
+            'comment_agent'     => $this->plugin->getName(),
+            'comment_type'      => 'order_note',
+        ]);
     }
 
     private function filter_data($value) {
@@ -234,27 +234,27 @@ class WooCommerce {
         return false;
     }
 
-	private function get_product_data(array $order_arr) {
-		$pf = new WC_Product_Factory();
-		$products = [];
-		foreach ($order_arr['line_items'] as $line_item) {
-			$product = $pf->get_product($line_item['product_id']);
-			if (!$product) {
-				continue;
-			}
-			$gtin_handler  = new GtinHandler($product);
-			$products[] = [
-				'id' => $product->get_id(),
-				'name' => $product->get_name(),
-				'url' => get_permalink($product->get_id()),
-				'image_url' => $this->getProductImage($product),
-				'sku' => $product->get_sku(),
-				'gtin' => $gtin_handler->getGtin(),
-				'reviews_allowed' => $product->get_reviews_allowed(),
-			];
-		}
-		return $products;
-	}
+    private function get_product_data(array $order_arr) {
+        $pf = new WC_Product_Factory();
+        $products = [];
+        foreach ($order_arr['line_items'] as $line_item) {
+            $product = $pf->get_product($line_item['product_id']);
+            if (!$product) {
+                continue;
+            }
+            $gtin_handler = new GtinHandler($product);
+            $products[] = [
+                'id' => $product->get_id(),
+                'name' => $product->get_name(),
+                'url' => get_permalink($product->get_id()),
+                'image_url' => $this->getProductImage($product),
+                'sku' => $product->get_sku(),
+                'gtin' => $gtin_handler->getGtin(),
+                'reviews_allowed' => $product->get_reviews_allowed(),
+            ];
+        }
+        return $products;
+    }
 
     private function getProductImage(WC_Product $product) {
         foreach (get_attached_media('image', $product->get_id()) as $image) {
