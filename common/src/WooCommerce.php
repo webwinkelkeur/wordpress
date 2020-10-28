@@ -147,7 +147,7 @@ class WooCommerce {
         $label = 'GTIN';
         echo '<div class="options_group">';
         woocommerce_wp_text_input([
-            'id' => "_{$this->plugin->getSlug()}_gtin",
+            'id' => $this->plugin->getGtinMetaKey(),
             'label' => sprintf(__('%s:', 'webwinkelkeur'), $label),
             'placeholder' => '',
             'desc_tip' => true,
@@ -157,10 +157,10 @@ class WooCommerce {
     }
 
     public function saveGtinOption($product) {
-        if (isset($_POST["_{$this->plugin->getSlug()}_gtin"])) {
+        if (isset($_POST[$this->plugin->getGtinMetaKey()])) {
             $product->update_meta_data(
                 "_{$this->plugin->getSlug()}_gtin",
-                wc_clean(wp_unslash($_POST["_{$this->plugin->getSlug()}_gtin"]))
+                wc_clean(wp_unslash($_POST[$this->plugin->getGtinMetaKey()]))
             );
         }
     }
@@ -245,7 +245,7 @@ class WooCommerce {
             if (!$product) {
                 continue;
             }
-            $gtin_handler = new GtinHandler($product);
+            $gtin_handler = new GtinHandler($product, $this->plugin);
             $products[] = [
                 'id' => $product->get_id(),
                 'name' => $product->get_name(),
