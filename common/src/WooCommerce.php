@@ -148,10 +148,10 @@ class WooCommerce {
         echo '<div class="options_group">';
         woocommerce_wp_text_input([
             'id' => "_{$this->plugin->getSlug()}_gtin",
-            'label' => sprintf(__('%s Code:', 'webwinkelkeur'), $label),
+            'label' => sprintf(__('%s:', 'webwinkelkeur'), $label),
             'placeholder' => '',
             'desc_tip' => true,
-            'description' => sprintf(__('Add the %s code for this product', 'webwinkelkeur'), $label),
+            'description' => sprintf(__('Add the %s for this product', 'webwinkelkeur'), $label),
         ]);
         echo '</div>';
     }
