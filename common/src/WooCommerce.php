@@ -15,8 +15,8 @@ class WooCommerce {
         $this->plugin = $plugin;
         add_action('woocommerce_order_status_changed', [$this, 'orderStatusChanged'], 10, 3);
         add_action('woocommerce_checkout_update_order_meta', [$this, 'set_order_language']);
-	    add_action('woocommerce_product_options_sku', [$this, 'gtin_wwk_option']);
-	    add_action('woocommerce_admin_process_product_object', [$this, 'save_wwk_product_option']);
+        add_action('woocommerce_product_options_sku', [$this, 'addGtinOption']);
+        add_action('woocommerce_admin_process_product_object', [$this, 'saveGtinOption']);
     }
 
     public function orderStatusChanged(int $order_id, string $old_status, string $new_status): void {
@@ -139,7 +139,7 @@ class WooCommerce {
         }
     }
 
-    public function gtin_wwk_option() {
+    public function addGtinOption() {
         $gtin_handler = new GtinHandler();
         if ($gtin_handler->hasActivePlugin() || !get_option($this->plugin->getOptionName('product_reviews'))) {
             return;
@@ -147,7 +147,7 @@ class WooCommerce {
         $label = 'GTIN';
         echo '<div class="options_group">';
         woocommerce_wp_text_input([
-            'id' => '_wwk_gtin_code',
+            'id' => "_{$this->plugin->getSlug()}_gtin",
             'label' => sprintf(__('%s Code:', 'webwinkelkeur'), $label),
             'placeholder' => '',
             'desc_tip' => true,
@@ -156,9 +156,12 @@ class WooCommerce {
         echo '</div>';
     }
 
-    public function save_gtin_wwk_option($product) {
-        if (isset($_POST['_wwk_gtin_code'])) {
-            $product->update_meta_data('_wwk_gtin_code', wc_clean(wp_unslash($_POST['_wwk_gtin_code'])));
+    public function saveGtinOption($product) {
+        if (isset($_POST["_{$this->plugin->getSlug()}_gtin"])) {
+            $product->update_meta_data(
+                "_{$this->plugin->getSlug()}_gtin",
+                wc_clean(wp_unslash($_POST["_{$this->plugin->getSlug()}_gtin"]))
+            );
         }
     }
 

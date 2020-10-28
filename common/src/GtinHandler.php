@@ -37,7 +37,7 @@ class GtinHandler {
                 return $key;
             }
         }
-        return '_wwk_gtin_code';
+        return "_{$this->plugin->getSlug()}_gtin";
     }
 
     private function getGtinFromMeta(string $key): ?string {
@@ -45,6 +45,6 @@ class GtinHandler {
     }
 
     private function handleGpf(): ?string {
-        return woocommerce_gpf_show_element('gtin', $this->product->post) ?: null;
+        return (string) woocommerce_gpf_show_element('gtin', $this->product->post) ?: null;
     }
 }
