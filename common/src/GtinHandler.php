@@ -16,7 +16,7 @@ class GtinHandler {
     }
 
     public function hasActivePlugin(): bool {
-        foreach (self::SUPPORTED_PLUGINS as $plugin) {
+        foreach (self::SUPPORTED_PLUGINS as $plugin => $key) {
             if (is_plugin_active($plugin)) {
                 return true;
             }
