@@ -12,9 +12,13 @@ class GtinHandler {
     private $product;
     private $plugin;
 
-    public function __construct(\WC_Product $product = null, BasePlugin $plugin) {
-        $this->product = $product;
+    public function __construct(BasePlugin $plugin) {
+
         $this->plugin = $plugin;
+    }
+
+    public function setProduct(\WC_Product $product): void {
+        $this->product = $product;
     }
 
     public function hasActivePlugin(): bool {
