@@ -140,7 +140,7 @@ class WooCommerce {
     }
 
     public function addGtinOption() {
-        $gtin_handler = new GtinHandler();
+        $gtin_handler = new GtinHandler(null, $this->plugin);
         if ($gtin_handler->hasActivePlugin() || !get_option($this->plugin->getOptionName('product_reviews'))) {
             return;
         }
