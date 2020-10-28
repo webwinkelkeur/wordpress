@@ -32,7 +32,7 @@ class GtinHandler {
     }
 
     private function getGtinMetaKey(): string {
-        foreach (array_filter(self::SUPPORTED_PLUGINS, 'strlen')  as $plugin => $key) {
+        foreach (array_filter(self::SUPPORTED_PLUGINS, 'strlen') as $plugin => $key) {
             if (is_plugin_active($plugin)) {
                 return $key;
             }
