@@ -7,6 +7,7 @@ use RuntimeException;
 use WC_Customer;
 use WC_Product_Factory;
 use WC_Product;
+use WP_Comment_Query;
 
 class WooCommerce {
     private $plugin;
@@ -264,5 +265,60 @@ class WooCommerce {
         foreach (get_attached_media('image', $product->get_id()) as $image) {
             return wp_get_attachment_image_src($image->ID, 'full')[0] ?? null;
         }
+    }
+
+    private function sync_reviews() {
+        $api_domain = $this->plugin->getDashboardDomain();
+        $shop_id = get_option($this->plugin->getOptionName('wwk_shop_id'));
+        $api_key = get_option($this->plugin->getOptionName('wwk_api_key'));
+        $api = new API($api_domain, $shop_id, $api_key);
+        $reviews = $api->getReviews();
+        foreach ($reviews['reviews']['review'] as $review) {
+            $comment_data = [
+                'comment_post_ID' => $this->getProductItem($review['products'], 'external_id'),
+                'comment_author' => $review['reviewer']['name'],
+                'comment_author_email' => $review['email'],
+                'comment_content' => $review['content'],
+                'comment_type' => 'review',
+                'comment_parent' => 0,
+                'user_id' => get_user_by('email', $review['content'])->ID,
+                'comment_date' => date('Y-m-d H:i:s', strtotime((string) $review['review_timestamp'])),
+                'comment_approved' => 1,
+            ];
+            $comment_id = $this->getExistingComment(
+                $comment_data['comment_post_ID'],
+                $comment_data['comment_author_email']
+            );
+            if ($comment_id) {
+                $comment_data['comment_ID'] = $comment_id;
+                wp_update_comment($comment_data);
+            } else {
+                $comment_id = wp_insert_comment($comment_data);
+                update_comment_meta(
+                    $comment_id,
+                    "_{$this->plugin->getOptionName('review_id')}",
+                    $review['review_id']
+                );
+            }
+            update_comment_meta($comment_id, 'rating', $review['ratings']['overall']);
+        }
+    }
+
+    private function getProductItem($products, $field) {
+        return $products['product']['external_id'];
+    }
+
+    private function getExistingComment(int $post_id, string $author_email): ?int {
+        $args = [
+            'post_id' => $post_id,
+            'author_email' => $author_email,
+            'type' => 'review',
+            'meta_query' => [
+                'key' => "_{$this->plugin->getOptionName('review_id')}",
+                'value' => 21,
+            ]
+        ];
+        $comments_query = new WP_Comment_Query($args);
+        return $comments_query->comments[0]->comment_ID;
     }
 }

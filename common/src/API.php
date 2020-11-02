@@ -17,6 +17,20 @@ class API {
         $this->api_key = (string) $api_key;
     }
 
+    public function getReviews(): array {
+        $params = [
+            'id' => $this->shop_id,
+            'code' => $this->api_key,
+            'detailed' => true,
+        ];
+        $url = $this->buildURL('https://' . $this->api_domain . '/api/1.0/product_reviews.xml', $params);
+        $response = Requests::get($url, ['Authorization' => 'Basic ' . base64_encode('tsanko:XyBSMlHw5U9X65nE1IZ4')]);
+        $response->throw_for_status();
+        $xml =  simplexml_load_string($response->body);
+        $json = json_encode($xml);
+        return json_decode($json,TRUE);
+    }
+
     public function invite(array $data) {
         $credentials = [
             'id'   => $this->shop_id,
@@ -25,7 +39,7 @@ class API {
 
         $url = $this->buildURL('https://' . $this->api_domain . '/api/1.0/invitations.json', $credentials);
 
-        $response = Requests::post($url, [], $data);
+        $response = Requests::post($url, [  'Authorization' => 'Basic ' . base64_encode( 'tsanko:XyBSMlHw5U9X65nE1IZ4' )], $data);
         $response->throw_for_status();
 
         $result = json_decode($response->body);
