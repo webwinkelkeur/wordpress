@@ -349,10 +349,10 @@ class WooCommerce {
             'comment_post_ID' => $this->getProductItem($review['products'], 'external_id'),
             'comment_author' => $review['reviewer']['name'],
             'comment_author_email' => $review['email'],
-            'comment_content' => $review['content'],
+            'comment_content' => $review['content'] ?? '',
             'comment_type' => 'review',
             'comment_parent' => 0,
-            'user_id' => get_user_by('email', $review['content'])->ID,
+            'user_id' => get_user_by('email', $review['email'])->ID ?? null,
             'comment_date' => date('Y-m-d H:i:s', strtotime((string) $review['review_timestamp'])),
             'comment_approved' => 1,
         ];
