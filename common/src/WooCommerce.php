@@ -18,6 +18,24 @@ class WooCommerce {
         add_action('woocommerce_checkout_update_order_meta', [$this, 'set_order_language']);
         add_action('woocommerce_product_options_sku', [$this, 'addGtinOption']);
         add_action('woocommerce_admin_process_product_object', [$this, 'saveGtinOption']);
+        add_action('init', [$this, 'syncReviewsSchedule']);
+//        register_activation_hook($this->plugin->getPluginFile(), [$this, 'syncReviewsSchedule']);
+        register_deactivation_hook($this->plugin->getPluginFile(), [$this, 'deactivateSyncReviews']);
+        add_action('sync_reviews_cron', [$this, 'syncReviews']);
+    }
+
+    public function syncReviewsSchedule() {
+        if (!wp_next_scheduled('sync_reviews_cron')) {
+            wp_schedule_event(time(), 'twicedaily', 'sync_reviews_cron');
+        }
+    }
+
+    public function runSyncReviews() {
+        $this->syncReviews();
+    }
+
+    public function deactivateSyncReviews() {
+        wp_clear_scheduled_hook('product_reviews_sched_sync');
     }
 
     public function orderStatusChanged(int $order_id, string $old_status, string $new_status): void {
@@ -267,58 +285,76 @@ class WooCommerce {
         }
     }
 
-    private function sync_reviews() {
+    public function syncReviews(): void {
+        if (!get_option($this->plugin->getOptionName('product_reviews'))) {
+            return;
+        }
         $api_domain = $this->plugin->getDashboardDomain();
         $shop_id = get_option($this->plugin->getOptionName('wwk_shop_id'));
         $api_key = get_option($this->plugin->getOptionName('wwk_api_key'));
         $api = new API($api_domain, $shop_id, $api_key);
         $reviews = $api->getReviews();
+        $this->processReviews($reviews);
+    }
+
+    private function processReviews(array $reviews): void {
         foreach ($reviews['reviews']['review'] as $review) {
-            $comment_data = [
-                'comment_post_ID' => $this->getProductItem($review['products'], 'external_id'),
-                'comment_author' => $review['reviewer']['name'],
-                'comment_author_email' => $review['email'],
-                'comment_content' => $review['content'],
-                'comment_type' => 'review',
-                'comment_parent' => 0,
-                'user_id' => get_user_by('email', $review['content'])->ID,
-                'comment_date' => date('Y-m-d H:i:s', strtotime((string) $review['review_timestamp'])),
-                'comment_approved' => 1,
-            ];
+            $comment_data = $this->getCommentData($review);
             $comment_id = $this->getExistingComment(
                 $comment_data['comment_post_ID'],
-                $comment_data['comment_author_email']
+                $comment_data['comment_author_email'],
+                $review['review_id']
             );
             if ($comment_id) {
                 $comment_data['comment_ID'] = $comment_id;
+                if (!$review['valid']) {
+                    wp_delete_comment($comment_id);
+                    continue;
+                }
                 wp_update_comment($comment_data);
-            } else {
+            } else if ($review['valid']) {
                 $comment_id = wp_insert_comment($comment_data);
                 update_comment_meta(
                     $comment_id,
                     "_{$this->plugin->getOptionName('review_id')}",
                     $review['review_id']
                 );
+            } else {
+                continue;
             }
             update_comment_meta($comment_id, 'rating', $review['ratings']['overall']);
         }
     }
 
-    private function getProductItem($products, $field) {
-        return $products['product']['external_id'];
+    private function getProductItem(array $products, string $field): string {
+        return $products['product'][$field];
     }
 
-    private function getExistingComment(int $post_id, string $author_email): ?int {
+    private function getExistingComment(int $post_id, string $author_email, int $review_id): ?int {
         $args = [
             'post_id' => $post_id,
             'author_email' => $author_email,
             'type' => 'review',
             'meta_query' => [
                 'key' => "_{$this->plugin->getOptionName('review_id')}",
-                'value' => 21,
+                'value' => $review_id,
             ]
         ];
         $comments_query = new WP_Comment_Query($args);
         return $comments_query->comments[0]->comment_ID;
+    }
+
+    private function getCommentData(array $review): array {
+        return [
+            'comment_post_ID' => $this->getProductItem($review['products'], 'external_id'),
+            'comment_author' => $review['reviewer']['name'],
+            'comment_author_email' => $review['email'],
+            'comment_content' => $review['content'],
+            'comment_type' => 'review',
+            'comment_parent' => 0,
+            'user_id' => get_user_by('email', $review['content'])->ID,
+            'comment_date' => date('Y-m-d H:i:s', strtotime((string) $review['review_timestamp'])),
+            'comment_approved' => 1,
+        ];
     }
 }
