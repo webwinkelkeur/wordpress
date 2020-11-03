@@ -24,7 +24,7 @@ class API {
             'detailed' => true,
         ];
         $url = $this->buildURL('https://' . $this->api_domain . '/api/1.0/product_reviews.xml', $params);
-        $response = Requests::get($url, ['Authorization' => 'Basic ' . base64_encode('tsanko:XyBSMlHw5U9X65nE1IZ4')]);
+        $response = Requests::get($url);
         $response->throw_for_status();
         $xml =  simplexml_load_string($response->body);
         $json = json_encode($xml);
@@ -39,7 +39,7 @@ class API {
 
         $url = $this->buildURL('https://' . $this->api_domain . '/api/1.0/invitations.json', $credentials);
 
-        $response = Requests::post($url, [  'Authorization' => 'Basic ' . base64_encode( 'tsanko:XyBSMlHw5U9X65nE1IZ4' )], $data);
+        $response = Requests::post($url, [], $data);
         $response->throw_for_status();
 
         $result = json_decode($response->body);
