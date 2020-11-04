@@ -18,20 +18,15 @@ class WooCommerce {
         add_action('woocommerce_checkout_update_order_meta', [$this, 'set_order_language']);
         add_action('woocommerce_product_options_sku', [$this, 'addGtinOption']);
         add_action('woocommerce_admin_process_product_object', [$this, 'saveGtinOption']);
-        add_action('init', [$this, 'syncReviewsSchedule']);
-//        register_activation_hook($this->plugin->getPluginFile(), [$this, 'syncReviewsSchedule']);
+        register_activation_hook($this->plugin->getPluginFile(), [$this, 'activateSyncReviews']);
         register_deactivation_hook($this->plugin->getPluginFile(), [$this, 'deactivateSyncReviews']);
         add_action('sync_reviews_cron', [$this, 'syncReviews']);
     }
 
-    public function syncReviewsSchedule() {
+    public function activateSyncReviews() {
         if (!wp_next_scheduled('sync_reviews_cron')) {
             wp_schedule_event(time(), 'twicedaily', 'sync_reviews_cron');
         }
-    }
-
-    public function runSyncReviews() {
-        $this->syncReviews();
     }
 
     public function deactivateSyncReviews() {
@@ -167,7 +162,7 @@ class WooCommerce {
         echo '<div class="options_group">';
         woocommerce_wp_text_input([
             'id' => $this->plugin->getGtinMetaKey(),
-            'label' => sprintf(__('%s:', 'webwinkelkeur'), $label),
+            'label' => $label,
             'placeholder' => '',
             'desc_tip' => true,
             'description' => sprintf(__('Add the %s for this product', 'webwinkelkeur'), $label),
@@ -307,20 +302,14 @@ class WooCommerce {
             );
             if ($comment_id) {
                 $comment_data['comment_ID'] = $comment_id;
-                if (!$review['valid']) {
-                    wp_delete_comment($comment_id);
-                    continue;
-                }
                 wp_update_comment($comment_data);
-            } else if ($review['valid']) {
+            } else {
                 $comment_id = wp_insert_comment($comment_data);
                 update_comment_meta(
                     $comment_id,
                     "_{$this->plugin->getOptionName('review_id')}",
                     $review['review_id']
                 );
-            } else {
-                continue;
             }
             update_comment_meta($comment_id, 'rating', $review['ratings']['overall']);
         }
@@ -352,9 +341,9 @@ class WooCommerce {
             'comment_content' => $review['content'] ?? '',
             'comment_type' => 'review',
             'comment_parent' => 0,
-            'user_id' => get_user_by('email', $review['email'])->ID ?? null,
+            'user_id' => get_user_by('email', $review['email'])->ID ?? 0,
             'comment_date' => date('Y-m-d H:i:s', strtotime((string) $review['review_timestamp'])),
-            'comment_approved' => 1,
+            'comment_approved' => $review['valid'],
         ];
     }
 }
