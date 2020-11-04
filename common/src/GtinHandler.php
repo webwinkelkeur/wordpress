@@ -13,7 +13,6 @@ class GtinHandler {
     private $plugin;
 
     public function __construct(BasePlugin $plugin) {
-
         $this->plugin = $plugin;
     }
 
