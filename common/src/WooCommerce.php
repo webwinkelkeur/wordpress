@@ -315,10 +315,6 @@ class WooCommerce {
         }
     }
 
-    private function getProductItem(array $products, string $field): string {
-        return $products['product'][$field];
-    }
-
     private function getExistingComment(int $post_id, string $author_email, int $review_id): ?int {
         $args = [
             'post_id' => $post_id,
@@ -335,7 +331,7 @@ class WooCommerce {
 
     private function getCommentData(array $review): array {
         return [
-            'comment_post_ID' => $this->getProductItem($review['products'], 'external_id'),
+            'comment_post_ID' => $review['products']['product']['external_id'],
             'comment_author' => $review['reviewer']['name'],
             'comment_author_email' => $review['email'],
             'comment_content' => $review['content'] ?? '',
