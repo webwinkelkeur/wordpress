@@ -20,17 +20,17 @@ class WooCommerce {
         add_action('woocommerce_admin_process_product_object', [$this, 'saveGtinOption']);
         register_activation_hook($this->plugin->getPluginFile(), [$this, 'activateSyncReviews']);
         register_deactivation_hook($this->plugin->getPluginFile(), [$this, 'deactivateSyncReviews']);
-        add_action('sync_reviews_cron', [$this, 'syncReviews']);
+        add_action($this->plugin->getReviewsHook(), [$this, 'syncReviews']);
     }
 
     public function activateSyncReviews() {
-        if (!wp_next_scheduled('sync_reviews_cron')) {
-            wp_schedule_event(time(), 'twicedaily', 'sync_reviews_cron');
+        if (!wp_next_scheduled($this->plugin->getReviewsHook())) {
+            wp_schedule_event(time(), 'twicedaily', $this->plugin->getReviewsHook());
         }
     }
 
     public function deactivateSyncReviews() {
-        wp_clear_scheduled_hook('product_reviews_sched_sync');
+        wp_clear_scheduled_hook($this->plugin->getReviewsHook());
     }
 
     public function orderStatusChanged(int $order_id, string $old_status, string $new_status): void {
@@ -46,7 +46,7 @@ class WooCommerce {
     }
 
     private function sendInvite($order_id) {
-        global $wpdb, $wp_version;
+        global $wp_version;
 
         // invites enabled?
         if (!get_option($this->plugin->getOptionName('invite'))) {
@@ -89,7 +89,7 @@ class WooCommerce {
 
         $invoice_address = $order->get_address('billing');
         $customer_name = $invoice_address['first_name']
-                         . ' ' . $invoice_address['last_name'];
+            . ' ' . $invoice_address['last_name'];
 
         $delivery_address = $order->get_address('shipping');
         $phones = [
@@ -138,11 +138,7 @@ class WooCommerce {
         } catch (WebwinkelKeurAPIAlreadySentError $e) {
             // that's okay
         } catch (WebwinkelKeurAPIError $e) {
-            $wpdb->insert($this->plugin->getInviteErrorsTable(), [
-                'url'       => $e->getURL(),
-                'response'  => $e->getMessage(),
-                'time'      => time(),
-            ]);
+            $this->logApiError($e);
             $this->insert_comment(
                 $order_id,
                 sprintf(
@@ -288,12 +284,19 @@ class WooCommerce {
         $shop_id = get_option($this->plugin->getOptionName('wwk_shop_id'));
         $api_key = get_option($this->plugin->getOptionName('wwk_api_key'));
         $api = new API($api_domain, $shop_id, $api_key);
-        $reviews = $api->getReviews();
+
+        $api = new API($api_domain, $shop_id, $api_key);
+        try {
+            $reviews = $api->getReviews();
+        } catch (WebwinkelKeurAPIError $e) {
+            $this->logApiError($e);
+            return;
+        }
         $this->processReviews($reviews);
     }
 
-    private function processReviews(array $reviews): void {
-        foreach ($reviews['reviews']['review'] as $review) {
+    private function processReviews(\SimpleXMLElement $reviews): void {
+        foreach ($reviews as $review) {
             $comment_data = $this->getCommentData($review);
             if (empty($comment_data)) {
                 continue;
@@ -301,7 +304,7 @@ class WooCommerce {
             $comment_id = $this->getExistingComment(
                 $comment_data['comment_post_ID'],
                 $comment_data['comment_author_email'],
-                $review['review_id']
+                (int) $review->review_id
             );
             if ($comment_id) {
                 $comment_data['comment_ID'] = $comment_id;
@@ -311,10 +314,9 @@ class WooCommerce {
                 update_comment_meta(
                     $comment_id,
                     "_{$this->plugin->getOptionName('review_id')}",
-                    $review['review_id']
+                    (int) $review->review_id
                 );
             }
-            update_comment_meta($comment_id, 'rating', $review['ratings']['overall']);
         }
     }
 
@@ -329,25 +331,39 @@ class WooCommerce {
             ]
         ];
         $comments_query = new WP_Comment_Query($args);
-        return $comments_query->comments[0]->comment_ID;
+        $comments = $comments_query->comments;
+        return (count($comments) > 0) ? $comments[0]->comment_ID : null;
     }
 
-    private function getCommentData(array $review): ?array {
+    private function getCommentData(\SimpleXMLElement $review): ?array {
         $pf = new WC_Product_Factory();
-        $product_id = $review['products']['product']['external_id'];
+        $product_id = (int) $review->products->product->external_id;
         if (!$pf->get_product($product_id)) {
             return null;
         }
         return [
             'comment_post_ID' => $product_id,
-            'comment_author' => $review['reviewer']['name'],
-            'comment_author_email' => $review['email'],
-            'comment_content' => $review['content'] ?? '',
+            'comment_author' => (string) $review->reviwer->name,
+            'comment_author_email' => (string) $review->email,
+            'comment_content' => (string) $review->content,
             'comment_type' => 'review',
+            'comment_meta' => [
+                "_{$this->plugin->getOptionName('review_id')}" => (int) $review->review_id,
+                'rating' => (int) $review->ratings->overall,
+            ],
             'comment_parent' => 0,
-            'user_id' => get_user_by('email', $review['email'])->ID ?? 0,
-            'comment_date' => date('Y-m-d H:i:s', strtotime((string) $review['review_timestamp'])),
-            'comment_approved' => $review['valid'],
+            'user_id' => get_user_by('email', (string) $review->email)->ID,
+            'comment_date' => date('Y-m-d H:i:s', strtotime((string) $review->review_timestamp)),
+            'comment_approved' => (bool) $review->valid,
         ];
+    }
+
+    private function logApiError(WebwinkelKeurAPIError $e) {
+        global $wpdb;
+        $wpdb->insert($this->plugin->getInviteErrorsTable(), [
+            'url' => $e->getURL(),
+            'response' => $e->getMessage(),
+            'time' => time(),
+        ]);
     }
 }
