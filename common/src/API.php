@@ -17,7 +17,7 @@ class API {
         $this->api_key = (string) $api_key;
     }
 
-    public function getReviews(): array {
+    public function getReviews(): \SimpleXMLElement {
         $params = [
             'id' => $this->shop_id,
             'code' => $this->api_key,
@@ -26,9 +26,7 @@ class API {
         $url = $this->buildURL('https://' . $this->api_domain . '/api/1.0/product_reviews.xml', $params);
         $response = Requests::get($url);
         $response->throw_for_status();
-        $xml =  simplexml_load_string($response->body);
-        $json = json_encode($xml);
-        return json_decode($json,TRUE);
+        return simplexml_load_string($response->body)->reviews->review;
     }
 
     public function invite(array $data) {
