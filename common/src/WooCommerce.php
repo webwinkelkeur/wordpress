@@ -295,6 +295,9 @@ class WooCommerce {
     private function processReviews(array $reviews): void {
         foreach ($reviews['reviews']['review'] as $review) {
             $comment_data = $this->getCommentData($review);
+            if (empty($comment_data)) {
+                continue;
+            }
             $comment_id = $this->getExistingComment(
                 $comment_data['comment_post_ID'],
                 $comment_data['comment_author_email'],
@@ -329,9 +332,14 @@ class WooCommerce {
         return $comments_query->comments[0]->comment_ID;
     }
 
-    private function getCommentData(array $review): array {
+    private function getCommentData(array $review): ?array {
+        $pf = new WC_Product_Factory();
+        $product_id = $review['products']['product']['external_id'];
+        if (!$pf->get_product($product_id)) {
+            return null;
+        }
         return [
-            'comment_post_ID' => $review['products']['product']['external_id'],
+            'comment_post_ID' => $product_id,
             'comment_author' => $review['reviewer']['name'],
             'comment_author_email' => $review['email'],
             'comment_content' => $review['content'] ?? '',
