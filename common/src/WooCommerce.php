@@ -324,7 +324,7 @@ class WooCommerce {
             'author_email' => $author_email,
             'type' => 'review',
             'meta_query' => [
-                'key' => "_{$this->plugin->getOptionName('review_id')}",
+                'key' => $this->getReviewIdMetaKey(),
                 'value' => $review_id,
             ]
         ];
@@ -346,7 +346,7 @@ class WooCommerce {
             'comment_content' => (string) $review->content,
             'comment_type' => 'review',
             'comment_meta' => [
-                "_{$this->plugin->getOptionName('review_id')}" => (int) $review->review_id,
+                $this->getReviewIdMetaKey() => (int) $review->review_id,
                 'rating' => (int) $review->ratings->overall,
             ],
             'comment_parent' => 0,
@@ -367,5 +367,9 @@ class WooCommerce {
 
     private function getReviewsHook(): string {
         return "{$this->plugin->getSlug()}_reviews_cron";
+    }
+
+    private function getReviewIdMetaKey(): string {
+        return "_{$this->plugin->getOptionName('review_id')}";
     }
 }
