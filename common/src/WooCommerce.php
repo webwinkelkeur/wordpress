@@ -20,17 +20,17 @@ class WooCommerce {
         add_action('woocommerce_admin_process_product_object', [$this, 'saveGtinOption']);
         register_activation_hook($this->plugin->getPluginFile(), [$this, 'activateSyncReviews']);
         register_deactivation_hook($this->plugin->getPluginFile(), [$this, 'deactivateSyncReviews']);
-        add_action($this->plugin->getReviewsHook(), [$this, 'syncReviews']);
+        add_action($this->getReviewsHook(), [$this, 'syncReviews']);
     }
 
     public function activateSyncReviews() {
-        if (!wp_next_scheduled($this->plugin->getReviewsHook())) {
-            wp_schedule_event(time(), 'twicedaily', $this->plugin->getReviewsHook());
+        if (!wp_next_scheduled($this->getReviewsHook())) {
+            wp_schedule_event(time(), 'twicedaily', $this->getReviewsHook());
         }
     }
 
     public function deactivateSyncReviews() {
-        wp_clear_scheduled_hook($this->plugin->getReviewsHook());
+        wp_clear_scheduled_hook($this->getReviewsHook());
     }
 
     public function orderStatusChanged(int $order_id, string $old_status, string $new_status): void {
@@ -284,18 +284,21 @@ class WooCommerce {
         $shop_id = get_option($this->plugin->getOptionName('wwk_shop_id'));
         $api_key = get_option($this->plugin->getOptionName('wwk_api_key'));
         $api = new API($api_domain, $shop_id, $api_key);
-
-        $api = new API($api_domain, $shop_id, $api_key);
         try {
-            $reviews = $api->getReviews();
+            $reviews = $api->getReviews(
+                get_option($this->plugin->getOptionName('last_synced')) ?: null
+            );
         } catch (WebwinkelKeurAPIError $e) {
             $this->logApiError($e);
             return;
         }
         $this->processReviews($reviews);
+        if ($last_modified = (string) $reviews[0]->modified ?? null) {
+            update_option($this->plugin->getOptionName('last_synced'), $last_modified);
+        }
     }
 
-    private function processReviews(\SimpleXMLElement $reviews): void {
+    private function processReviews(?\SimpleXMLElement $reviews): void {
         foreach ($reviews as $review) {
             $comment_data = $this->getCommentData($review);
             if (empty($comment_data)) {
@@ -310,12 +313,7 @@ class WooCommerce {
                 $comment_data['comment_ID'] = $comment_id;
                 wp_update_comment($comment_data);
             } else {
-                $comment_id = wp_insert_comment($comment_data);
-                update_comment_meta(
-                    $comment_id,
-                    "_{$this->plugin->getOptionName('review_id')}",
-                    (int) $review->review_id
-                );
+                wp_insert_comment($comment_data);
             }
         }
     }
@@ -332,7 +330,7 @@ class WooCommerce {
         ];
         $comments_query = new WP_Comment_Query($args);
         $comments = $comments_query->comments;
-        return (count($comments) > 0) ? $comments[0]->comment_ID : null;
+        return $comments[0]->comment_ID ?? null;
     }
 
     private function getCommentData(\SimpleXMLElement $review): ?array {
@@ -343,7 +341,7 @@ class WooCommerce {
         }
         return [
             'comment_post_ID' => $product_id,
-            'comment_author' => (string) $review->reviwer->name,
+            'comment_author' => (string) $review->reviewer->name,
             'comment_author_email' => (string) $review->email,
             'comment_content' => (string) $review->content,
             'comment_type' => 'review',
@@ -352,18 +350,22 @@ class WooCommerce {
                 'rating' => (int) $review->ratings->overall,
             ],
             'comment_parent' => 0,
-            'user_id' => get_user_by('email', (string) $review->email)->ID,
+            'user_id' => get_user_by('email', (string) $review->email)->ID ?? 0,
             'comment_date' => date('Y-m-d H:i:s', strtotime((string) $review->review_timestamp)),
-            'comment_approved' => (bool) $review->valid,
+            'comment_approved' => (int) $review->valid,
         ];
     }
 
-    private function logApiError(WebwinkelKeurAPIError $e) {
+    private function logApiError(WebwinkelKeurAPIError $e): void {
         global $wpdb;
         $wpdb->insert($this->plugin->getInviteErrorsTable(), [
             'url' => $e->getURL(),
             'response' => $e->getMessage(),
             'time' => time(),
         ]);
+    }
+
+    private function getReviewsHook(): string {
+        return "{$this->plugin->getSlug()}_reviews_cron";
     }
 }
