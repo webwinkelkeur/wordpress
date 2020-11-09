@@ -77,6 +77,20 @@
                     <?php if (!$plugin->woocommerce): ?>
                     <p class="description"><?php _e('Install and activate WooCommerce to use this functionality.', 'webwinkelkeur'); ?></p>
                     <?php endif; ?>
+                    <fieldset>
+                        <br>
+                        <label for="<?= $plugin->getOptionName('order_status'); ?>"> <?php _e('Select order status', 'webwinkelkeur'); ?>
+                            <select name="<?= $plugin->getOptionName('order_status'); ?>">
+                                <?php foreach (wc_get_order_statuses() as $key => $label): ?>
+                                    <option value="<?= $key; ?>" <?= ($key == $config['order_status']) ? ' selected="selected"' : ''; ?>><?= _e($label, 'webwinkelkeur'); ?>
+                                    </option>
+                                <? endforeach; ?>
+                            </select>
+                        </label>
+                        <p class="description">
+                            <?php _e('Select order status to send invitation', 'webwinkelkeur'); ?>
+                        </p>
+                    </fieldset>
                 </td>
             </tr>
             <tr>

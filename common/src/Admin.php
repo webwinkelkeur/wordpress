@@ -10,6 +10,7 @@ class Admin {
         return [
             'invite_delay'     => 3,
             'javascript'       => true,
+            'order_status' => 'wc-completed',
         ];
     }
 
@@ -69,6 +70,7 @@ class Admin {
             'invite_delay' => 'intval',
             'limit_order_data' => 'intval',
             'javascript' => 'boolval',
+            'order_status' => 'strval',
             'rich_snippet' => 'boolval',
         ];
 
@@ -127,12 +129,12 @@ class Admin {
         foreach ($errors as $error) {
             ?>
             <div class="error"><p>
-                <?php sprintf(
-                __('An error occurred while requesting the %s invitation:', 'webwinkelkeur'),
-                $this->plugin->getName()
-            ); ?><br/>
-                <?php echo esc_html($error->response); ?>
-            </p></div>
+                    <?php sprintf(
+                        __('An error occurred while requesting the %s invitation:', 'webwinkelkeur'),
+                        $this->plugin->getName()
+                    ); ?><br/>
+                    <?php echo esc_html($error->response); ?>
+                </p></div>
             <?php
         }
 
