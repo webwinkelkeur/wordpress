@@ -26,7 +26,7 @@ class API {
         ];
         $url = $this->buildURL('https://' . $this->api_domain . '/api/1.0/product_reviews.xml', $params);
         $response = Requests::get($url);
-        if (isset($response->status_code) & ($response->status_code >= 200 && $response->status_code < 300)) {
+        if (isset($response->status_code) && $response->status_code >= 200 && $response->status_code < 300) {
             return simplexml_load_string($response->body)->reviews->review;
         }
         throw new WebwinkelKeurAPIError(
