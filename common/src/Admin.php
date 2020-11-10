@@ -8,8 +8,8 @@ class Admin {
 
     protected function get_default_config() {
         return [
-            'invite_delay'     => 3,
-            'javascript'       => true,
+            'invite_delay' => 3,
+            'javascript' => true,
             'order_status' => 'wc-completed',
         ];
     }
