@@ -88,7 +88,7 @@
                             </select>
                         </label>
                         <p class="description">
-                            <?php _e('Select order status to send invitation', 'webwinkelkeur'); ?>
+                            <?php _e('Select an order status on which you would like the invitation to be sent.', 'webwinkelkeur'); ?>
                         </p>
                     </fieldset>
                 </td>
