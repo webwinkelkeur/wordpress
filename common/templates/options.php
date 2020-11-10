@@ -79,10 +79,10 @@
                     <?php endif; ?>
                     <fieldset>
                         <br>
-                        <label for="<?= $plugin->getOptionName('order_status'); ?>"> <?php _e('Select order status', 'webwinkelkeur'); ?>
+                        <label> <?php _e('Select order status', 'webwinkelkeur'); ?>
                             <select name="<?= $plugin->getOptionName('order_status'); ?>">
                                 <?php foreach (wc_get_order_statuses() as $key => $label): ?>
-                                    <option value="<?= $key; ?>" <?= ($key == $config['order_status']) ? ' selected="selected"' : ''; ?>><?= _e($label, 'webwinkelkeur'); ?>
+                                    <option value="<?= $key; ?>" <?= $key == $config['order_status'] ? 'selected' : ''; ?>><?= $label ?>
                                     </option>
                                 <? endforeach; ?>
                             </select>

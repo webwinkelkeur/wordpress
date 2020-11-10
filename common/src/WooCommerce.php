@@ -17,7 +17,8 @@ class WooCommerce {
     }
 
     public function orderStatusChanged(int $order_id, string $old_status, string $new_status): void {
-        if ('wc-' . $new_status == (string) get_option($this->plugin->getOptionName('order_status'))) {
+       $selected_status = get_option($this->plugin->getOptionName('order_status')) ?? 'wc-completed';
+        if ($new_status == preg_replace('/^wc-/', '', $selected_status)) {
             $this->sendInvite($order_id);
         }
     }
