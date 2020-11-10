@@ -17,8 +17,7 @@ class WooCommerce {
     }
 
     public function orderStatusChanged(int $order_id, string $old_status, string $new_status): void {
-        $selected_status = get_option($this->plugin->getOptionName('order_status')) ?: 'wc-completed';
-        if ($new_status == preg_replace('/^wc-/', '', $selected_status)) {
+        if ($this->statusReached($new_status)) {
             $this->sendInvite($order_id);
         }
     }
@@ -73,7 +72,7 @@ class WooCommerce {
 
         $invoice_address = $order->get_address('billing');
         $customer_name = $invoice_address['first_name']
-                         . ' ' . $invoice_address['last_name'];
+            . ' ' . $invoice_address['last_name'];
 
         $delivery_address = $order->get_address('shipping');
         $phones = [
@@ -210,5 +209,15 @@ class WooCommerce {
             throw new RuntimeException('Method requires parameters');
         }
         return @$method->invoke($obj);
+    }
+
+    private function statusReached(string $new_status): bool {
+        $selected_statuses = get_option($this->plugin->getOptionName('order_statuses')) ?: ['wc-completed'];
+        foreach ($selected_statuses as $selected_status) {
+            if ($new_status == preg_replace('/^wc-/', '', $selected_status)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
