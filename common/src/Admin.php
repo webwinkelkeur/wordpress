@@ -71,7 +71,11 @@ class Admin {
             'limit_order_data' => 'intval',
             'javascript' => 'boolval',
             'order_statuses' => function ($value) {
-                return $value;
+                $statuses = [];
+                foreach ($value as $status){
+                    $statuses[]= strval($status);
+                }
+                return $statuses;
             },
             'rich_snippet' => 'boolval',
         ];
