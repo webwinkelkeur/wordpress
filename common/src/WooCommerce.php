@@ -16,7 +16,7 @@ class WooCommerce {
         add_action('woocommerce_checkout_update_order_meta', [$this, 'set_order_language']);
     }
 
-    public function orderStatusChanged($order_id, $old_status, $new_status) {
+    public function orderStatusChanged(int $order_id, string $old_status, string $new_status): void {
         if ('wc-' . $new_status == (string) get_option($this->plugin->getOptionName('order_status'))) {
             $this->sendInvite($order_id);
         }
