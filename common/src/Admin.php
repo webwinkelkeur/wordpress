@@ -10,7 +10,7 @@ class Admin {
         return [
             'invite_delay' => 3,
             'javascript' => true,
-            'order_status' => 'wc-completed',
+            'order_statuses' => ['wc-completed'],
         ];
     }
 
@@ -70,7 +70,9 @@ class Admin {
             'invite_delay' => 'intval',
             'limit_order_data' => 'intval',
             'javascript' => 'boolval',
-            'order_status' => 'strval',
+            'order_statuses' => function ($value) {
+                return $value;
+            },
             'rich_snippet' => 'boolval',
         ];
 
@@ -79,7 +81,7 @@ class Admin {
         foreach (array_keys($fields) as $field_name) {
             $value = get_option($this->plugin->getOptionName($field_name), false);
             if ($value !== false) {
-                $config[$field_name] = (string) $value;
+                $config[$field_name] = $value;
             } elseif (!isset($config[$field_name])) {
                 $config[$field_name] = '';
             }
@@ -89,7 +91,7 @@ class Admin {
             foreach ($fields as $field_name => $sanitize) {
                 try {
                     $config[$field_name] =
-                        $sanitize((string) @$_POST[$this->plugin->getOptionName($field_name)]);
+                        $sanitize(@$_POST[$this->plugin->getOptionName($field_name)]);
                 } catch (ValidationException $e) {
                     $errors[] = $e->getMessage();
                     $config[$field_name] = '';
