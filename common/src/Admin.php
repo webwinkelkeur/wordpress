@@ -72,8 +72,8 @@ class Admin {
             'javascript' => 'boolval',
             'order_statuses' => function ($value) {
                 $statuses = [];
-                foreach ($value as $status){
-                    $statuses[]= strval($status);
+                foreach ($value as $status) {
+                    $statuses[] = strval($status);
                 }
                 return $statuses;
             },
