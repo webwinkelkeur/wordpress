@@ -74,8 +74,30 @@
                             <?php _e('No, don\'t send invitations.', 'webwinkelkeur'); ?>
                         </label>
                     </fieldset>
-                    <?php if (!$plugin->woocommerce): ?>
-                    <p class="description"><?php _e('Install and activate WooCommerce to use this functionality.', 'webwinkelkeur'); ?></p>
+                </td>
+            </tr>
+            <tr valign="top">
+                <th scope="row">
+                    <label><?php _e('Order status for invitations', 'webwinkelkeur'); ?></label>
+                </th>
+                <td>
+                    <?php if (!$plugin->isWoocommerceActivated()): ?>
+                        <p class="description"><?php _e('Install and activate WooCommerce to use this functionality.', 'webwinkelkeur'); ?></p>
+                    <?php else: ?>
+                        <fieldset>
+                            <div style="height: 150px; overflow: auto;">
+                                <?php foreach (wc_get_order_statuses() as $key => $label): ?>
+                                    <label>
+                                        <input type="checkbox" name="<?= $plugin->getOptionName('order_statuses[]'); ?>"
+                                               value="<?= $key; ?>" <?= in_array($key, $config['order_statuses']) ? 'checked' : ''; ?>>
+                                        <?= $label; ?>
+                                    </label> <br>
+                                <?php endforeach; ?>
+                            </div>
+                            <p class="description">
+                                <?php _e('The invitation is only sent when the order has the checked status.', 'webwinkelkeur'); ?>
+                            </p>
+                        </fieldset>
                     <?php endif; ?>
                 </td>
             </tr>
