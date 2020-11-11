@@ -12,8 +12,14 @@ class WooCommerce {
 
     public function __construct(BasePlugin $plugin) {
         $this->plugin = $plugin;
-        add_action('woocommerce_order_status_completed', [$this, 'order_completed'], 10, 1);
+        add_action('woocommerce_order_status_changed', [$this, 'orderStatusChanged'], 10, 3);
         add_action('woocommerce_checkout_update_order_meta', [$this, 'set_order_language']);
+    }
+
+    public function orderStatusChanged(int $order_id, string $old_status, string $new_status): void {
+        if ($this->statusReached($new_status)) {
+            $this->sendInvite($order_id);
+        }
     }
 
     public function set_order_language($order_id) {
@@ -22,7 +28,7 @@ class WooCommerce {
         }
     }
 
-    public function order_completed($order_id) {
+    private function sendInvite($order_id) {
         global $wpdb, $wp_version;
 
         // invites enabled?
@@ -66,7 +72,7 @@ class WooCommerce {
 
         $invoice_address = $order->get_address('billing');
         $customer_name = $invoice_address['first_name']
-                         . ' ' . $invoice_address['last_name'];
+            . ' ' . $invoice_address['last_name'];
 
         $delivery_address = $order->get_address('shipping');
         $phones = [
@@ -203,5 +209,15 @@ class WooCommerce {
             throw new RuntimeException('Method requires parameters');
         }
         return @$method->invoke($obj);
+    }
+
+    private function statusReached(string $new_status): bool {
+        $selected_statuses = get_option($this->plugin->getOptionName('order_statuses')) ?: Admin::DEFAULT_ORDER_STATUS;
+        foreach ($selected_statuses as $selected_status) {
+            if ($new_status == preg_replace('/^wc-/', '', $selected_status)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
