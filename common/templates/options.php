@@ -87,13 +87,11 @@
                     <fieldset>
                         <div style="height: 150px; overflow: auto;">
                             <?php foreach (wc_get_order_statuses() as $key => $label): ?>
-                                <div>
-                                    <label>
-                                        <input type="checkbox" name="<?= $plugin->getOptionName('order_statuses[]'); ?>"
-                                               value="<?= $key; ?>" <?= in_array($key, $config['order_statuses']) ? 'checked' : ''; ?>>
-                                        <?= $label; ?>
-                                    </label>
-                                </div>
+                                <label>
+                                    <input type="checkbox" name="<?= $plugin->getOptionName('order_statuses[]'); ?>"
+                                           value="<?= $key; ?>" <?= in_array($key, $config['order_statuses']) ? 'checked' : ''; ?>>
+                                    <?= $label; ?>
+                                </label> <br>
                             <?php endforeach; ?>
                         </div>
                         <p class="description">
