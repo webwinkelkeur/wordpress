@@ -6,11 +6,13 @@ class Admin {
 
     private $woocommerce = false;
 
+    const ORDER_STATUS = ['wc-completed'];
+
     protected function get_default_config() {
         return [
             'invite_delay' => 3,
             'javascript' => true,
-            'order_statuses' => ['wc-completed'],
+            'order_statuses' => self::ORDER_STATUS,
         ];
     }
 
