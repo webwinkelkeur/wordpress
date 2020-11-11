@@ -98,4 +98,8 @@ abstract class BasePlugin {
         $reflect = new ReflectionClass($this);
         return dirname(dirname($reflect->getFilename())) . '/' . $this->getSlug() . '.php';
     }
+
+    public function isWoocommerceActivated(): bool {
+        return class_exists('woocommerce');
+    }
 }
