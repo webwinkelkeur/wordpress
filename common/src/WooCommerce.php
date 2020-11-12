@@ -93,8 +93,8 @@ class WooCommerce {
 
         $delivery_address = $order->get_address('shipping');
         $phones = [
-            $invoice_address['phone'],
-            $delivery_address['phone'],
+            $invoice_address['phone'] ?? null,
+            $delivery_address['phone'] ?? null,
         ];
 
         $lang = get_post_meta($order_id, 'wpml_language', true);
@@ -293,7 +293,7 @@ class WooCommerce {
             return;
         }
         $this->processReviews($reviews);
-        if ($last_modified = (string) $reviews[0]->modified ?? null) {
+        if ($last_modified = (string) ($reviews[0]->modified ?? null)) {
             update_option($this->plugin->getOptionName('last_synced'), $last_modified);
         }
     }
