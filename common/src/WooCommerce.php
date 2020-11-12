@@ -277,9 +277,9 @@ class WooCommerce {
     }
 
     public function syncReviews(): void {
-        if (!get_option($this->plugin->getOptionName('product_reviews'))) {
-            return;
-        }
+        if (!get_option($this->plugin->getOptionName('product_reviews'))
+            || !$this->plugin->isWoocommerceActivated()
+        ) return;
         $api_domain = $this->plugin->getDashboardDomain();
         $shop_id = get_option($this->plugin->getOptionName('wwk_shop_id'));
         $api_key = get_option($this->plugin->getOptionName('wwk_api_key'));
