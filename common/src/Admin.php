@@ -4,8 +4,6 @@ namespace Valued\WordPress;
 class Admin {
     private $plugin;
 
-    private $woocommerce = false;
-
     const DEFAULT_ORDER_STATUS = ['wc-completed'];
 
     protected function get_default_config() {
@@ -21,7 +19,6 @@ class Admin {
         add_action('admin_menu', [$this, 'admin_menu']);
         add_action('plugin_action_links', [$this, 'plugin_action_links'], 10, 2);
         add_action('admin_notices', [$this, 'invite_error_notices']);
-        add_action('before_woocommerce_init', [$this, 'activate_woocommerce']);
     }
 
     public function admin_menu() {
@@ -42,10 +39,6 @@ class Admin {
                      . __('Settings') . '</a>';
         }
         return $links;
-    }
-
-    public function activate_woocommerce() {
-        $this->woocommerce = true;
     }
 
     public function options_page() {
