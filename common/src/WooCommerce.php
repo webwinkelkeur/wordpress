@@ -150,14 +150,14 @@ class WooCommerce {
     }
 
     public function addGtinOption() {
-        $gtin_handler = new GtinHandler($this->plugin);
+        $gtin_handler = new GtinHandler($this->getGtinMetaKey());
         if ($gtin_handler->hasActivePlugin() || !get_option($this->plugin->getOptionName('product_reviews'))) {
             return;
         }
         $label = 'GTIN';
         echo '<div class="options_group">';
         woocommerce_wp_text_input([
-            'id' => $this->plugin->getGtinMetaKey(),
+            'id' => $this->getGtinMetaKey(),
             'label' => $label,
             'placeholder' => '',
             'desc_tip' => true,
@@ -167,10 +167,10 @@ class WooCommerce {
     }
 
     public function saveGtinOption($product) {
-        if (isset($_POST[$this->plugin->getGtinMetaKey()])) {
+        if (isset($_POST[$this->getGtinMetaKey()])) {
             $product->update_meta_data(
-                $this->plugin->getGtinMetaKey(),
-                wc_clean(wp_unslash($_POST[$this->plugin->getGtinMetaKey()]))
+                $this->getGtinMetaKey(),
+                wc_clean(wp_unslash($_POST[$this->getGtinMetaKey()]))
             );
         }
     }
@@ -255,7 +255,7 @@ class WooCommerce {
             if (!$product) {
                 continue;
             }
-            $gtin_handler = new GtinHandler($this->plugin);
+            $gtin_handler = new GtinHandler($this->getGtinMetaKey());
             $gtin_handler->setProduct($product);
             $products[] = [
                 'id' => $product->get_id(),
@@ -279,7 +279,9 @@ class WooCommerce {
     public function syncReviews(): void {
         if (!get_option($this->plugin->getOptionName('product_reviews'))
             || !$this->plugin->isWoocommerceActivated()
-        ) return;
+        ) {
+            return;
+        }
         $api_domain = $this->plugin->getDashboardDomain();
         $shop_id = get_option($this->plugin->getOptionName('wwk_shop_id'));
         $api_key = get_option($this->plugin->getOptionName('wwk_api_key'));
@@ -298,7 +300,7 @@ class WooCommerce {
         }
     }
 
-    private function processReviews(?\SimpleXMLElement $reviews): void {
+    private function processReviews(\SimpleXMLElement $reviews): void {
         foreach ($reviews as $review) {
             $comment_data = $this->getCommentData($review);
             if (empty($comment_data)) {
@@ -371,5 +373,9 @@ class WooCommerce {
 
     private function getReviewIdMetaKey(): string {
         return "_{$this->plugin->getOptionName('review_id')}";
+    }
+
+    private function getGtinMetaKey(): string {
+        return "_{$this->plugin->getOptionName('gtin')}";
     }
 }

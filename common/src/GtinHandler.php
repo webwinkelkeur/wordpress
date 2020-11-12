@@ -10,10 +10,10 @@ class GtinHandler {
         'woo-product-feed-pro/woocommerce-sea.php' => '_woosea_gtin',
     ];
     private $product;
-    private $plugin;
+    private $gtin_meta_key;
 
-    public function __construct(BasePlugin $plugin) {
-        $this->plugin = $plugin;
+    public function __construct(string $gtin_meta_key) {
+        $this->gtin_meta_key = $gtin_meta_key;
     }
 
     public function setProduct(\WC_Product $product): void {
@@ -42,7 +42,7 @@ class GtinHandler {
                 return $key;
             }
         }
-        return $this->plugin->getGtinMetaKey();
+        return $this->gtin_meta_key;
     }
 
     private function getGtinFromMeta(string $key): ?string {
