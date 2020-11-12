@@ -11,6 +11,7 @@ class Admin {
             'invite_delay' => 3,
             'javascript' => true,
             'order_statuses' => self::DEFAULT_ORDER_STATUS,
+            'product_reviews' => true,
         ];
     }
 
@@ -64,6 +65,7 @@ class Admin {
             'invite' => 'intval',
             'invite_delay' => 'intval',
             'limit_order_data' => 'boolval',
+            'product_reviews' => 'boolval',
             'javascript' => 'boolval',
             'order_statuses' => function ($value) {
                 return array_map('strval', is_array($value) ? $value : []);

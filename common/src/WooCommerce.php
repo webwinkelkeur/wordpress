@@ -6,6 +6,8 @@ use ReflectionMethod;
 use RuntimeException;
 use WC_Customer;
 use WC_Product_Factory;
+use WC_Product;
+use WP_Comment_Query;
 
 class WooCommerce {
     private $plugin;
@@ -14,6 +16,21 @@ class WooCommerce {
         $this->plugin = $plugin;
         add_action('woocommerce_order_status_changed', [$this, 'orderStatusChanged'], 10, 3);
         add_action('woocommerce_checkout_update_order_meta', [$this, 'set_order_language']);
+        add_action('woocommerce_product_options_sku', [$this, 'addGtinOption']);
+        add_action('woocommerce_admin_process_product_object', [$this, 'saveGtinOption']);
+        register_activation_hook($this->plugin->getPluginFile(), [$this, 'activateSyncReviews']);
+        register_deactivation_hook($this->plugin->getPluginFile(), [$this, 'deactivateSyncReviews']);
+        add_action($this->getReviewsHook(), [$this, 'syncReviews']);
+    }
+
+    public function activateSyncReviews() {
+        if (!wp_next_scheduled($this->getReviewsHook())) {
+            wp_schedule_event(time(), 'twicedaily', $this->getReviewsHook());
+        }
+    }
+
+    public function deactivateSyncReviews() {
+        wp_clear_scheduled_hook($this->getReviewsHook());
     }
 
     public function orderStatusChanged(int $order_id, string $old_status, string $new_status): void {
@@ -29,7 +46,7 @@ class WooCommerce {
     }
 
     private function sendInvite($order_id) {
-        global $wpdb, $wp_version;
+        global $wp_version;
 
         // invites enabled?
         if (!get_option($this->plugin->getOptionName('invite'))) {
@@ -76,8 +93,8 @@ class WooCommerce {
 
         $delivery_address = $order->get_address('shipping');
         $phones = [
-            $invoice_address['phone'],
-            $delivery_address['phone'],
+            $invoice_address['phone'] ?? null,
+            $delivery_address['phone'] ?? null,
         ];
 
         $lang = get_post_meta($order_id, 'wpml_language', true);
@@ -102,20 +119,7 @@ class WooCommerce {
         if ($with_order_data) {
             $order_arr = $this->get_data($order, []);
             $customer_arr = !empty($order_arr['customer_id']) ? $this->get_data(new WC_Customer($order_arr['customer_id']), []) : [];
-            $pf = new WC_Product_Factory();
-            $products = [];
-            foreach ($order_arr['line_items'] as $line_item) {
-                $product = $pf->get_product($line_item['product_id']);
-                if (!$product) {
-                    continue;
-                }
-                $product_arr = $this->get_data($product, []);
-                $images = get_attached_media('image', $product->get_id());
-                foreach ($images as $image) {
-                    $product_arr['product_image'][] = wp_get_attachment_image_src($image->ID, 'full')[0];
-                }
-                $products[] = $product_arr;
-            }
+            $products = $this->get_product_data($order_arr);
             $order_data = [
                 'order' => $order_arr,
                 'customer' => $customer_arr,
@@ -134,17 +138,39 @@ class WooCommerce {
         } catch (WebwinkelKeurAPIAlreadySentError $e) {
             // that's okay
         } catch (WebwinkelKeurAPIError $e) {
-            $wpdb->insert($this->plugin->getInviteErrorsTable(), [
-                'url'       => $e->getURL(),
-                'response'  => $e->getMessage(),
-                'time'      => time(),
-            ]);
+            $this->logApiError($e);
             $this->insert_comment(
                 $order_id,
                 sprintf(
                     __('The %s invitation could not be sent.', 'webwinkelkeur'),
                     $this->plugin->getName()
                 ) . ' ' . $e->getMessage()
+            );
+        }
+    }
+
+    public function addGtinOption() {
+        $gtin_handler = new GtinHandler($this->getGtinMetaKey());
+        if ($gtin_handler->hasActivePlugin() || !get_option($this->plugin->getOptionName('product_reviews'))) {
+            return;
+        }
+        $label = 'GTIN';
+        echo '<div class="options_group">';
+        woocommerce_wp_text_input([
+            'id' => $this->getGtinMetaKey(),
+            'label' => $label,
+            'placeholder' => '',
+            'desc_tip' => true,
+            'description' => sprintf(__('Add the %s for this product', 'webwinkelkeur'), $label),
+        ]);
+        echo '</div>';
+    }
+
+    public function saveGtinOption($product) {
+        if (isset($_POST[$this->getGtinMetaKey()])) {
+            $product->update_meta_data(
+                $this->getGtinMetaKey(),
+                wc_clean(wp_unslash($_POST[$this->getGtinMetaKey()]))
             );
         }
     }
@@ -219,5 +245,137 @@ class WooCommerce {
             }
         }
         return false;
+    }
+
+    private function get_product_data(array $order_arr) {
+        $pf = new WC_Product_Factory();
+        $products = [];
+        foreach ($order_arr['line_items'] as $line_item) {
+            $product = $pf->get_product($line_item['product_id']);
+            if (!$product) {
+                continue;
+            }
+            $gtin_handler = new GtinHandler($this->getGtinMetaKey());
+            $gtin_handler->setProduct($product);
+            $products[] = [
+                'id' => $product->get_id(),
+                'name' => $product->get_name(),
+                'url' => get_permalink($product->get_id()),
+                'image_url' => $this->getProductImage($product),
+                'sku' => $product->get_sku(),
+                'gtin' => $gtin_handler->getGtin(),
+                'reviews_allowed' => $product->get_reviews_allowed(),
+            ];
+        }
+        return $products;
+    }
+
+    private function getProductImage(WC_Product $product) {
+        foreach (get_attached_media('image', $product->get_id()) as $image) {
+            return wp_get_attachment_image_src($image->ID, 'full')[0] ?? null;
+        }
+    }
+
+    public function syncReviews(): void {
+        if (!get_option($this->plugin->getOptionName('product_reviews'))
+            || !$this->plugin->isWoocommerceActivated()
+        ) {
+            return;
+        }
+        $api_domain = $this->plugin->getDashboardDomain();
+        $shop_id = get_option($this->plugin->getOptionName('wwk_shop_id'));
+        $api_key = get_option($this->plugin->getOptionName('wwk_api_key'));
+        $api = new API($api_domain, $shop_id, $api_key);
+        try {
+            $reviews = $api->getReviews(
+                get_option($this->plugin->getOptionName('last_synced')) ?: null
+            );
+        } catch (WebwinkelKeurAPIError $e) {
+            $this->logApiError($e);
+            return;
+        }
+        $this->processReviews($reviews);
+        if ($last_modified = (string) ($reviews[0]->modified ?? null)) {
+            update_option($this->plugin->getOptionName('last_synced'), $last_modified);
+        }
+    }
+
+    private function processReviews(\SimpleXMLElement $reviews): void {
+        foreach ($reviews as $review) {
+            $comment_data = $this->getCommentData($review);
+            if (empty($comment_data)) {
+                continue;
+            }
+            $comment_id = $this->getExistingComment(
+                $comment_data['comment_post_ID'],
+                $comment_data['comment_author_email'],
+                (int) $review->review_id
+            );
+            if ($comment_id) {
+                $comment_data['comment_ID'] = $comment_id;
+                wp_update_comment($comment_data);
+            } else {
+                wp_insert_comment($comment_data);
+            }
+        }
+    }
+
+    private function getExistingComment(int $post_id, string $author_email, int $review_id): ?int {
+        $args = [
+            'post_id' => $post_id,
+            'author_email' => $author_email,
+            'type' => 'review',
+            'meta_query' => [
+                'key' => $this->getReviewIdMetaKey(),
+                'value' => $review_id,
+            ]
+        ];
+        $comments_query = new WP_Comment_Query($args);
+        $comments = $comments_query->comments;
+        return $comments[0]->comment_ID ?? null;
+    }
+
+    private function getCommentData(\SimpleXMLElement $review): ?array {
+        $pf = new WC_Product_Factory();
+        $product_id = (int) $review->products->product->external_id;
+        if (!$pf->get_product($product_id)) {
+            return null;
+        }
+        return [
+            'comment_post_ID' => $product_id,
+            'comment_author' => (string) $review->reviewer->name,
+            'comment_author_email' => (string) $review->email,
+            'comment_content' => (string) $review->content,
+            'comment_type' => 'review',
+            'comment_meta' => [
+                $this->getReviewIdMetaKey() => (int) $review->review_id,
+                'rating' => (int) $review->ratings->overall,
+            ],
+            'comment_parent' => 0,
+            'user_id' => get_user_by('email', (string) $review->email)->ID ?? 0,
+            'comment_date' => date('Y-m-d H:i:s', strtotime((string) $review->review_timestamp)),
+            'comment_approved' => (int) $review->valid,
+        ];
+    }
+
+    private function logApiError(WebwinkelKeurAPIError $e): void {
+        global $wpdb;
+        $wpdb->insert($this->plugin->getInviteErrorsTable(), [
+            'url' => $e->getURL(),
+            'response' => $e->getMessage(),
+            'time' => time(),
+        ]);
+    }
+
+    private function getReviewsHook(): string {
+        return "{$this->plugin->getSlug()}_reviews_cron";
+    }
+
+    private function getReviewIdMetaKey(): string {
+        return "_{$this->plugin->getOptionName('review_id')}";
+    }
+
+    private function getGtinMetaKey(): string {
+        return "_{$this->plugin->getOptionName('gtin')}";
     }
 }
