@@ -11,6 +11,7 @@ class Admin {
             'invite_delay' => 3,
             'javascript' => true,
             'order_statuses' => self::DEFAULT_ORDER_STATUS,
+            'product_reviews' => true,
         ];
     }
 
@@ -63,6 +64,7 @@ class Admin {
             },
             'invite' => 'boolval',
             'invite_delay' => 'intval',
+            'product_reviews' => 'boolval',
             'limit_order_data' => 'intval',
             'javascript' => 'boolval',
             'order_statuses' => function ($value) {
