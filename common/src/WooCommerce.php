@@ -261,19 +261,13 @@ class WooCommerce {
                 'id' => $product->get_id(),
                 'name' => $product->get_name(),
                 'url' => get_permalink($product->get_id()),
-                'image_url' => $this->getProductImage($product),
+                'image_url' => get_the_post_thumbnail_url($product->get_id()) ?: null,
                 'sku' => $product->get_sku(),
                 'gtin' => $gtin_handler->getGtin(),
                 'reviews_allowed' => $product->get_reviews_allowed(),
             ];
         }
         return $products;
-    }
-
-    private function getProductImage(WC_Product $product) {
-        foreach (get_attached_media('image', $product->get_id()) as $image) {
-            return wp_get_attachment_image_src($image->ID, 'full')[0] ?? null;
-        }
     }
 
     public function syncReviews(): void {
