@@ -6,7 +6,6 @@ use ReflectionMethod;
 use RuntimeException;
 use WC_Customer;
 use WC_Product_Factory;
-use WC_Product;
 use WP_Comment_Query;
 
 class WooCommerce {
@@ -132,36 +131,31 @@ class WooCommerce {
         }
 
         // send invite
-        $is_invite_added = true;
         $api = new API($api_domain, $shop_id, $api_key);
+
         try {
             $api->invite($data);
-        } catch (Exception $e) {
-            $is_invite_added = false;
-            if ($e instanceof WebwinkelKeurAPIAlreadySentError) {
-                // that's okay
-            } elseif ($e instanceof WebwinkelKeurAPIError) {
-                $this->logApiError($e);
-                $this->insert_comment(
-                    $order_id,
-                    sprintf(
-                        __('The %s invitation could not be sent.', 'webwinkelkeur'),
-                        $this->plugin->getName()
-                    ) . ' ' . $e->getMessage()
-                );
-            } else {
-                throw $e;
-            }
-        }
-        if ($is_invite_added) {
+        } catch (WebwinkelKeurAPIAlreadySentError $e) {
+            // that's okay
+        } catch (WebwinkelKeurAPIError $e) {
+            $this->logApiError($e);
             $this->insert_comment(
                 $order_id,
                 sprintf(
-                    __('An invitation was added to %s dashboard.', 'webwinkelkeur'),
+                    __('The %s invitation could not be sent.', 'webwinkelkeur'),
                     $this->plugin->getName()
-                )
+                ) . ' ' . $e->getMessage()
             );
+            return;
         }
+
+        $this->insert_comment(
+            $order_id,
+            sprintf(
+                __('An invitation was added to %s dashboard.', 'webwinkelkeur'),
+                $this->plugin->getName()
+            )
+        );
     }
 
     public function addGtinOption() {
@@ -337,7 +331,7 @@ class WooCommerce {
             'meta_query' => [
                 'key' => $this->getReviewIdMetaKey(),
                 'value' => $review_id,
-            ]
+            ],
         ];
         $comments_query = new WP_Comment_Query($args);
         $comments = $comments_query->comments;
