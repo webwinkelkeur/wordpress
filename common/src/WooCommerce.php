@@ -150,7 +150,7 @@ class WooCommerce {
         $this->insert_comment(
             $order_id,
             sprintf(
-                __('An invitation was added to %s dashboard.', 'webwinkelkeur'),
+                __('An invitation was sent to %s dashboard.', 'webwinkelkeur'),
                 $this->plugin->getName()
             )
         );
