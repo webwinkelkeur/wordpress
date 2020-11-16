@@ -77,6 +77,3 @@ class WebwinkelKeurAPIError extends Exception {
         return $this->url;
     }
 }
-
-class WebwinkelKeurAPIAlreadySentError extends WebwinkelKeurAPIError {
-}

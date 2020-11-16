@@ -135,8 +135,6 @@ class WooCommerce {
 
         try {
             $api->invite($data);
-        } catch (WebwinkelKeurAPIAlreadySentError $e) {
-            // that's okay
         } catch (WebwinkelKeurAPIError $e) {
             $this->logApiError($e);
             $this->insert_comment(
