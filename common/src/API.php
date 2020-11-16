@@ -50,12 +50,6 @@ class API {
         if (isset($result->status) && $result->status == 'success') {
             return true;
         }
-        if (preg_match('|already sent|', $result->message)) {
-            throw new WebwinkelKeurAPIAlreadySentError($url, $result->message);
-        }
-        if (preg_match('|limit hit|', $result->message)) {
-            throw new WebwinkelKeurAPIAlreadySentError($url, $result->message);
-        }
         throw new WebwinkelKeurAPIError(
             $url,
             isset($result->message) ? $result->message : $response->body
