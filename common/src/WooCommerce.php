@@ -342,18 +342,19 @@ class WooCommerce {
         if (!$pf->get_product($product_id)) {
             return null;
         }
+        $author_email = sanitize_text_field((string) $review->email);
         return [
             'comment_post_ID' => $product_id,
-            'comment_author' => (string) $review->reviewer->name,
-            'comment_author_email' => (string) $review->email,
-            'comment_content' => (string) $review->content,
+            'comment_author' => sanitize_text_field((string) $review->reviewer->name),
+            'comment_author_email' => $author_email,
+            'comment_content' => sanitize_text_field((string) $review->content),
             'comment_type' => 'review',
             'comment_meta' => [
                 $this->getReviewIdMetaKey() => (int) $review->review_id,
                 'rating' => (int) $review->ratings->overall,
             ],
             'comment_parent' => 0,
-            'user_id' => get_user_by('email', (string) $review->email)->ID ?? 0,
+            'user_id' => get_user_by('email', $author_email)->ID ?? 0,
             'comment_date' => date('Y-m-d H:i:s', strtotime((string) $review->review_timestamp)),
             'comment_approved' => (int) $review->valid,
         ];
