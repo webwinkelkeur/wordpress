@@ -6,7 +6,6 @@ use ReflectionMethod;
 use RuntimeException;
 use WC_Customer;
 use WC_Product_Factory;
-use WC_Product;
 use WP_Comment_Query;
 
 class WooCommerce {
@@ -133,10 +132,9 @@ class WooCommerce {
 
         // send invite
         $api = new API($api_domain, $shop_id, $api_key);
+
         try {
             $api->invite($data);
-        } catch (WebwinkelKeurAPIAlreadySentError $e) {
-            // that's okay
         } catch (WebwinkelKeurAPIError $e) {
             $this->logApiError($e);
             $this->insert_comment(
@@ -146,7 +144,16 @@ class WooCommerce {
                     $this->plugin->getName()
                 ) . ' ' . $e->getMessage()
             );
+            return;
         }
+
+        $this->insert_comment(
+            $order_id,
+            sprintf(
+                __('An invitation was sent to %s dashboard.', 'webwinkelkeur'),
+                $this->plugin->getName()
+            )
+        );
     }
 
     public function addGtinOption() {
@@ -322,7 +329,7 @@ class WooCommerce {
             'meta_query' => [
                 'key' => $this->getReviewIdMetaKey(),
                 'value' => $review_id,
-            ]
+            ],
         ];
         $comments_query = new WP_Comment_Query($args);
         $comments = $comments_query->comments;
