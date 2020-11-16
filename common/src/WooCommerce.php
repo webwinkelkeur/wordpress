@@ -346,7 +346,7 @@ class WooCommerce {
             'comment_post_ID' => $product_id,
             'comment_author' => (string) $review->reviewer->name,
             'comment_author_email' => (string) $review->email,
-            'comment_content' => (string) $review->content,
+            'comment_content' => sanitize_text_field((string) $review->content),
             'comment_type' => 'review',
             'comment_meta' => [
                 $this->getReviewIdMetaKey() => (int) $review->review_id,
