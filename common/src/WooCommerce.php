@@ -132,19 +132,34 @@ class WooCommerce {
         }
 
         // send invite
+        $is_invite_added = true;
         $api = new API($api_domain, $shop_id, $api_key);
         try {
             $api->invite($data);
-        } catch (WebwinkelKeurAPIAlreadySentError $e) {
-            // that's okay
-        } catch (WebwinkelKeurAPIError $e) {
-            $this->logApiError($e);
+        } catch (Exception $e) {
+            $is_invite_added = false;
+            if ($e instanceof WebwinkelKeurAPIAlreadySentError) {
+                // that's okay
+            } elseif ($e instanceof WebwinkelKeurAPIError) {
+                $this->logApiError($e);
+                $this->insert_comment(
+                    $order_id,
+                    sprintf(
+                        __('The %s invitation could not be sent.', 'webwinkelkeur'),
+                        $this->plugin->getName()
+                    ) . ' ' . $e->getMessage()
+                );
+            } else {
+                throw $e;
+            }
+        }
+        if ($is_invite_added) {
             $this->insert_comment(
                 $order_id,
                 sprintf(
-                    __('The %s invitation could not be sent.', 'webwinkelkeur'),
+                    __('An invitation was added to %s dashboard.', 'webwinkelkeur'),
                     $this->plugin->getName()
-                ) . ' ' . $e->getMessage()
+                )
             );
         }
     }
