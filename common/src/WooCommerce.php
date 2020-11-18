@@ -312,10 +312,15 @@ class WooCommerce {
                 $comment_data['comment_author_email'],
                 (int) $review->review_id
             );
+            $deleted = (int) $review->deleted;
             if ($comment_id) {
                 $comment_data['comment_ID'] = $comment_id;
+                if ($deleted) {
+                    wp_delete_comment($comment_id);
+                    continue;
+                }
                 wp_update_comment($comment_data);
-            } else {
+            } elseif (!$deleted) {
                 wp_insert_comment($comment_data);
             }
         }
