@@ -36,10 +36,8 @@ class GtinHandler {
         if (is_plugin_active('woocommerce-product-feeds/woocommerce-gpf.php')) {
             return $this->handleGpf();
         }
-        foreach (
-            array_filter(self::SUPPORTED_PLUGINS, [$this, 'filterMetaPlugins'])
-            as $plugin_name => $keys) {
-            if (is_plugin_active($plugin_name)) {
+        foreach (self::SUPPORTED_PLUGINS as $plugin_name => $keys) {
+            if ($keys && is_plugin_active($plugin_name)) {
                 return $this->getFromPluginMeta($keys);
             }
         }
@@ -61,9 +59,5 @@ class GtinHandler {
 
     private function handleGpf(): ?string {
         return (string) woocommerce_gpf_show_element('gtin', $this->product->post) ?: null;
-    }
-
-    private function filterMetaPlugins(?array $value): bool {
-        return !empty($value);
     }
 }
