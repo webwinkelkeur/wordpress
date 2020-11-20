@@ -4,10 +4,13 @@ namespace Valued\WordPress;
 
 class GtinHandler {
     const SUPPORTED_PLUGINS = [
+        'woosa-vandermeer/woosa-vandermeer.php' => ['vdm_ean'],
         'woocommerce-product-feeds/woocommerce-gpf.php' => null,
-        'customer-reviews-woocommerce/ivole.php' => '_cr_gtin',
-        'product-gtin-ean-upc-isbn-for-woocommerce/product-gtin-ean-upc-isbn-for-woocommerce.php' => '_wpm_gtin_code',
-        'woo-product-feed-pro/woocommerce-sea.php' => '_woosea_gtin',
+        'customer-reviews-woocommerce/ivole.php' => ['_cr_gtin'],
+        'product-gtin-ean-upc-isbn-for-woocommerce/product-gtin-ean-upc-isbn-for-woocommerce.php' => [
+            '_wpm_gtin_code', '_wpm_ean_code'
+        ],
+        'woo-product-feed-pro/woocommerce-sea.php' => ['_woosea_gtin', '_woosea_ean'],
     ];
     private $product;
     private $gtin_meta_key;
@@ -33,16 +36,23 @@ class GtinHandler {
         if (is_plugin_active('woocommerce-product-feeds/woocommerce-gpf.php')) {
             return $this->handleGpf();
         }
-        return $this->getGtinFromMeta($this->getGtinMetaKey());
-    }
-
-    private function getGtinMetaKey(): string {
-        foreach (array_filter(self::SUPPORTED_PLUGINS, 'strlen') as $plugin_name => $key) {
+        foreach (
+            array_filter(self::SUPPORTED_PLUGINS, [$this, 'filterPlugins'])
+            as $plugin_name => $keys) {
             if (is_plugin_active($plugin_name)) {
-                return $key;
+                return $this->getFromPluginMeta($keys);
             }
         }
-        return $this->gtin_meta_key;
+        return $this->getGtinFromMeta($this->gtin_meta_key);
+    }
+
+    private function getFromPluginMeta(array $keys): ?string {
+        foreach ($keys as $key) {
+            if ($result = $this->getGtinFromMeta($key)) {
+                return $result;
+            }
+        }
+        return null;
     }
 
     private function getGtinFromMeta(string $key): ?string {
@@ -51,5 +61,9 @@ class GtinHandler {
 
     private function handleGpf(): ?string {
         return (string) woocommerce_gpf_show_element('gtin', $this->product->post) ?: null;
+    }
+
+    private function filterPlugins(?array $value): bool {
+        return !empty($value);
     }
 }
