@@ -37,7 +37,7 @@ class GtinHandler {
             return $this->handleGpf();
         }
         foreach (
-            array_filter(self::SUPPORTED_PLUGINS, [$this, 'filterPlugins'])
+            array_filter(self::SUPPORTED_PLUGINS, [$this, 'filterMetaPlugins'])
             as $plugin_name => $keys) {
             if (is_plugin_active($plugin_name)) {
                 return $this->getFromPluginMeta($keys);
@@ -63,7 +63,7 @@ class GtinHandler {
         return (string) woocommerce_gpf_show_element('gtin', $this->product->post) ?: null;
     }
 
-    private function filterPlugins(?array $value): bool {
+    private function filterMetaPlugins(?array $value): bool {
         return !empty($value);
     }
 }
