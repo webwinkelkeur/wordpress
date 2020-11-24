@@ -15,7 +15,7 @@ namespace WebwinkelKeur\WordPress;
 use Valued\WordPress\PhpCompatibilityCheck;
 require __DIR__ . '/common/autoload.php';
 
-if (!PhpCompatibilityCheck::isCompatible('webwinkelkeur')) {
+if (!PhpCompatibilityCheck::isCompatible('WebwinkelKeur')) {
     return;
 }
 
