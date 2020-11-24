@@ -4,7 +4,7 @@ set -euo pipefail
 
 cd /var/www/html
 
-while ! mysql -h db -u root -e 'SELECT 1'; do
+while ! mysql -h db -u root -e 'SELECT 1' >/dev/null; do
 	sleep 0.5
 done
 
@@ -24,5 +24,9 @@ if [[ ! -f .installed ]]; then
 		--title='Valued WordPress'
 	touch .installed
 fi
+
+cd wp-content/plugins
+sudo -u docker ln -sn /data/webwinkelkeur || true
+sudo -u docker ln -sn /data/trustprofile || true
 
 exec apache2-foreground
