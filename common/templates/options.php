@@ -34,6 +34,7 @@
                 <th scope="row"><label for="webwinkelkeur-javascript"><?php _e('JavaScript integration', 'webwinkelkeur'); ?></label></th>
                 <td>
                     <label>
+                        <input type="hidden" name="<?= $plugin->getOptionName('javascript'); ?>" value="">
                         <input type="checkbox" id="webwinkelkeur-javascript" name="<?= $plugin->getOptionName('javascript');?>" value="1" <?php if ($config['javascript']) {
             echo 'checked';
         } ?> />
@@ -84,6 +85,7 @@
                 <td>
                     <fieldset>
                         <label>
+                            <input type="hidden" name="<?= $plugin->getOptionName('limit_order_data'); ?>" value="">
                             <input type="checkbox" name="<?= $plugin->getOptionName('limit_order_data');?>" value="1" <?php if ($config['limit_order_data']) {
             echo 'checked ';
         }?> />

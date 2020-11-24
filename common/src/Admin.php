@@ -67,7 +67,7 @@ class Admin {
             },
             'invite' => 'boolval',
             'invite_delay' => 'intval',
-            'limit_order_data' => 'intval',
+            'limit_order_data' => 'boolval',
             'javascript' => 'boolval',
             'rich_snippet' => 'boolval',
         ];
@@ -100,6 +100,11 @@ class Admin {
 
             if (!$errors) {
                 foreach ($config as $name => $value) {
+                    if (is_bool($value)) {
+                        // WordPress won't store `false' properly, so convert to 0.
+                        // https://core.trac.wordpress.org/ticket/40007
+                        $value = (int) $value;
+                    }
                     update_option($this->plugin->getOptionName($name), $value);
                 }
                 $updated = true;
