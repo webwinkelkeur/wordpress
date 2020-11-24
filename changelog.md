@@ -1,3 +1,6 @@
+= 2.3 - 2020-11-24 =
+* Bump **Tested up to** to WordPress 5.6.
+
 = 2.2 =
 * Use new sidebar load method so only one request is needed.
 
