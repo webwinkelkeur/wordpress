@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  www:
+    build: ./docker
+    volumes:
+      - .:/data
+    ports:
+      - "13779:80"
+
+  db:
+    image: mariadb:10.3
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
