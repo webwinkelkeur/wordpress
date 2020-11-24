@@ -17,7 +17,7 @@ trap cleanup EXIT
 version="$(git describe --tags --match='v*')"
 version="${version#v}"
 
-git archive master | tar xf - -C "$tmp"
+git archive HEAD | tar xf - -C "$tmp"
 
 cd "$tmp"
 

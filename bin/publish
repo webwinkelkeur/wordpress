@@ -28,7 +28,7 @@ tmp="$(mktemp -d)"
 cleanup() { rm -rf "$tmp"; }
 trap cleanup EXIT
 
-git push git@github.com:webwinkelkeur/wordpress master --tags
+git push git@github.com:webwinkelkeur/wordpress HEAD --tags
 
 ./bin/package
 
