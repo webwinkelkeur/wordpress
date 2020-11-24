@@ -65,7 +65,7 @@ class Admin {
                 }
                 return $value;
             },
-            'invite' => 'boolval',
+            'invite' => 'intval',
             'invite_delay' => 'intval',
             'limit_order_data' => 'boolval',
             'javascript' => 'boolval',
