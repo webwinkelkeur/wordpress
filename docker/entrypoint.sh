@@ -29,4 +29,5 @@ cd wp-content/plugins
 sudo -u docker ln -sn /data/webwinkelkeur || true
 sudo -u docker ln -sn /data/trustprofile || true
 
+cd /
 exec apache2-foreground
