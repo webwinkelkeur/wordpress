@@ -1,3 +1,7 @@
+= 2.4 - 2020-11-24 =
+* Fix disabling JavaScript integration. Previously, the setting wasn't saved.
+* Fix setting invitations to "Yes, after a customer's first order.". This setting was converted to "Yes, after every order." silently before.
+
 = 2.3 - 2020-11-24 =
 * Bump **Tested up to** to WordPress 5.6.
 
