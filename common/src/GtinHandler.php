@@ -19,7 +19,7 @@ class GtinHandler {
         $this->gtin_meta_key = $gtin_meta_key;
     }
 
-    public function setProduct(\WC_Product $product): void {
+    public function setProduct(\WC_Product $product) {
         $this->product = $product;
     }
 
@@ -32,7 +32,7 @@ class GtinHandler {
         return false;
     }
 
-    public function getGtin(): ?string {
+    public function getGtin() {
         if (is_plugin_active('woocommerce-product-feeds/woocommerce-gpf.php')) {
             return $this->handleGpf();
         }
@@ -44,7 +44,7 @@ class GtinHandler {
         return $this->getGtinFromMeta($this->gtin_meta_key);
     }
 
-    private function getFromPluginMeta(array $keys): ?string {
+    private function getFromPluginMeta(array $keys) {
         foreach ($keys as $key) {
             if ($result = $this->getGtinFromMeta($key)) {
                 return $result;
@@ -53,11 +53,11 @@ class GtinHandler {
         return null;
     }
 
-    private function getGtinFromMeta(string $key): ?string {
+    private function getGtinFromMeta(string $key) {
         return (string) get_post_meta($this->product->get_id(), $key, true) ?: null;
     }
 
-    private function handleGpf(): ?string {
+    private function handleGpf() {
         return (string) woocommerce_gpf_show_element('gtin', $this->product->post) ?: null;
     }
 }

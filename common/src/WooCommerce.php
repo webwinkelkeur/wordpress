@@ -32,7 +32,7 @@ class WooCommerce {
         wp_clear_scheduled_hook($this->getReviewsHook());
     }
 
-    public function orderStatusChanged(int $order_id, string $old_status, string $new_status): void {
+    public function orderStatusChanged(int $order_id, string $old_status, string $new_status) {
         if ($this->statusReached($new_status)) {
             $this->sendInvite($order_id);
         }
@@ -277,7 +277,7 @@ class WooCommerce {
         return $products;
     }
 
-    public function syncReviews(): void {
+    public function syncReviews() {
         if (!get_option($this->plugin->getOptionName('product_reviews'))
             || !$this->plugin->isWoocommerceActivated()
         ) {
@@ -301,7 +301,7 @@ class WooCommerce {
         }
     }
 
-    private function processReviews(\SimpleXMLElement $reviews): void {
+    private function processReviews(\SimpleXMLElement $reviews) {
         foreach ($reviews as $review) {
             $comment_data = $this->getCommentData($review);
             if (empty($comment_data)) {
@@ -326,7 +326,7 @@ class WooCommerce {
         }
     }
 
-    private function getExistingComment(int $post_id, string $author_email, int $review_id): ?int {
+    private function getExistingComment(int $post_id, string $author_email, int $review_id) {
         $args = [
             'post_id' => $post_id,
             'author_email' => $author_email,
@@ -341,7 +341,7 @@ class WooCommerce {
         return $comments[0]->comment_ID ?? null;
     }
 
-    private function getCommentData(\SimpleXMLElement $review): ?array {
+    private function getCommentData(\SimpleXMLElement $review) {
         $pf = new WC_Product_Factory();
         $product_id = (int) $review->products->product->external_id;
         if (!$pf->get_product($product_id)) {
@@ -365,7 +365,7 @@ class WooCommerce {
         ];
     }
 
-    private function logApiError(WebwinkelKeurAPIError $e): void {
+    private function logApiError(WebwinkelKeurAPIError $e) {
         global $wpdb;
         $wpdb->insert($this->plugin->getInviteErrorsTable(), [
             'url' => $e->getURL(),

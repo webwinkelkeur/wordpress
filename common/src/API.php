@@ -17,7 +17,7 @@ class API {
         $this->api_key = (string) $api_key;
     }
 
-    public function getReviews(?string $last_synced): \SimpleXMLElement {
+    public function getReviews(string $last_synced = null): \SimpleXMLElement {
         $params = [
             'id' => $this->shop_id,
             'code' => $this->api_key,
