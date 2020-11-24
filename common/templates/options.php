@@ -35,9 +35,7 @@
                 <td>
                     <label>
                         <input type="hidden" name="<?= $plugin->getOptionName('javascript'); ?>" value="">
-                        <input type="checkbox" id="webwinkelkeur-javascript" name="<?= $plugin->getOptionName('javascript');?>" value="1" <?php if ($config['javascript']) {
-            echo 'checked';
-        } ?> />
+                        <input type="checkbox" id="webwinkelkeur-javascript" name="<?= $plugin->getOptionName('javascript');?>" value="1" <?= $config['javascript'] ? 'checked' : ''; ?> />
                         <?php printf(__('Yes, add the %s JavaScript to my website.', 'webwinkelkeur'), $plugin->getName()); ?>
                     </label>
                     <p class="description">
@@ -57,21 +55,15 @@
                 <td>
                     <fieldset>
                         <label>
-                            <input type="radio" name="<?= $plugin->getOptionName('invite');?>" value="1" <?php if ($config['invite'] == 1) {
-            echo 'checked';
-        } ?> />
+                            <input type="radio" name="<?= $plugin->getOptionName('invite');?>" value="1" <?= $config['invite'] == 1 ? 'checked' : ''; ?> />
                             <?php _e('Yes, after every order.', 'webwinkelkeur'); ?>
                         </label><br>
                         <label>
-                            <input type="radio" name="<?= $plugin->getOptionName('invite');?>" value="2" <?php if ($config['invite'] == 2) {
-            echo 'checked';
-        } ?> />
+                            <input type="radio" name="<?= $plugin->getOptionName('invite');?>" value="2" <?= $config['invite'] == 2 ? 'checked' : ''; ?> />
                             <?php _e('Yes, after a customer\'s first order.', 'webwinkelkeur'); ?>
                         </label><br>
                         <label>
-                            <input type="radio" name="<?= $plugin->getOptionName('invite');?>" value="0" <?php if (!$config['invite']) {
-            echo 'checked';
-        } ?> />
+                            <input type="radio" name="<?= $plugin->getOptionName('invite');?>" value="0" <?= !$config['invite'] ? 'checked' : ''; ?> />
                             <?php _e('No, don\'t send invitations.', 'webwinkelkeur'); ?>
                         </label>
                     </fieldset>
@@ -86,9 +78,7 @@
                     <fieldset>
                         <label>
                             <input type="hidden" name="<?= $plugin->getOptionName('limit_order_data'); ?>" value="">
-                            <input type="checkbox" name="<?= $plugin->getOptionName('limit_order_data');?>" value="1" <?php if ($config['limit_order_data']) {
-            echo 'checked ';
-        }?> />
+                            <input type="checkbox" name="<?= $plugin->getOptionName('limit_order_data');?>" value="1" <?= $config['limit_order_data'] ? 'checked ' : ''; ?> />
                             <?= esc_html(sprintf(
             __('Do not send order information to %s', 'webwinkelkeur'),
             $plugin->getName()
@@ -115,9 +105,7 @@
                 <th scope="row"><label for="webwinkelkeur-javascript"><?php _e('Add rich snippet', 'webwinkelkeur'); ?></label></th>
                 <td>
                     <label>
-                        <input type="checkbox" id="webwinkelkeur-rich-snippet" name="<?= $plugin->getOptionName('rich_snippet');?>" value="1" <?php if ($config['rich_snippet']) {
-                    echo 'checked';
-                } ?> />
+                        <input type="checkbox" id="webwinkelkeur-rich-snippet" name="<?= $plugin->getOptionName('rich_snippet');?>" value="1" <?= $config['rich_snippet'] ? 'checked' : ''; ?> />
                         <?php _e('Yes, add a rich snippet to the footer of my website.', 'webwinkelkeur'); ?>
                     </label>
                     <p class="description">
