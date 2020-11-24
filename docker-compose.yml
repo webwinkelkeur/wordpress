@@ -1,14 +1,42 @@
 version: '3'
 
 services:
-  www:
-    build: ./docker
+  php_latest:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile-latest
     volumes:
       - .:/data
+      - www:/var/www/html
     ports:
       - "13779:80"
+
+  php_min:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile-min
+    volumes:
+      - .:/data
+      - www:/var/www/html
+    environment:
+      WP_INSTALL: 'yes'
+    ports:
+      - "13778:80"
+
+  php_old:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile-old
+    volumes:
+      - .:/data
+      - www:/var/www/html
+    ports:
+      - "13777:80"
 
   db:
     image: mariadb:10.3
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+
+volumes:
+  www:
