@@ -17,7 +17,7 @@ namespace WebwinkelKeur\WordPress;
 use Valued\WordPress\PhpCompatibilityCheck;
 require __DIR__ . '/common/autoload.php';
 
-if (!PhpCompatibilityCheck::isCompatible('trustprofile')) {
+if (!PhpCompatibilityCheck::isCompatible('TrustProfile')) {
     return;
 }
 
