@@ -15,14 +15,3 @@ require __DIR__ . '/common/autoload.php';
 require __DIR__ . '/src/Plugin.php';
 
 Plugin::getInstance()->init();
-
-$settings = [
-    'PLUGIN_PATH' => __DIR__,
-    'PLUGIN_SLUG' => 'webwinkelkeur',
-    'PLUGIN_NAME' => 'WebwinkelKeur',
-    'PLUGIN_ENTRY' => 'webwinkelkeur/webwinkelkeur.php',
-    'API_DOMAIN' => 'dashboard.webwinkelkeur.nl',
-    'JS_SIDEBAR_DOMAIN' => 'www.webwinkelkeur.nl',
-    'ADMIN_CLASS' => 'WebwinkelKeurAdmin',
-    'FRONTEND_CLASS' => 'WebwinkelKeurFrontend',
-];
