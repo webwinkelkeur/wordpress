@@ -62,6 +62,7 @@ class Admin {
                 }
                 return $value;
             },
+            'custom_gtin' => 'strval',
             'invite' => 'intval',
             'invite_delay' => 'intval',
             'limit_order_data' => 'boolval',

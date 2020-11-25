@@ -157,8 +157,7 @@ class WooCommerce {
     }
 
     public function addGtinOption() {
-        $gtin_handler = new GtinHandler($this->getGtinMetaKey());
-        if ($gtin_handler->hasActivePlugin() || !get_option($this->plugin->getOptionName('product_reviews'))) {
+        if (GtinHandler::hasActivePlugin() || !get_option($this->plugin->getOptionName('product_reviews'))) {
             return;
         }
         $label = 'GTIN';
@@ -270,7 +269,9 @@ class WooCommerce {
                 'url' => get_permalink($product->get_id()),
                 'image_url' => get_the_post_thumbnail_url($product->get_id()) ?: null,
                 'sku' => $product->get_sku(),
-                'gtin' => $gtin_handler->getGtin(),
+                'gtin' => $gtin_handler->getGtin(
+                    get_option($this->plugin->getOptionName('custom_gtin')) ?: null
+                ),
                 'reviews_allowed' => $product->get_reviews_allowed(),
             ];
         }

@@ -102,4 +102,23 @@ abstract class BasePlugin {
     public function isWoocommerceActivated(): bool {
         return class_exists('woocommerce');
     }
+
+    public function getProductMetaKeys(): array {
+        global $wpdb;
+        $post_type = 'product';
+        $query = "
+        SELECT DISTINCT($wpdb->postmeta.meta_key) 
+        FROM $wpdb->posts 
+        LEFT JOIN $wpdb->postmeta 
+        ON $wpdb->posts.ID = $wpdb->postmeta.post_id 
+        WHERE $wpdb->posts.post_type = '%s' 
+        AND $wpdb->postmeta.meta_key != ''
+    ";
+        $meta_keys = $wpdb->get_col($wpdb->prepare($query, $post_type));
+        return $meta_keys;
+    }
+
+    public function hasActiveGtinPlugin(): bool {
+        return GtinHandler::hasActivePlugin();
+    }
 }
