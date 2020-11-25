@@ -36,6 +36,9 @@ class GtinHandler {
         if (!empty($custom_gtin_key)) {
             return $this->getGtinFromMeta($custom_gtin_key);
         }
+        if (is_plugin_active('woocommerce-product-feeds/woocommerce-gpf.php')) {
+            return $this->handleGpf();
+        }
         foreach (self::SUPPORTED_PLUGINS as $plugin_name => $keys) {
             if ($keys && is_plugin_active($plugin_name)) {
                 return $this->getFromPluginMeta($keys);
