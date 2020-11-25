@@ -11,8 +11,6 @@ WC tested up to: 4.99
 
 namespace TrustProfile\WordPress;
 
-namespace WebwinkelKeur\WordPress;
-
 
 use Valued\WordPress\PhpCompatibilityCheck;
 require __DIR__ . '/common/autoload.php';

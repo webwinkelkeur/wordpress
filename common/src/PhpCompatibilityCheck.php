@@ -14,7 +14,7 @@ class PhpCompatibilityCheck {
                     $plugin_name,
                     phpversion()
                 );
-                printf('<div class="%1$s"><p>%2$s</p></div>', esc_attr($class), esc_html($message));
+                printf('<div class="%s"><p>%s</p></div>', esc_attr($class), esc_html($message));
             });
             return false;
         }
