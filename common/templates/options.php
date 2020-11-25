@@ -101,8 +101,7 @@
                             <input type="hidden" name="<?= $plugin->getOptionName('limit_order_data'); ?>" value="">
                             <input type="checkbox" name="<?= $plugin->getOptionName('limit_order_data');?>" value="1" <?= $config['limit_order_data'] ? 'checked ' : ''; ?> />
                             <?= esc_html(sprintf(
-                                __('Do not send my order information to %s (checking this option disables product reviews!)
-', 'webwinkelkeur'),
+                                __('Do not send my order information to %s (checking this option disables product reviews!).', 'webwinkelkeur'),
                                 $plugin->getName()
         )); ?>
                             <p class="description">
