@@ -11,8 +11,8 @@ WC tested up to: 4.99
 
 namespace TrustProfile\WordPress;
 
-
 use Valued\WordPress\PhpCompatibilityCheck;
+
 require __DIR__ . '/common/autoload.php';
 
 if (!PhpCompatibilityCheck::isCompatible('TrustProfile')) {
@@ -21,4 +21,3 @@ if (!PhpCompatibilityCheck::isCompatible('TrustProfile')) {
 
 require __DIR__ . '/src/Plugin.php';
 Plugin::getInstance()->init();
-
