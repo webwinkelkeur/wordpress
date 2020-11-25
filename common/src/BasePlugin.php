@@ -105,17 +105,14 @@ abstract class BasePlugin {
 
     public function getProductMetaKeys(): array {
         global $wpdb;
-        $post_type = 'product';
-        $query = "
-        SELECT DISTINCT($wpdb->postmeta.meta_key) 
-        FROM $wpdb->posts 
-        LEFT JOIN $wpdb->postmeta 
-        ON $wpdb->posts.ID = $wpdb->postmeta.post_id 
-        WHERE $wpdb->posts.post_type = '%s' 
-        AND $wpdb->postmeta.meta_key != ''
-    ";
-        $meta_keys = $wpdb->get_col($wpdb->prepare($query, $post_type));
-        return $meta_keys;
+        return $wpdb->get_col("
+            SELECT DISTINCT(pm.meta_key)
+            FROM {$wpdb->posts} p
+            LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
+            WHERE
+                p.post_type = 'product'
+                AND pm.meta_key <> ''
+        ");
     }
 
     public function hasActiveGtinPlugin(): bool {
