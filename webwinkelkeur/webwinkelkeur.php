@@ -11,8 +11,8 @@ WC tested up to: 4.99
 
 namespace WebwinkelKeur\WordPress;
 
-
 use Valued\WordPress\PhpCompatibilityCheck;
+
 require __DIR__ . '/common/autoload.php';
 
 if (!PhpCompatibilityCheck::isCompatible('WebwinkelKeur')) {
@@ -21,4 +21,3 @@ if (!PhpCompatibilityCheck::isCompatible('WebwinkelKeur')) {
 
 require __DIR__ . '/src/Plugin.php';
 Plugin::getInstance()->init();
-
