@@ -23,7 +23,7 @@ class GtinHandler {
         $this->product = $product;
     }
 
-    public function hasActivePlugin(): bool {
+    public static function hasActivePlugin(): bool {
         foreach (self::SUPPORTED_PLUGINS as $plugin_name => $key) {
             if (is_plugin_active($plugin_name)) {
                 return true;
@@ -32,7 +32,10 @@ class GtinHandler {
         return false;
     }
 
-    public function getGtin() {
+    public function getGtin(string $custom_gtin_key = null) {
+        if (!empty($custom_gtin_key)) {
+            return $this->getGtinFromMeta($custom_gtin_key);
+        }
         if (is_plugin_active('woocommerce-product-feeds/woocommerce-gpf.php')) {
             return $this->handleGpf();
         }

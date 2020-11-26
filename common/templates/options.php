@@ -101,8 +101,8 @@
                             <input type="hidden" name="<?= $plugin->getOptionName('limit_order_data'); ?>" value="">
                             <input type="checkbox" name="<?= $plugin->getOptionName('limit_order_data');?>" value="1" <?= $config['limit_order_data'] ? 'checked ' : ''; ?> />
                             <?= esc_html(sprintf(
-            __('Do not send order information to %s (required for product reviews)', 'webwinkelkeur'),
-            $plugin->getName()
+                                __('Do not send my order information to %s (checking this option disables product reviews!).', 'webwinkelkeur'),
+                                $plugin->getName()
         )); ?>
                             <p class="description">
                                 <?= esc_html(sprintf(
@@ -140,6 +140,25 @@
                             </p>
                         </label>
                     </fieldset>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row"></th>
+                <td>
+                    <label>
+                        GTIN meta key
+                        <select name="<?= $plugin->getOptionName('custom_gtin'); ?>">
+                            <option value=""><?= $plugin->hasActiveGtinPlugin() ? __('Automatic detection', 'webwinkelkeur') : 'Select key'; ?></option>
+                            <?php foreach ($plugin->getProductMetaKeys() as $key): ?>
+                                <option value="<?= $key; ?>" <?= $key == $config['custom_gtin'] ? 'selected' : ''; ?>><?= $key; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </label>
+                    <p class="description">
+                        <?=
+                        __('Tell this plugin where to find the product <strong>GTIN</strong> by selecting a custom key. For example: if you use a field called <strong>_productcode</strong> to store the <strong>GTIN</strong>, you should select  <strong>_product_code</strong>. Our plugin also supports certain 3rd party plugins. If we found a supported plugin, this box is set to <strong>Automatic detection</strong>, you can still choose to select another key.', 'webwinkelkeur')
+                        ?>
+                    </p>
                 </td>
             </tr>
             <tr valign="top">

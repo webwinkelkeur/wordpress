@@ -102,4 +102,20 @@ abstract class BasePlugin {
     public function isWoocommerceActivated(): bool {
         return class_exists('woocommerce');
     }
+
+    public function getProductMetaKeys(): array {
+        global $wpdb;
+        return $wpdb->get_col("
+            SELECT DISTINCT(pm.meta_key)
+            FROM {$wpdb->posts} p
+            LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
+            WHERE
+                p.post_type = 'product'
+                AND pm.meta_key <> ''
+        ");
+    }
+
+    public function hasActiveGtinPlugin(): bool {
+        return GtinHandler::hasActivePlugin();
+    }
 }
