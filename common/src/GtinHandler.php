@@ -23,13 +23,13 @@ class GtinHandler {
         $this->product = $product;
     }
 
-    public static function hasActivePlugin(): bool {
+    public static function hasActivePlugin() {
         foreach (self::SUPPORTED_PLUGINS as $plugin_name => $key) {
             if (is_plugin_active($plugin_name)) {
-                return true;
+                return $plugin_name;
             }
         }
-        return false;
+        return null;
     }
 
     public function getGtin(string $custom_gtin_key = null) {

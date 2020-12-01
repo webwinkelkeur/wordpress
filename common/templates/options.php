@@ -148,7 +148,7 @@
                     <label>
                         GTIN meta key
                         <select name="<?= $plugin->getOptionName('custom_gtin'); ?>">
-                            <option value=""><?= $plugin->hasActiveGtinPlugin() ? __('Automatic detection', 'webwinkelkeur') : 'Select key'; ?></option>
+                            <option value=""><?= $plugin->hasActiveGtinPlugin() ? __('Automatic detection', 'webwinkelkeur') . ' (' . explode('/', $plugin->hasActiveGtinPlugin())[0] .')' : 'Select key'; ?></option>
                             <?php foreach ($plugin->getProductMetaKeys() as $key): ?>
                                 <option value="<?= $key; ?>" <?= $key == $config['custom_gtin'] ? 'selected' : ''; ?>><?= $plugin->getAttributeName($key); ?></option>
                             <?php endforeach; ?>

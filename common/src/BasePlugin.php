@@ -104,7 +104,7 @@ abstract class BasePlugin {
         return class_exists('woocommerce');
     }
 
-    public function hasActiveGtinPlugin(): bool {
+    public function hasActiveGtinPlugin() {
         return GtinHandler::hasActivePlugin();
     }
 
