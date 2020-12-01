@@ -1,4 +1,5 @@
 <?php
+
 namespace Valued\WordPress;
 
 use ReflectionClass;
@@ -103,9 +104,14 @@ abstract class BasePlugin {
         return class_exists('woocommerce');
     }
 
+    public function hasActiveGtinPlugin(): bool {
+        return GtinHandler::hasActivePlugin();
+    }
+
     public function getProductMetaKeys(): array {
         global $wpdb;
-        return $wpdb->get_col("
+
+        $meta_keys = $wpdb->get_col("
             SELECT DISTINCT(pm.meta_key)
             FROM {$wpdb->posts} p
             LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
@@ -113,9 +119,44 @@ abstract class BasePlugin {
                 p.post_type = 'product'
                 AND pm.meta_key <> ''
         ");
+        return array_merge($meta_keys, $this->getCustomAttributes());
     }
 
-    public function hasActiveGtinPlugin(): bool {
-        return GtinHandler::hasActivePlugin();
+    private function getCustomAttributes(): array {
+        global $wpdb;
+        $custom_attributes = [];
+        $sql = "
+            SELECT meta.meta_id, meta.meta_key as name, meta.meta_value as type 
+            FROM " . $wpdb->prefix . "postmeta" . " AS meta, " . $wpdb->prefix . "posts" . " AS posts 
+            WHERE meta.post_id = posts.id 
+            AND posts.post_type LIKE '%product%' 
+            AND meta.meta_key='_product_attributes';";
+
+        $data = $wpdb->get_results($sql);
+        if (!empty($data)) {
+            foreach ($data as $key => $value) {
+                $product_attr = unserialize($value->type);
+                if (!empty($product_attr)) {
+                    foreach ($product_attr as $key => $arr_value) {
+                        $custom_attributes[] = $this->getCustomAttributePreffix() . $arr_value['name'];
+                    }
+                }
+            }
+        }
+        return $custom_attributes;
+    }
+
+    public function getCustomAttributePreffix(): string {
+        return "_{$this->getOptionName('custom_')}";
+    }
+
+    public function getCustomAttributeName(string $name) {
+        $pattern = sprintf('/^%s(.*)/', $this->getCustomAttributePreffix());
+        preg_match($pattern, $name, $matches);
+        return $matches[1] ?? null;
+    }
+
+    public function getAttributeName(string $name): string {
+        return $this->getCustomAttributeName($name) ?? $name;
     }
 }
