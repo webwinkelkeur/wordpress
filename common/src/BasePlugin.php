@@ -104,8 +104,8 @@ abstract class BasePlugin {
         return class_exists('woocommerce');
     }
 
-    public function hasActiveGtinPlugin() {
-        return GtinHandler::hasActivePlugin();
+    public function getActiveGtinPlugin() {
+        return GtinHandler::getActivePlugin();
     }
 
     public function getProductMetaKeys(): array {
@@ -147,7 +147,7 @@ abstract class BasePlugin {
     }
 
     public function getCustomAttributePreffix(): string {
-        return "_{$this->getOptionName('custom_')}";
+        return "_{$this->getOptionName('attr_')}";
     }
 
     public function getCustomAttributeName(string $name) {

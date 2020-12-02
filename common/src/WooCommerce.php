@@ -157,7 +157,7 @@ class WooCommerce {
     }
 
     public function addGtinOption() {
-        if (GtinHandler::hasActivePlugin() || !get_option($this->plugin->getOptionName('product_reviews'))) {
+        if (GtinHandler::getActivePlugin() || !get_option($this->plugin->getOptionName('product_reviews'))) {
             return;
         }
         $label = 'GTIN';

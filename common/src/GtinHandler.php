@@ -23,7 +23,7 @@ class GtinHandler {
         $this->product = $product;
     }
 
-    public static function hasActivePlugin() {
+    public static function getActivePlugin() {
         foreach (self::SUPPORTED_PLUGINS as $plugin_name => $key) {
             if (is_plugin_active($plugin_name)) {
                 return $plugin_name;
