@@ -127,9 +127,10 @@ abstract class BasePlugin {
         $custom_attributes = [];
         $sql = "
             SELECT meta.meta_id, meta.meta_key as name, meta.meta_value as type 
-            FROM " . $wpdb->prefix . "postmeta" . " AS meta, " . $wpdb->prefix . "posts" . " AS posts 
-            WHERE meta.post_id = posts.id 
-            AND posts.post_type LIKE '%product%' 
+            FROM {$wpdb->postmeta} meta
+            JOIN {$wpdb->posts} posts
+            ON meta.post_id = posts.id 
+            WHERE posts.post_type LIKE '%product%' 
             AND meta.meta_key='_product_attributes';";
 
         $data = $wpdb->get_results($sql);

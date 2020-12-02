@@ -146,7 +146,7 @@
                 <th scope="row"></th>
                 <td>
                     <label>
-                        GTIN meta key
+                        GTIN key
                         <select name="<?= $plugin->getOptionName('custom_gtin'); ?>">
                             <option value=""><?= $plugin->getActiveGtinPlugin() ? __('Automatic detection', 'webwinkelkeur') . ' (' . (explode('/', $plugin->getActiveGtinPlugin())[0] ?? '') . ')' : 'Select key'; ?></option>
                             <?php foreach ($plugin->getProductMetaKeys() as $key): ?>
