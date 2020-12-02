@@ -267,7 +267,7 @@ class WooCommerce {
                 'url' => get_permalink($product->get_id()),
                 'image_url' => get_the_post_thumbnail_url($product->get_id()) ?: null,
                 'sku' => $product->get_sku(),
-                'gtin' => $this->getGtin($product),
+                'gtin' => $this->getProductGtin($product),
                 'reviews_allowed' => $product->get_reviews_allowed(),
             ];
         }
@@ -383,7 +383,7 @@ class WooCommerce {
         return "_{$this->plugin->getOptionName('gtin')}";
     }
 
-    private function getGtin(\WC_Product $product) {
+    private function getProductGtin(\WC_Product $product) {
         if ($custom_gtin = get_option($this->plugin->getOptionName('custom_gtin'))) {
             if ($custom_attribute = $this->plugin->getCustomAttributeName($custom_gtin)) {
                 return $product->get_attribute($custom_attribute);

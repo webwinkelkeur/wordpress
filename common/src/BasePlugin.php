@@ -138,7 +138,7 @@ abstract class BasePlugin {
                 $product_attr = unserialize($value->type);
                 if (!empty($product_attr)) {
                     foreach ($product_attr as $key => $arr_value) {
-                        $custom_attributes[] = $this->getCustomAttributePreffix() . $arr_value['name'];
+                        $custom_attributes[] = $this->getCustomAttributePrefix() . $arr_value['name'];
                     }
                 }
             }
@@ -146,12 +146,12 @@ abstract class BasePlugin {
         return $custom_attributes;
     }
 
-    public function getCustomAttributePreffix(): string {
+    public function getCustomAttributePrefix(): string {
         return "_{$this->getOptionName('attr_')}";
     }
 
     public function getCustomAttributeName(string $name) {
-        $pattern = sprintf('/^%s(.*)/', $this->getCustomAttributePreffix());
+        $pattern = sprintf('/^%s(.*)/', $this->getCustomAttributePrefix());
         preg_match($pattern, $name, $matches);
         return $matches[1] ?? null;
     }
