@@ -1,5 +1,4 @@
 <?php
-
 namespace Valued\WordPress;
 
 use ReflectionClass;
