@@ -134,10 +134,10 @@ abstract class BasePlugin {
 
         $data = $wpdb->get_results($sql);
         if (!empty($data)) {
-            foreach ($data as $key => $value) {
+            foreach ($data as $value) {
                 $product_attr = unserialize($value->type);
                 if (!empty($product_attr)) {
-                    foreach ($product_attr as $key => $arr_value) {
+                    foreach ($product_attr as $arr_value) {
                         $custom_attributes[] = $this->getCustomAttributePrefix() . $arr_value['name'];
                     }
                 }
