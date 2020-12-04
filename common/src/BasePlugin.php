@@ -136,7 +136,7 @@ abstract class BasePlugin {
         global $wpdb;
         $custom_attributes = [];
         $sql = "
-            SELECT meta.meta_id, meta.meta_key as name, meta.meta_value as type 
+            SELECT meta.meta_id, meta.meta_key as name, meta.meta_value 
             FROM {$wpdb->postmeta} meta
             JOIN {$wpdb->posts} posts
             ON meta.post_id = posts.id 
@@ -146,7 +146,7 @@ abstract class BasePlugin {
         $data = $wpdb->get_results($sql);
         if (!empty($data)) {
             foreach ($data as $value) {
-                $product_attr = unserialize($value->type);
+                $product_attr = unserialize($value->meta_value);
                 if (!empty($product_attr)) {
                     foreach ($product_attr as $arr_value) {
                         $custom_attributes[] = [
