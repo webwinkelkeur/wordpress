@@ -103,9 +103,13 @@ abstract class BasePlugin {
         return class_exists('woocommerce');
     }
 
+    public function getActiveGtinPlugin() {
+        return GtinHandler::getActivePlugin();
+    }
+
     public function getProductMetaKeys(): array {
         global $wpdb;
-        return $wpdb->get_col("
+        $meta_keys = $wpdb->get_col("
             SELECT DISTINCT(pm.meta_key)
             FROM {$wpdb->posts} p
             LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
@@ -113,9 +117,53 @@ abstract class BasePlugin {
                 p.post_type = 'product'
                 AND pm.meta_key <> ''
         ");
+        return array_map(
+            function ($value) {
+                return [
+                    'type' => 'meta_key',
+                    'name' => $value
+                ];
+            },
+            $meta_keys
+        );
     }
 
-    public function hasActiveGtinPlugin(): bool {
-        return GtinHandler::hasActivePlugin();
+    public function getProductKeys() {
+        $custom_keys = array_merge($this->getProductMetaKeys(), $this->getCustomAttributes());
+        return array_map(function ($value) {
+            return [
+                'option_value' => $value['type'] . htmlentities($value['name']),
+                'label' => htmlentities($value['name']) . ' (' . $value['type'] . ')',
+            ];
+        },
+            $custom_keys
+        );
+    }
+
+    private function getCustomAttributes(): array {
+        global $wpdb;
+        $custom_attributes = [];
+        $sql = "
+            SELECT meta.meta_id, meta.meta_key as name, meta.meta_value 
+            FROM {$wpdb->postmeta} meta
+            JOIN {$wpdb->posts} posts
+            ON meta.post_id = posts.id 
+            WHERE posts.post_type = 'product' 
+            AND meta.meta_key='_product_attributes';";
+
+        $data = $wpdb->get_results($sql);
+        foreach ($data as $value) {
+            $product_attr = unserialize($value->meta_value);
+            if (!is_array($product_attr)) {
+                continue;
+            }
+            foreach ($product_attr as $arr_value) {
+                $custom_attributes[] = [
+                    'type' => 'custom_attribute',
+                    'name' => $arr_value['name']
+                ];
+            }
+        }
+        return $custom_attributes;
     }
 }

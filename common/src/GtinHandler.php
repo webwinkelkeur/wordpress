@@ -12,6 +12,9 @@ class GtinHandler {
         ],
         'woo-product-feed-pro/woocommerce-sea.php' => ['_woosea_gtin', '_woosea_ean'],
     ];
+    const ATTRIBUTE_PREFIX = 'custom_attribute';
+    const META_PREFIX = 'meta_key';
+
     private $product;
     private $gtin_meta_key;
 
@@ -23,18 +26,18 @@ class GtinHandler {
         $this->product = $product;
     }
 
-    public static function hasActivePlugin(): bool {
+    public static function getActivePlugin() {
         foreach (self::SUPPORTED_PLUGINS as $plugin_name => $key) {
             if (is_plugin_active($plugin_name)) {
-                return true;
+                return $plugin_name;
             }
         }
-        return false;
+        return null;
     }
 
     public function getGtin(string $custom_gtin_key = null) {
         if (!empty($custom_gtin_key)) {
-            return $this->getGtinFromMeta($custom_gtin_key);
+            return $this->getGtinFromKey($custom_gtin_key);
         }
         if (is_plugin_active('woocommerce-product-feeds/woocommerce-gpf.php')) {
             return $this->handleGpf();
@@ -62,5 +65,19 @@ class GtinHandler {
 
     private function handleGpf() {
         return (string) woocommerce_gpf_show_element('gtin', $this->product->post) ?: null;
+    }
+
+    private function getGtinFromKey(string $custom_gtin_key) {
+        if (strpos($custom_gtin_key, self::ATTRIBUTE_PREFIX) === 0) {
+            return $this->product->get_attribute(
+                substr($custom_gtin_key, strlen(self::ATTRIBUTE_PREFIX))
+            );
+        }
+        if (strpos($custom_gtin_key, self::META_PREFIX) === 0) {
+            return $this->getGtinFromMeta(
+                substr($custom_gtin_key, strlen(self::META_PREFIX))
+            );
+        }
+        return null;
     }
 }
