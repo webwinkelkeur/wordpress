@@ -109,7 +109,6 @@ abstract class BasePlugin {
 
     public function getProductMetaKeys(): array {
         global $wpdb;
-
         $meta_keys = $wpdb->get_col("
             SELECT DISTINCT(pm.meta_key)
             FROM {$wpdb->posts} p
@@ -118,7 +117,19 @@ abstract class BasePlugin {
                 p.post_type = 'product'
                 AND pm.meta_key <> ''
         ");
-        return array_merge($meta_keys, $this->getCustomAttributes());
+        return array_map(
+            function ($value) {
+                return [
+                    'type' => 'meta',
+                    'name' => $value
+                ];
+            },
+            $meta_keys
+        );
+    }
+
+    public function getProductKeys() {
+        return array_merge($this->getProductMetaKeys(), $this->getCustomAttributes());
     }
 
     private function getCustomAttributes(): array {
@@ -138,25 +149,14 @@ abstract class BasePlugin {
                 $product_attr = unserialize($value->type);
                 if (!empty($product_attr)) {
                     foreach ($product_attr as $arr_value) {
-                        $custom_attributes[] = $this->getCustomAttributePrefix() . $arr_value['name'];
+                        $custom_attributes[] = [
+                            'type' => 'attr',
+                            'name' => $arr_value['name']
+                        ];
                     }
                 }
             }
         }
         return $custom_attributes;
-    }
-
-    public function getCustomAttributePrefix(): string {
-        return "_{$this->getOptionName('attr_')}";
-    }
-
-    public function getCustomAttributeName(string $name) {
-        $pattern = sprintf('/^%s(.*)/', $this->getCustomAttributePrefix());
-        preg_match($pattern, $name, $matches);
-        return $matches[1] ?? null;
-    }
-
-    public function getAttributeName(string $name): string {
-        return $this->getCustomAttributeName($name) ?? $name;
     }
 }
