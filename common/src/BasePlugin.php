@@ -140,7 +140,7 @@ abstract class BasePlugin {
             FROM {$wpdb->postmeta} meta
             JOIN {$wpdb->posts} posts
             ON meta.post_id = posts.id 
-            WHERE posts.post_type LIKE '%product%' 
+            WHERE posts.post_type = 'product' 
             AND meta.meta_key='_product_attributes';";
 
         $data = $wpdb->get_results($sql);
