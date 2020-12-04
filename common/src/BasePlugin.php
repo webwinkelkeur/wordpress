@@ -120,7 +120,7 @@ abstract class BasePlugin {
         return array_map(
             function ($value) {
                 return [
-                    'type' => 'meta',
+                    'type' => 'meta_key',
                     'name' => $value
                 ];
             },
@@ -129,7 +129,15 @@ abstract class BasePlugin {
     }
 
     public function getProductKeys() {
-        return array_merge($this->getProductMetaKeys(), $this->getCustomAttributes());
+        $custom_keys = array_merge($this->getProductMetaKeys(), $this->getCustomAttributes());
+        return array_map(function ($value) {
+            return [
+                'option_value' => $value['type'] . htmlentities($value['name']),
+                'label' => htmlentities($value['name']) . ' (' . $value['type'] . ')',
+            ];
+        },
+            $custom_keys
+        );
     }
 
     private function getCustomAttributes(): array {
@@ -144,17 +152,16 @@ abstract class BasePlugin {
             AND meta.meta_key='_product_attributes';";
 
         $data = $wpdb->get_results($sql);
-        if (!empty($data)) {
-            foreach ($data as $value) {
-                $product_attr = unserialize($value->meta_value);
-                if (!empty($product_attr)) {
-                    foreach ($product_attr as $arr_value) {
-                        $custom_attributes[] = [
-                            'type' => 'attr',
-                            'name' => $arr_value['name']
-                        ];
-                    }
-                }
+        foreach ($data as $value) {
+            $product_attr = unserialize($value->meta_value);
+            if (!is_array($product_attr)) {
+                continue;
+            }
+            foreach ($product_attr as $arr_value) {
+                $custom_attributes[] = [
+                    'type' => 'custom_attribute',
+                    'name' => $arr_value['name']
+                ];
             }
         }
         return $custom_attributes;

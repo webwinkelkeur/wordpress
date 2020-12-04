@@ -12,8 +12,8 @@ class GtinHandler {
         ],
         'woo-product-feed-pro/woocommerce-sea.php' => ['_woosea_gtin', '_woosea_ean'],
     ];
-    const ATTRIBUTE_PREFIX = 'attr:';
-    const META_PREFIX = 'meta:';
+    const ATTRIBUTE_PREFIX = 'custom_attribute';
+    const META_PREFIX = 'meta_key';
 
     private $product;
     private $gtin_meta_key;
