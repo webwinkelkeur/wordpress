@@ -158,6 +158,9 @@ abstract class BasePlugin {
                 continue;
             }
             foreach ($product_attr as $arr_value) {
+                if (!$this->isUniqueAttribute($custom_attributes, $arr_value['name'])) {
+                    continue;
+                }
                 $custom_attributes[] = [
                     'type' => 'custom_attribute',
                     'name' => $arr_value['name']
@@ -165,5 +168,14 @@ abstract class BasePlugin {
             }
         }
         return $custom_attributes;
+    }
+
+    private function isUniqueAttribute(array $array, string $value): bool {
+        foreach ($array as $item) {
+            if (isset($item['name']) && $item['name'] == $value) {
+                return false;
+            }
+        }
+        return true;
     }
 }
