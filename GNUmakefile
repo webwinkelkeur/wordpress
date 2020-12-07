@@ -1,7 +1,7 @@
 PHP_VERSIONS := latest min old
 PHP_DOCKERFILES := $(patsubst %,docker/Dockerfile-%,$(PHP_VERSIONS))
 
-all : docker webwinkelkeur/readme.txt
+all : docker webwinkelkeur/readme.txt trustprofile/readme.txt
 .PHONY : all
 
 docker : $(PHP_DOCKERFILES)
