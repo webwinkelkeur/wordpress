@@ -4,12 +4,14 @@ namespace Valued\WordPress;
 class Admin {
     private $plugin;
 
-    private $woocommerce = false;
+    const DEFAULT_ORDER_STATUS = ['wc-completed'];
 
     protected function get_default_config() {
         return [
-            'invite_delay'     => 3,
-            'javascript'       => true,
+            'invite_delay' => 3,
+            'javascript' => true,
+            'order_statuses' => self::DEFAULT_ORDER_STATUS,
+            'product_reviews' => true,
         ];
     }
 
@@ -18,7 +20,6 @@ class Admin {
         add_action('admin_menu', [$this, 'admin_menu']);
         add_action('plugin_action_links', [$this, 'plugin_action_links'], 10, 2);
         add_action('admin_notices', [$this, 'invite_error_notices']);
-        add_action('before_woocommerce_init', [$this, 'activate_woocommerce']);
     }
 
     public function admin_menu() {
@@ -41,10 +42,6 @@ class Admin {
         return $links;
     }
 
-    public function activate_woocommerce() {
-        $this->woocommerce = true;
-    }
-
     public function options_page() {
         $errors = [];
         $updated = false;
@@ -65,10 +62,15 @@ class Admin {
                 }
                 return $value;
             },
+            'custom_gtin' => 'strval',
             'invite' => 'intval',
             'invite_delay' => 'intval',
             'limit_order_data' => 'boolval',
+            'product_reviews' => 'boolval',
             'javascript' => 'boolval',
+            'order_statuses' => function ($value) {
+                return array_map('strval', is_array($value) ? $value : []);
+            },
             'rich_snippet' => 'boolval',
         ];
 
@@ -77,7 +79,7 @@ class Admin {
         foreach (array_keys($fields) as $field_name) {
             $value = get_option($this->plugin->getOptionName($field_name), false);
             if ($value !== false) {
-                $config[$field_name] = (string) $value;
+                $config[$field_name] = $value;
             } elseif (!isset($config[$field_name])) {
                 $config[$field_name] = '';
             }
@@ -87,7 +89,7 @@ class Admin {
             foreach ($fields as $field_name => $sanitize) {
                 try {
                     $config[$field_name] =
-                        $sanitize((string) @$_POST[$this->plugin->getOptionName($field_name)]);
+                        $sanitize(@$_POST[$this->plugin->getOptionName($field_name)]);
                 } catch (ValidationException $e) {
                     $errors[] = $e->getMessage();
                     $config[$field_name] = '';
@@ -132,12 +134,12 @@ class Admin {
         foreach ($errors as $error) {
             ?>
             <div class="error"><p>
-                <?php sprintf(
-                __('An error occurred while requesting the %s invitation:', 'webwinkelkeur'),
-                $this->plugin->getName()
-            ); ?><br/>
-                <?php echo esc_html($error->response); ?>
-            </p></div>
+                    <?php sprintf(
+                        __('An error occurred while requesting the %s invitation:', 'webwinkelkeur'),
+                        $this->plugin->getName()
+                    ); ?><br/>
+                    <?php echo esc_html($error->response); ?>
+                </p></div>
             <?php
         }
 

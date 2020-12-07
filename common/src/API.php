@@ -17,6 +17,24 @@ class API {
         $this->api_key = (string) $api_key;
     }
 
+    public function getReviews(string $last_synced = null): \SimpleXMLElement {
+        $params = [
+            'id' => $this->shop_id,
+            'code' => $this->api_key,
+            'detailed' => true,
+            'last_synced' => $last_synced,
+        ];
+        $url = $this->buildURL('https://' . $this->api_domain . '/api/1.0/product_reviews.xml', $params);
+        $response = Requests::get($url);
+        if (isset($response->status_code) && $response->status_code >= 200 && $response->status_code < 300) {
+            return simplexml_load_string($response->body)->reviews->review;
+        }
+        throw new WebwinkelKeurAPIError(
+            $url,
+            isset($result->message) ? $result->message : $response->body
+        );
+    }
+
     public function invite(array $data) {
         $credentials = [
             'id'   => $this->shop_id,
@@ -31,12 +49,6 @@ class API {
         $result = json_decode($response->body);
         if (isset($result->status) && $result->status == 'success') {
             return true;
-        }
-        if (preg_match('|already sent|', $result->message)) {
-            throw new WebwinkelKeurAPIAlreadySentError($url, $result->message);
-        }
-        if (preg_match('|limit hit|', $result->message)) {
-            throw new WebwinkelKeurAPIAlreadySentError($url, $result->message);
         }
         throw new WebwinkelKeurAPIError(
             $url,
@@ -64,7 +76,4 @@ class WebwinkelKeurAPIError extends Exception {
     public function getURL() {
         return $this->url;
     }
-}
-
-class WebwinkelKeurAPIAlreadySentError extends WebwinkelKeurAPIError {
 }

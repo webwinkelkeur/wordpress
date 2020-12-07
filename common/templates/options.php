@@ -1,6 +1,5 @@
 <form method="POST" action="">
     <div class="wrap">
-        <?php screen_icon(); ?>
         <h2><?= $plugin->getName(); ?></h2>
         <?php
         if ($updated) {
@@ -67,8 +66,30 @@
                             <?php _e('No, don\'t send invitations.', 'webwinkelkeur'); ?>
                         </label>
                     </fieldset>
-                    <?php if (!$plugin->woocommerce): ?>
-                    <p class="description"><?php _e('Install and activate WooCommerce to use this functionality.', 'webwinkelkeur'); ?></p>
+                </td>
+            </tr>
+            <tr valign="top">
+                <th scope="row">
+                    <label><?php _e('Order status for invitations', 'webwinkelkeur'); ?></label>
+                </th>
+                <td>
+                    <?php if (!$plugin->isWoocommerceActivated()): ?>
+                        <p class="description"><?php _e('Install and activate WooCommerce to use this functionality.', 'webwinkelkeur'); ?></p>
+                    <?php else: ?>
+                        <fieldset>
+                            <div style="height: 150px; overflow: auto;">
+                                <?php foreach (wc_get_order_statuses() as $key => $label): ?>
+                                    <label>
+                                        <input type="checkbox" name="<?= $plugin->getOptionName('order_statuses[]'); ?>"
+                                               value="<?= $key; ?>" <?= in_array($key, $config['order_statuses']) ? 'checked' : ''; ?>>
+                                        <?= $label; ?>
+                                    </label> <br>
+                                <?php endforeach; ?>
+                            </div>
+                            <p class="description">
+                                <?php _e('The invitation is only sent when the order has the checked status.', 'webwinkelkeur'); ?>
+                            </p>
+                        </fieldset>
                     <?php endif; ?>
                 </td>
             </tr>
@@ -80,8 +101,8 @@
                             <input type="hidden" name="<?= $plugin->getOptionName('limit_order_data'); ?>" value="">
                             <input type="checkbox" name="<?= $plugin->getOptionName('limit_order_data');?>" value="1" <?= $config['limit_order_data'] ? 'checked ' : ''; ?> />
                             <?= esc_html(sprintf(
-            __('Do not send order information to %s', 'webwinkelkeur'),
-            $plugin->getName()
+                                __('Do not send my order information to %s (checking this option disables product reviews!).', 'webwinkelkeur'),
+                                $plugin->getName()
         )); ?>
                             <p class="description">
                                 <?= esc_html(sprintf(
@@ -99,6 +120,45 @@
                 <p class="description">
                 <?php _e('The invitation will be send after the specified amount of days since the order has been shipped.', 'webwinkelkeur'); ?>
                 </p>
+                </td>
+            </tr>
+            <tr valign="top">
+                <th scope="row"><?php _e('Product reviews', 'webwinkelkeur'); ?></th>
+                <td>
+                    <fieldset>
+                        <label>
+                            <input type="checkbox" name="<?= $plugin->getOptionName('product_reviews'); ?>" value="1" <?php if ($config['product_reviews']) {
+                                echo 'checked ';
+                            } ?> />
+                            <?= esc_html(
+                                __('Import product reviews to WooCommerce.', 'webwinkelkeur')
+                            ); ?>
+                            <p class="description">
+                                <?= esc_html(
+                                    sprintf(__('Automatically display product reviews collected using %s on your WooCommerce shop.', 'webwinkelkeur'), $plugin->getName())
+                                ); ?>
+                            </p>
+                        </label>
+                    </fieldset>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row"></th>
+                <td>
+                    <label>
+                        GTIN key
+                        <select name="<?= $plugin->getOptionName('custom_gtin'); ?>">
+                            <option value=""><?= $plugin->getActiveGtinPlugin() ? __('Automatic detection', 'webwinkelkeur') . ' (' . (explode('/', $plugin->getActiveGtinPlugin())[0] ?? '') . ')' : 'Select key'; ?></option>
+                            <?php foreach ($plugin->getProductKeys() as $key): ?>
+                                <option value="<?= $key['option_value']; ?>" <?= $key['option_value'] == $config['custom_gtin'] ? 'selected' : ''; ?>><?= $key['label']; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </label>
+                    <p class="description">
+                        <?=
+                        __('Tell this plugin where to find the product <strong>GTIN</strong> by selecting a custom key. For example: if you use a field called <strong>_productcode</strong> to store the <strong>GTIN</strong>, you should select  <strong>_product_code</strong>. Our plugin also supports certain 3rd party plugins. If we found a supported plugin, this box is set to <strong>Automatic detection</strong>, you can still choose to select another key.', 'webwinkelkeur')
+                        ?>
+                    </p>
                 </td>
             </tr>
             <tr valign="top">
