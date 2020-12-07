@@ -1,3 +1,8 @@
+= 3.0 - 2020-12-07 =
+* Allow order status selection for invites.
+* Add product reviews.
+* Require PHP 7.0.
+
 = 2.4 - 2020-11-24 =
 * Fix disabling JavaScript integration. Previously, the setting wasn't saved.
 * Fix setting invitations to "Yes, after a customer's first order.". This setting was converted to "Yes, after every order." silently before.
