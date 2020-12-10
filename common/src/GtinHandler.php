@@ -5,7 +5,6 @@ namespace Valued\WordPress;
 class GtinHandler {
     const SUPPORTED_PLUGINS = [
         'woosa-vandermeer/woosa-vandermeer.php' => ['vdm_ean'],
-        'woocommerce-product-feeds/woocommerce-gpf.php' => null,
         'customer-reviews-woocommerce/ivole.php' => ['_cr_gtin'],
         'product-gtin-ean-upc-isbn-for-woocommerce/product-gtin-ean-upc-isbn-for-woocommerce.php' => [
             '_wpm_gtin_code', '_wpm_ean_code'
@@ -39,8 +38,8 @@ class GtinHandler {
         if (!empty($custom_gtin_key)) {
             return $this->getGtinFromKey($custom_gtin_key);
         }
-        if (is_plugin_active('woocommerce-product-feeds/woocommerce-gpf.php')) {
-            return $this->handleGpf();
+        if (function_exists('woocommerce_gpf_show_element')) {
+            return (string) woocommerce_gpf_show_element('gtin', $this->product->post) ?: null;
         }
         foreach (self::SUPPORTED_PLUGINS as $plugin_name => $keys) {
             if ($keys && is_plugin_active($plugin_name)) {
@@ -61,13 +60,6 @@ class GtinHandler {
 
     private function getGtinFromMeta(string $key) {
         return (string) get_post_meta($this->product->get_id(), $key, true) ?: null;
-    }
-
-    private function handleGpf() {
-        if (!function_exists('woocommerce_gpf_show_element')) {
-            return null;
-        }
-        return (string) woocommerce_gpf_show_element('gtin', $this->product->post) ?: null;
     }
 
     private function getGtinFromKey(string $custom_gtin_key) {
