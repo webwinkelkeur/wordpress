@@ -64,6 +64,9 @@ class GtinHandler {
     }
 
     private function handleGpf() {
+        if (!function_exists('woocommerce_gpf_show_element')) {
+            return null;
+        }
         return (string) woocommerce_gpf_show_element('gtin', $this->product->post) ?: null;
     }
 
