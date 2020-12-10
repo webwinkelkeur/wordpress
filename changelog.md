@@ -1,6 +1,5 @@
 = 3.1 - 2020-12-10 =
-* Fix undefined function error when the `woocommerce-product-feeds` plugin is
-  installed but the `woocommerce_gpf_show_element` function does not exist.
+* Fix undefined function error when the `woocommerce-product-feeds` plugin is installed but the `woocommerce_gpf_show_element` function does not exist.
 
 = 3.0 - 2020-12-07 =
 * Allow order status selection for invites.
@@ -24,8 +23,7 @@
 * Release TrustProfile integration.
 
 = 1.9 =
-* Set `wpml_language` on orders, in case WooCommerce Multilingual plugin is
-  missing.
+* Set `wpml_language` on orders, in case WooCommerce Multilingual plugin is missing.
 * Bump WordPress, WooCommerce version compatibility.
 
 = 1.8 =
