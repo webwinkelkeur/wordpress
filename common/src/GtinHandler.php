@@ -5,6 +5,7 @@ namespace Valued\WordPress;
 class GtinHandler {
     const SUPPORTED_PLUGINS = [
         'woosa-vandermeer/woosa-vandermeer.php' => ['vdm_ean'],
+        'woocommerce-product-feeds/woocommerce-gpf.php' => null,
         'customer-reviews-woocommerce/ivole.php' => ['_cr_gtin'],
         'product-gtin-ean-upc-isbn-for-woocommerce/product-gtin-ean-upc-isbn-for-woocommerce.php' => [
             '_wpm_gtin_code', '_wpm_ean_code'
