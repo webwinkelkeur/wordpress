@@ -150,12 +150,12 @@
                         <select name="<?= $plugin->getOptionName('custom_gtin'); ?>">
                             <option value=""><?= $plugin->getActiveGtinPlugin() ? __('Automatic detection', 'webwinkelkeur') . ' (' . (explode('/', $plugin->getActiveGtinPlugin())[0] ?? '') . ')' : 'Select key'; ?></option>
                             <optgroup label="<?= _e('Suggested keys', 'webwinkelkeur'); ?>">
-                                <?php foreach ($plugin->getKeysPerSuggestion($config['custom_gtin'], true) as $select_option): ?>
+                                <?php foreach ($plugin->getSelectOptions($config['custom_gtin'], true) as $select_option): ?>
                                     <?= $select_option; ?>
                                 <?php endforeach; ?>
                             </optgroup>
                             <optgroup label="<?= _e('Other keys', 'webwinkelkeur'); ?>">
-                                <?php foreach ($plugin->getKeysPerSuggestion($config['custom_gtin']) as $select_option): ?>
+                                <?php foreach ($plugin->getSelectOptions($config['custom_gtin']) as $select_option): ?>
                                     <?= $select_option; ?>
                                 <?php endforeach; ?>
                             </optgroup>

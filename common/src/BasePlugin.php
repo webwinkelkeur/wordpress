@@ -131,7 +131,7 @@ abstract class BasePlugin {
         );
     }
 
-    public function getKeysPerSuggestion(string $selected_key, bool $suggested = false) {
+    public function getSelectOptions(string $selected_key, bool $suggested = false) {
         $options = [];
         foreach ($this->getProductKeys() as $key) {
             if ($key['suggested'] != $suggested) {
@@ -142,7 +142,7 @@ abstract class BasePlugin {
         return $options;
     }
 
-    public function getProductKeys() {
+    private function getProductKeys(): array {
         $custom_keys = array_merge($this->getProductMetaKeys(), $this->getCustomAttributes());
         return array_map(function ($value) {
             return [
@@ -155,7 +155,7 @@ abstract class BasePlugin {
         );
     }
 
-    private function getMetaValue($meta_key) {
+    private function getMetaValue(string $meta_key): string {
         global $wpdb;
         $sql = "
             SELECT meta.meta_value
@@ -166,6 +166,7 @@ abstract class BasePlugin {
         ";
         return $wpdb->get_var($sql);
     }
+
     private function getCustomAttributes(): array {
         global $wpdb;
         $custom_attributes = [];
@@ -209,7 +210,7 @@ abstract class BasePlugin {
         return true;
     }
 
-    private function isSuggested($value): bool {
+    private function isSuggested(string $value): bool {
         return preg_match('/^\d{8}(?:\d{4,6})?$/', $value);
     }
 }
