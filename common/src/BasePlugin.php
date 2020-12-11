@@ -140,7 +140,7 @@ abstract class BasePlugin {
                 '<option value="%s"%s>%s</option>',
                 htmlentities($key['option_value']),
                 $key['option_value'] === $selected_key ? ' selected' : '',
-                htmlentities($key['label']) . PHP_EOL
+                htmlentities($key['label'])
             );
         }
         return $options;
