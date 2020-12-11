@@ -142,7 +142,7 @@
                     </fieldset>
                     <fieldset>
                         <label>
-                            <button type="button" id="<?= $plugin->getOptionName('manual_sync_btn'); ?>" onClick="triggerManualSync()">
+                            <button class="button" type="button" id="<?= $plugin->getOptionName('manual_sync_btn'); ?>" onClick="triggerManualSync()">
                                 <?= __('Sync manually', 'webwinkelkeur'); ?>
                             </button>
                             <span id='successful-sync' hidden style="color:#0ED826">&#10003;
@@ -159,18 +159,17 @@
             <tr>
                 <th scope="row"></th>
                 <td>
-                    <label>
-                        GTIN/EAN key
-                        <select name="<?= $plugin->getOptionName('custom_gtin'); ?>">
-                            <option value=""><?= $plugin->getActiveGtinPlugin() ? __('Automatic detection', 'webwinkelkeur') . ' (' . (explode('/', $plugin->getActiveGtinPlugin())[0] ?? '') . ')' : 'Select key'; ?></option>
-                            <optgroup label="<?= _e('Suggested keys', 'webwinkelkeur'); ?>">
-                                <?= $plugin->getSelectOptions($config['custom_gtin'], true); ?>
-                            </optgroup>
-                            <optgroup label="<?= _e('Other keys', 'webwinkelkeur'); ?>">
-                                <?= $plugin->getSelectOptions($config['custom_gtin']); ?>
-                            </optgroup>
-                        </select>
-                    </label>
+                    <label>GTIN/EAN key</label>
+                    <select name="<?= $plugin->getOptionName('custom_gtin'); ?>">
+                        <option value=""><?= $plugin->getActiveGtinPlugin() ? __('Automatic detection', 'webwinkelkeur') . ' (' . (explode('/', $plugin->getActiveGtinPlugin())[0] ?? '') . ')' : 'Select key'; ?></option>
+                        <optgroup label="<?= _e('Suggested keys', 'webwinkelkeur'); ?>">
+                            <?= $plugin->getSelectOptions($config['custom_gtin'], true); ?>
+                        </optgroup>
+                        <optgroup label="<?= _e('Other keys', 'webwinkelkeur'); ?>">
+                            <?= $plugin->getSelectOptions($config['custom_gtin']); ?>
+                        </optgroup>
+                    </select>
+
                     <p class="description">
                         <?=
                         __('Tell this plugin where to find the product <strong>GTIN</strong> by selecting a custom key. For example: if you use a field called <strong>_productcode</strong> to store the <strong>GTIN</strong>, you should select  <strong>_product_code</strong>. Our plugin also supports certain 3rd party plugins. If we found a supported plugin, this box is set to <strong>Automatic detection</strong>, you can still choose to select another key.', 'webwinkelkeur')
