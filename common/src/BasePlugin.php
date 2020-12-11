@@ -116,28 +116,60 @@ abstract class BasePlugin {
             WHERE
                 p.post_type = 'product'
                 AND pm.meta_key <> ''
+                AND pm.meta_value <> ''
         ");
         return array_map(
             function ($value) {
                 return [
                     'type' => 'meta_key',
-                    'name' => $value
+                    'name' => $value,
+                    'example_value' => substr($this->getMetaValue($value), 0, 15),
                 ];
             },
             $meta_keys
         );
     }
 
-    public function getProductKeys() {
+    public function getSelectOptions(string $selected_key, bool $suggested = false): string {
+        $options = '';
+        foreach ($this->getProductKeys() as $key) {
+            if ($key['suggested'] != $suggested) {
+                continue;
+            }
+            $options .= sprintf(
+                '<option value="%s"%s>%s</option>',
+                htmlentities($key['option_value']),
+                $key['option_value'] === $selected_key ? ' selected' : '',
+                htmlentities($key['label'])
+            );
+        }
+        return $options;
+    }
+
+    private function getProductKeys(): array {
         $custom_keys = array_merge($this->getProductMetaKeys(), $this->getCustomAttributes());
         return array_map(function ($value) {
             return [
-                'option_value' => $value['type'] . htmlentities($value['name']),
-                'label' => htmlentities($value['name']) . ' (' . $value['type'] . ')',
+                'option_value' => $value['type'] . $value['name'],
+                'label' => $value['name'] . ' (e.g. "' . $value['example_value'] . '")',
+                'suggested' => $this->isValidGtin($value['example_value']),
             ];
         },
             $custom_keys
         );
+    }
+
+    private function getMetaValue(string $meta_key) {
+        global $wpdb;
+        $sql = "
+            SELECT meta.meta_value
+            FROM {$wpdb->postmeta} meta
+            WHERE meta.meta_key = %s
+            AND meta.meta_value <> ''
+            ORDER BY meta.meta_id DESC
+            LIMIT 1;
+        ";
+        return $wpdb->get_var($wpdb->prepare($sql, $meta_key));
     }
 
     private function getCustomAttributes(): array {
@@ -158,12 +190,16 @@ abstract class BasePlugin {
                 continue;
             }
             foreach ($product_attr as $arr_value) {
-                if (!$this->isUniqueAttribute($custom_attributes, $arr_value['name'])) {
+                if (
+                    !$this->isUniqueAttribute($custom_attributes, $arr_value['name']) ||
+                    empty($arr_value['value'])
+                ) {
                     continue;
                 }
                 $custom_attributes[] = [
                     'type' => 'custom_attribute',
-                    'name' => $arr_value['name']
+                    'name' => $arr_value['name'],
+                    'example_value' => substr($arr_value['value'], 0, 15),
                 ];
             }
         }
@@ -177,5 +213,9 @@ abstract class BasePlugin {
             }
         }
         return true;
+    }
+
+    private function isValidGtin(string $value): bool {
+        return preg_match('/^\d{8}(?:\d{4,6})?$/', $value);
     }
 }
