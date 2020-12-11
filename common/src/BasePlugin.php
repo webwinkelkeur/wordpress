@@ -163,7 +163,6 @@ abstract class BasePlugin {
             SELECT meta.meta_value
             FROM {$wpdb->postmeta} meta
             WHERE meta.meta_key = '{$meta_key}'
-            AND meta.meta_value <> ''
             LIMIT 1;
         ";
         return $wpdb->get_var($sql);
