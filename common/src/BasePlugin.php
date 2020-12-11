@@ -116,16 +116,30 @@ abstract class BasePlugin {
             WHERE
                 p.post_type = 'product'
                 AND pm.meta_key <> ''
+                AND pm.meta_value <> ''
         ");
         return array_map(
             function ($value) {
+                $meta_value = substr($this->getMetaValue($value), 0, 15);
                 return [
                     'type' => 'meta_key',
-                    'name' => $value
+                    'name' => $value,
+                    'example_value' => $meta_value,
                 ];
             },
             $meta_keys
         );
+    }
+
+    public function getKeysPerSuggestion(string $selected_key, bool $suggested = false) {
+        $options = [];
+        foreach ($this->getProductKeys() as $key) {
+            if ($key['suggested'] != $suggested) {
+                continue;
+            }
+            $options[] = '<option value="' . $key['option_value'] . '" ' . ($key['option_value'] == $selected_key ? 'selected' : '') . '>' . $key['label'] . '</option>';
+        }
+        return $options;
     }
 
     public function getProductKeys() {
@@ -133,13 +147,25 @@ abstract class BasePlugin {
         return array_map(function ($value) {
             return [
                 'option_value' => $value['type'] . htmlentities($value['name']),
-                'label' => htmlentities($value['name']) . ' (' . $value['type'] . ')',
+                'label' => htmlentities($value['name']) . ' (e.g. ' . $value['example_value'] . ')',
+                'suggested' => $this->isSuggested($value['example_value']),
             ];
         },
             $custom_keys
         );
     }
 
+    private function getMetaValue($meta_key) {
+        global $wpdb;
+        $sql = "
+            SELECT meta.meta_value
+            FROM {$wpdb->postmeta} meta
+            WHERE meta.meta_key = '{$meta_key}'
+            AND meta.meta_value <> ''
+            LIMIT 1;
+        ";
+        return $wpdb->get_var($sql);
+    }
     private function getCustomAttributes(): array {
         global $wpdb;
         $custom_attributes = [];
@@ -158,12 +184,16 @@ abstract class BasePlugin {
                 continue;
             }
             foreach ($product_attr as $arr_value) {
-                if (!$this->isUniqueAttribute($custom_attributes, $arr_value['name'])) {
+                if (
+                    !$this->isUniqueAttribute($custom_attributes, $arr_value['name']) ||
+                    empty($arr_value['value'])
+                ) {
                     continue;
                 }
                 $custom_attributes[] = [
                     'type' => 'custom_attribute',
-                    'name' => $arr_value['name']
+                    'name' => $arr_value['name'],
+                    'example_value' => $arr_value['value'],
                 ];
             }
         }
@@ -177,5 +207,9 @@ abstract class BasePlugin {
             }
         }
         return true;
+    }
+
+    private function isSuggested($value): bool {
+        return preg_match('/^\d{8}(?:\d{4,6})?$/', $value);
     }
 }

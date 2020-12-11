@@ -160,7 +160,7 @@ class WooCommerce {
         if (
             GtinHandler::getActivePlugin()
             || !get_option($this->plugin->getOptionName('product_reviews'))
-            || get_option($this->plugin->getOptionName('custom_gtin'))
+            || get_option($this->plugin->getOptionName('custom_gtin') != $this->getGtinMetaKey())
         ) {
             return;
         }
