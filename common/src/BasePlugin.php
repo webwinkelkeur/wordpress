@@ -218,4 +218,20 @@ abstract class BasePlugin {
     private function isValidGtin(string $value): bool {
         return preg_match('/^\d{8}(?:\d{4,6})?$/', $value);
     }
+
+    public function getManualSyncAction(): string {
+        return "{$this->getOptionName('manual_sync')}";
+    }
+
+    public function getManualSyncNonce(): string {
+        return "{$this->getOptionName('manual-sync-data')}";
+    }
+
+    public function getNextReviewSync() {
+        $next_sync = wp_next_scheduled($this->woocommerce->getReviewsHook());
+        if ($next_sync) {
+            return date("Y-m-d H:i:s", $next_sync);
+        }
+        return 'Not registered.';
+    }
 }

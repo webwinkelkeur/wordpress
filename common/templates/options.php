@@ -140,6 +140,17 @@
                             </p>
                         </label>
                     </fieldset>
+                    <fieldset>
+                        <label>
+                            <button type="button" id="<?= $plugin->getOptionName('manual_sync_btn'); ?>" onClick="triggerManualSync()">
+                                <?= __('Sync manually', 'webwinkelkeur'); ?>
+                            </button>
+                            <span id='successful-sync' hidden style="color:#0ED826">&#10003;
+                                <?= __('Synced successfully', 'webwinkelkeur'); ?>
+                            </span>
+                        </label>
+                            <?= __('Next automatic sync', 'webwinkelkeur'); ?>:<?= esc_html($plugin->getNextReviewSync()); ?>
+                    </fieldset>
                 </td>
             </tr>
             <tr>
@@ -181,3 +192,23 @@
         <?php submit_button(); ?>
     </div>
 </form>
+<script>
+    function triggerManualSync() {
+        <?php $nonce = wp_create_nonce($plugin->getManualSyncNonce());?>
+        jQuery.ajax({
+            type: "post",
+            url: "admin-ajax.php",
+            data: {action: <?= json_encode($plugin->getManualSyncAction()); ?>, _ajax_nonce: '<?php echo $nonce; ?>'},
+            success: function (response) {
+                const obj = JSON.parse(response);
+                if (obj.status) {
+                    jQuery("#successful-sync").show();
+                } else {
+                    alert('Something went wrong with syncing.');
+                }
+                console.log(response);
+            }
+        });
+    }
+</script>
+<?php

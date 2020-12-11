@@ -20,6 +20,7 @@ class WooCommerce {
         register_activation_hook($this->plugin->getPluginFile(), [$this, 'activateSyncReviews']);
         register_deactivation_hook($this->plugin->getPluginFile(), [$this, 'deactivateSyncReviews']);
         add_action($this->getReviewsHook(), [$this, 'syncReviews']);
+        add_action('wp_ajax_' . $plugin->getManualSyncAction(), [$this, 'manualReviewSync']);
     }
 
     public function activateSyncReviews() {
@@ -282,6 +283,13 @@ class WooCommerce {
         return $products;
     }
 
+    public function manualReviewSync() {
+        check_ajax_referer($this->plugin->getManualSyncNonce());
+        $this->syncReviews();
+        echo json_encode(['status' => true]);
+        wp_die();
+    }
+
     public function syncReviews() {
         if (!get_option($this->plugin->getOptionName('product_reviews'))
             || !$this->plugin->isWoocommerceActivated()
@@ -379,7 +387,7 @@ class WooCommerce {
         ]);
     }
 
-    private function getReviewsHook(): string {
+    public function getReviewsHook(): string {
         return "{$this->plugin->getSlug()}_reviews_cron";
     }
 
