@@ -120,11 +120,10 @@ abstract class BasePlugin {
         ");
         return array_map(
             function ($value) {
-                $meta_value = substr($this->getMetaValue($value), 0, 15);
                 return [
                     'type' => 'meta_key',
                     'name' => $value,
-                    'example_value' => $meta_value,
+                    'example_value' => substr($this->getMetaValue($value), 0, 15),
                 ];
             },
             $meta_keys
@@ -194,7 +193,7 @@ abstract class BasePlugin {
                 $custom_attributes[] = [
                     'type' => 'custom_attribute',
                     'name' => $arr_value['name'],
-                    'example_value' => $arr_value['value'],
+                    'example_value' => substr($arr_value['value'], 0, 15),
                 ];
             }
         }
