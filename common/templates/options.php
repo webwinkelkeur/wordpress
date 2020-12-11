@@ -148,8 +148,11 @@
                             <span id='successful-sync' hidden style="color:#0ED826">&#10003;
                                 <?= __('Synced successfully', 'webwinkelkeur'); ?>
                             </span>
-                        </label>
-                            <?= __('Next automatic sync', 'webwinkelkeur'); ?>:<?= esc_html($plugin->getNextReviewSync()); ?>
+                        </label> </br>
+                        <p> <?= __('Last sync', 'webwinkelkeur'); ?>: <b><?= $plugin->getLastReviewSync(); ?></b>
+                        </p>
+                        <p> <?= __('Next sync', 'webwinkelkeur'); ?>: <b><?= $plugin->getNextReviewSync(); ?></b>
+                        </p>
                     </fieldset>
                 </td>
             </tr>

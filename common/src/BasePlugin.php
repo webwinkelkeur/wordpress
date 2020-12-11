@@ -227,10 +227,19 @@ abstract class BasePlugin {
         return "{$this->getOptionName('manual-sync-data')}";
     }
 
-    public function getNextReviewSync() {
-        $next_sync = wp_next_scheduled($this->woocommerce->getReviewsHook());
-        if ($next_sync) {
-            return date("Y-m-d H:i:s", $next_sync);
+    public function getNextReviewSync(): string {
+        return $this->getReviewSyncDate(wp_next_scheduled($this->woocommerce->getReviewsHook()));
+    }
+
+    public function getLastReviewSync(): string {
+        return $this->getReviewSyncDate(strtotime(
+            get_option($this->getOptionName('last_synced'))
+        ));
+    }
+
+    private function getReviewSyncDate($date): string {
+        if ($date) {
+            return htmlentities(date("Y-m-d H:i:s", $date));
         }
         return 'Not registered.';
     }
