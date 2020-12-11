@@ -130,16 +130,18 @@ abstract class BasePlugin {
         );
     }
 
-    public function getSelectOptions(string $selected_key, bool $suggested = false) {
-        $options = [];
+    public function getSelectOptions(string $selected_key, bool $suggested = false): string {
+        $options = '';
         foreach ($this->getProductKeys() as $key) {
             if ($key['suggested'] != $suggested) {
                 continue;
             }
-            $options[] = '<option value="' . $key['option_value'] . '" '
-                . ($key['option_value'] == $selected_key ? 'selected' : '') . '>'
-                . $key['label']
-                . '</option>';
+            $options .= sprintf(
+                '<option value="%s"%s>%s</option>',
+                htmlentities($key['option_value']),
+                $key['option_value'] === $selected_key ? ' selected' : '',
+                htmlentities($key['label']) . PHP_EOL
+            );
         }
         return $options;
     }
@@ -148,8 +150,8 @@ abstract class BasePlugin {
         $custom_keys = array_merge($this->getProductMetaKeys(), $this->getCustomAttributes());
         return array_map(function ($value) {
             return [
-                'option_value' => $value['type'] . htmlentities($value['name']),
-                'label' => htmlentities($value['name']) . ' (e.g. "' . $value['example_value'] . '")',
+                'option_value' => $value['type'] . $value['name'],
+                'label' => $value['name'] . ' (e.g. "' . $value['example_value'] . '")',
                 'suggested' => $this->isValidGtin($value['example_value']),
             ];
         },
@@ -162,11 +164,12 @@ abstract class BasePlugin {
         $sql = "
             SELECT meta.meta_value
             FROM {$wpdb->postmeta} meta
-            WHERE meta.meta_key = '{$meta_key}'
+            WHERE meta.meta_key = %s
             AND meta.meta_value <> ''
+            ORDER BY meta.meta_id DESC
             LIMIT 1;
         ";
-        return $wpdb->get_var($sql);
+        return $wpdb->get_var($wpdb->prepare($sql, $meta_key));
     }
 
     private function getCustomAttributes(): array {
