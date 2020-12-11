@@ -147,7 +147,7 @@ abstract class BasePlugin {
         return array_map(function ($value) {
             return [
                 'option_value' => $value['type'] . htmlentities($value['name']),
-                'label' => htmlentities($value['name']) . ' (e.g. ' . $value['example_value'] . ')',
+                'label' => htmlentities($value['name']) . ' (e.g. "' . $value['example_value'] . '")',
                 'suggested' => $this->isSuggested($value['example_value']),
             ];
         },

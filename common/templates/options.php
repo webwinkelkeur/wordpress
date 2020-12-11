@@ -154,9 +154,11 @@
                                     <?= $select_option; ?>
                                 <?php endforeach; ?>
                             </optgroup>
-                            <?php foreach ($plugin->getKeysPerSuggestion($config['custom_gtin']) as $select_option): ?>
-                                <?= $select_option; ?>
-                            <?php endforeach; ?>
+                            <optgroup label="<?= _e('Other keys', 'webwinkelkeur'); ?>">
+                                <?php foreach ($plugin->getKeysPerSuggestion($config['custom_gtin']) as $select_option): ?>
+                                    <?= $select_option; ?>
+                                <?php endforeach; ?>
+                            </optgroup>
                         </select>
                     </label>
                     <p class="description">
