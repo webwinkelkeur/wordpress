@@ -136,7 +136,10 @@ abstract class BasePlugin {
             if ($key['suggested'] != $suggested) {
                 continue;
             }
-            $options[] = '<option value="' . $key['option_value'] . '" ' . ($key['option_value'] == $selected_key ? 'selected' : '') . '>' . $key['label'] . '</option>';
+            $options[] = '<option value="' . $key['option_value'] . '" '
+                . ($key['option_value'] == $selected_key ? 'selected' : '') . '>'
+                . $key['label']
+                . '</option>';
         }
         return $options;
     }
