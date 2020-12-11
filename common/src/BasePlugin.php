@@ -150,19 +150,20 @@ abstract class BasePlugin {
             return [
                 'option_value' => $value['type'] . htmlentities($value['name']),
                 'label' => htmlentities($value['name']) . ' (e.g. "' . $value['example_value'] . '")',
-                'suggested' => $this->isSuggested($value['example_value']),
+                'suggested' => $this->isValidGtin($value['example_value']),
             ];
         },
             $custom_keys
         );
     }
 
-    private function getMetaValue(string $meta_key): string {
+    private function getMetaValue(string $meta_key) {
         global $wpdb;
         $sql = "
             SELECT meta.meta_value
             FROM {$wpdb->postmeta} meta
             WHERE meta.meta_key = '{$meta_key}'
+            AND meta.meta_value <> ''
             LIMIT 1;
         ";
         return $wpdb->get_var($sql);
@@ -211,7 +212,7 @@ abstract class BasePlugin {
         return true;
     }
 
-    private function isSuggested(string $value): bool {
+    private function isValidGtin(string $value): bool {
         return preg_match('/^\d{8}(?:\d{4,6})?$/', $value);
     }
 }
