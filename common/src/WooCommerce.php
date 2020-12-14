@@ -286,7 +286,7 @@ class WooCommerce {
     public function manualReviewSync() {
         check_ajax_referer($this->getManualSyncNonce());
         $this->syncReviews();
-        echo json_encode(['status' => true]);
+        wp_send_json(['status' => true]);
         wp_die();
     }
 

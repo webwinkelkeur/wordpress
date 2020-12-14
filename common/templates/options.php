@@ -206,8 +206,7 @@
                 '_ajax_nonce' => $nonce,
             ]); ?>,
             success: function (response) {
-                const obj = JSON.parse(response);
-                if (obj.status) {
+                if (response.status) {
                     jQuery("#successful-sync").show();
                 } else {
                     alert('Something went wrong with syncing.');
