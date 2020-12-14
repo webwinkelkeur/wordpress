@@ -201,7 +201,10 @@
         jQuery.ajax({
             type: "post",
             url: "admin-ajax.php",
-            data: {action: <?= json_encode($plugin->woocommerce->getManualSyncAction()); ?>, _ajax_nonce: '<?php echo $nonce; ?>'},
+            data: <?= json_encode([
+                'action' => $plugin->woocommerce->getManualSyncAction(),
+                '_ajax_nonce' => $nonce,
+            ]); ?>,
             success: function (response) {
                 const obj = JSON.parse(response);
                 if (obj.status) {
