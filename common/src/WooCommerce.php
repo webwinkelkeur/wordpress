@@ -309,7 +309,10 @@ class WooCommerce {
             return;
         }
         $this->processReviews($reviews);
-        update_option($this->plugin->getOptionName('last_synced'), date(\DateTime::RFC3339));
+        if ($last_modified = (string) ($reviews[0]->modified ?? null)) {
+            update_option($this->plugin->getOptionName('last_synced'), $last_modified);
+        }
+        update_option($this->plugin->getOptionName('last_executed_sync'), date(\DateTime::RFC3339));
     }
 
     private function processReviews(\SimpleXMLElement $reviews) {
@@ -411,7 +414,7 @@ class WooCommerce {
 
     public function getLastReviewSync(): string {
         return $this->getReviewSyncDate(strtotime(
-            get_option($this->plugin->getOptionName('last_synced'))
+            get_option($this->plugin->getOptionName('last_executed_sync'))
         ));
     }
 
