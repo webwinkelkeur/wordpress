@@ -388,7 +388,7 @@ class WooCommerce {
         ]);
     }
 
-    public function getReviewsHook(): string {
+    private function getReviewsHook(): string {
         return "{$this->plugin->getSlug()}_reviews_cron";
     }
 
