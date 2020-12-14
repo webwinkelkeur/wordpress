@@ -148,7 +148,7 @@
                             <span id='successful-sync' hidden style="color:#0ED826">&#10003;
                                 <?= __('Synced successfully', 'webwinkelkeur'); ?>
                             </span>
-                        </label> </br>
+                        </label> <br>
                         <p> <?= __('Last sync', 'webwinkelkeur'); ?>: <b><?= $plugin->woocommerce->getLastReviewSync(); ?></b>
                         </p>
                         <p> <?= __('Next sync', 'webwinkelkeur'); ?>: <b><?= $plugin->woocommerce->getNextReviewSync(); ?></b>
