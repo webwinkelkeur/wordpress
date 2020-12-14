@@ -149,9 +149,9 @@
                                 <?= __('Synced successfully', 'webwinkelkeur'); ?>
                             </span>
                         </label> </br>
-                        <p> <?= __('Last sync', 'webwinkelkeur'); ?>: <b><?= $plugin->getLastReviewSync(); ?></b>
+                        <p> <?= __('Last sync', 'webwinkelkeur'); ?>: <b><?= $plugin->woocommerce->getLastReviewSync(); ?></b>
                         </p>
-                        <p> <?= __('Next sync', 'webwinkelkeur'); ?>: <b><?= $plugin->getNextReviewSync(); ?></b>
+                        <p> <?= __('Next sync', 'webwinkelkeur'); ?>: <b><?= $plugin->woocommerce->getNextReviewSync(); ?></b>
                         </p>
                     </fieldset>
                 </td>
@@ -195,11 +195,11 @@
 </form>
 <script>
     function triggerManualSync() {
-        <?php $nonce = wp_create_nonce($plugin->getManualSyncNonce());?>
+        <?php $nonce = wp_create_nonce($plugin->woocommerce->getManualSyncNonce());?>
         jQuery.ajax({
             type: "post",
             url: "admin-ajax.php",
-            data: {action: <?= json_encode($plugin->getManualSyncAction()); ?>, _ajax_nonce: '<?php echo $nonce; ?>'},
+            data: {action: <?= json_encode($plugin->woocommerce->getManualSyncAction()); ?>, _ajax_nonce: '<?php echo $nonce; ?>'},
             success: function (response) {
                 const obj = JSON.parse(response);
                 if (obj.status) {

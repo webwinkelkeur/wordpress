@@ -20,7 +20,7 @@ class WooCommerce {
         register_activation_hook($this->plugin->getPluginFile(), [$this, 'activateSyncReviews']);
         register_deactivation_hook($this->plugin->getPluginFile(), [$this, 'deactivateSyncReviews']);
         add_action($this->getReviewsHook(), [$this, 'syncReviews']);
-        add_action('wp_ajax_' . $plugin->getManualSyncAction(), [$this, 'manualReviewSync']);
+        add_action('wp_ajax_' . $this->getManualSyncAction(), [$this, 'manualReviewSync']);
     }
 
     public function activateSyncReviews() {
@@ -284,7 +284,7 @@ class WooCommerce {
     }
 
     public function manualReviewSync() {
-        check_ajax_referer($this->plugin->getManualSyncNonce());
+        check_ajax_referer($this->getManualSyncNonce());
         $this->syncReviews();
         echo json_encode(['status' => true]);
         wp_die();
@@ -395,5 +395,30 @@ class WooCommerce {
 
     private function getGtinMetaKey(): string {
         return "_{$this->plugin->getOptionName('gtin')}";
+    }
+
+    public function getManualSyncAction(): string {
+        return $this->plugin->getOptionName('manual_sync');
+    }
+
+    public function getManualSyncNonce(): string {
+        return $this->plugin->getOptionName('manual-sync-data');
+    }
+
+    public function getNextReviewSync(): string {
+        return $this->getReviewSyncDate(wp_next_scheduled($this->getReviewsHook()));
+    }
+
+    public function getLastReviewSync(): string {
+        return $this->getReviewSyncDate(strtotime(
+            get_option($this->plugin->getOptionName('last_synced'))
+        ));
+    }
+
+    private function getReviewSyncDate($date): string {
+        if ($date) {
+            return htmlentities(date("Y-m-d H:i:s", $date));
+        }
+        return __('Not registered.', 'webwinkelkeur');
     }
 }
