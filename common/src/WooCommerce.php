@@ -20,6 +20,7 @@ class WooCommerce {
         register_activation_hook($this->plugin->getPluginFile(), [$this, 'activateSyncReviews']);
         register_deactivation_hook($this->plugin->getPluginFile(), [$this, 'deactivateSyncReviews']);
         add_action($this->getReviewsHook(), [$this, 'syncReviews']);
+        add_action('wp_ajax_' . $this->getManualSyncAction(), [$this, 'manualReviewSync']);
     }
 
     public function activateSyncReviews() {
@@ -282,6 +283,13 @@ class WooCommerce {
         return $products;
     }
 
+    public function manualReviewSync() {
+        check_ajax_referer($this->getManualSyncNonce());
+        $this->syncReviews();
+        wp_send_json(['status' => true]);
+        wp_die();
+    }
+
     public function syncReviews() {
         if (!get_option($this->plugin->getOptionName('product_reviews'))
             || !$this->plugin->isWoocommerceActivated()
@@ -304,6 +312,7 @@ class WooCommerce {
         if ($last_modified = (string) ($reviews[0]->modified ?? null)) {
             update_option($this->plugin->getOptionName('last_synced'), $last_modified);
         }
+        update_option($this->plugin->getOptionName('last_executed_sync'), date(\DateTime::RFC3339));
     }
 
     private function processReviews(\SimpleXMLElement $reviews) {
@@ -389,5 +398,30 @@ class WooCommerce {
 
     private function getGtinMetaKey(): string {
         return "_{$this->plugin->getOptionName('gtin')}";
+    }
+
+    public function getManualSyncAction(): string {
+        return $this->plugin->getOptionName('manual_sync');
+    }
+
+    public function getManualSyncNonce(): string {
+        return $this->plugin->getOptionName('manual-sync-data');
+    }
+
+    public function getNextReviewSync(): string {
+        return $this->getReviewSyncDate(wp_next_scheduled($this->getReviewsHook()));
+    }
+
+    public function getLastReviewSync(): string {
+        return $this->getReviewSyncDate(strtotime(
+            get_option($this->plugin->getOptionName('last_executed_sync'))
+        ));
+    }
+
+    private function getReviewSyncDate($date): string {
+        if ($date) {
+            return htmlentities(date("Y-m-d H:i:s", $date));
+        }
+        return __('Not registered.', 'webwinkelkeur');
     }
 }
