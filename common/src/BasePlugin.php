@@ -220,11 +220,11 @@ abstract class BasePlugin {
     }
 
     public function getManualSyncAction(): string {
-        return "{$this->getOptionName('manual_sync')}";
+        return $this->getOptionName('manual_sync');
     }
 
     public function getManualSyncNonce(): string {
-        return "{$this->getOptionName('manual-sync-data')}";
+        return $this->getOptionName('manual-sync-data');
     }
 
     public function getNextReviewSync(): string {
