@@ -142,7 +142,7 @@
                     </fieldset>
                     <fieldset>
                         <label>
-                            <button class="button" type="button" id="<?= $plugin->getOptionName('manual_sync_btn'); ?>" onClick="triggerManualSync()">
+                            <button class="button" <?= !$config['product_reviews'] ? 'disabled' : ''; ?> type="button" id="<?= $plugin->getOptionName('manual_sync_btn'); ?>" onClick="triggerManualSync()">
                                 <?= __('Sync manually', 'webwinkelkeur'); ?>
                             </button>
                             <span id='successful-sync' hidden style="color:#0ED826">&#10003;
