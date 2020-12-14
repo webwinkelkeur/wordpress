@@ -169,7 +169,6 @@
                             <?= $plugin->getSelectOptions($config['custom_gtin']); ?>
                         </optgroup>
                     </select>
-
                     <p class="description">
                         <?=
                         __('Tell this plugin where to find the product <strong>GTIN</strong> by selecting a custom key. For example: if you use a field called <strong>_productcode</strong> to store the <strong>GTIN</strong>, you should select  <strong>_product_code</strong>. Our plugin also supports certain 3rd party plugins. If we found a supported plugin, this box is set to <strong>Automatic detection</strong>, you can still choose to select another key.', 'webwinkelkeur')
@@ -213,4 +212,3 @@
         });
     }
 </script>
-<?php
