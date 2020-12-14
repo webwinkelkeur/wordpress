@@ -17,6 +17,16 @@ readme:
         **Reviews voor webshops**
         Geen webshop kan zonder het pro-actief verzamelen van reviews. Het verzamelen en tonen van betrouwbare reviews zorgt ervoor dat de conversie van je webwinkel flink verbeterd. Met WebwinkelKeur verzamel eenvoudig en automatisch reviews. We bieden je daarvoor [innovatieve review software][4] die het voor de klanten zo eenvoudig mogelijk maakt om reviews te plaatsen. WebwinkelKeur draagt daarbij zorg voor het eerlijk verzamelen van reviews, wat de betrouwbaarheid ten goede komt.
 
+        **Reviews voor producten**
+        Ook is het mogelijk product reviews te verzamelen via WebwinkelKeur.
+        Let wel: dit is een aparte extra dienst die is in te schakelen via je dashboard.
+        Zorg er daarnaast ook voor dat je de laatste versie van deze plugin hebt.
+        Product reviews zorgen voor extra feedback op je assortiment, social proof en minder retourverzoeken daar consumenten geinformeerder bestellen.
+        Ook krijg je sterren in Google search en kun je sterren krijgen in Google shopping door de feed die we bieden in te laden.
+        Lees het kennisbank stuk of onze blog voor meer informatie (hyperlinks)
+        Blog: [Product reviews nu beschikbaar voor jouw WooCommerce webshop!][6]
+        Kennisbank: [Klik hier][7]
+
         **Over de plugin**
         De WordPress plugin zorgt voor een eenvoudige integratie van het WebwinkelKeur binnen jouw WordPress website en WooCommerce webwinkel. Zo integreert de module automatisch de innovatieve [WebwinkelKeur Sidebar][1] binnen elke WordPress website of webwinkel.  Voor gebruikers van de WooCommerce plugin voor WordPress zorgt de module voor het automatisch versturen van reviewverzoeken aan je klanten. Bij elke afgewerkte bestelling wordt automatisch een uitnodiging naar de klant verzonden waarin hij uitgenodigd wordt om zijn ervaring te delen. Zo vergroot je het vertrouwen en de conversie van jouw webwinkel.
 
@@ -30,6 +40,8 @@ readme:
         [3]: https://www.webwinkelkeur.nl/keurmerk
         [4]: https://www.webwinkelkeur.nl/klantbeoordelingen
         [5]: https://www.webwinkelkeur.nl/pakketten
+        [6]: https://www.webwinkelkeur.nl/product-reviews-nu-beschikbaar-voor-jouw-woocommerce-webshop/
+        [7]: https://www.webwinkelkeur.nl/kennisbank/meer-diensten/product-reviews/
 
     installation: |
         1. Plaats de map "webwinkelkeur" in de map "wp-content/plugins" op de webserver.
