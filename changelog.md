@@ -1,3 +1,7 @@
+= 3.2 - 2020-12-15 =
+* Add sample values to GTIN meta/attribute selector.
+* Add button for manually syncing product reviews.
+
 = 3.1 - 2020-12-10 =
 * Fix undefined function error when the `woocommerce-product-feeds` plugin is installed but the `woocommerce_gpf_show_element` function does not exist.
 
