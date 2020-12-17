@@ -21,6 +21,14 @@ class WooCommerce {
         register_deactivation_hook($this->plugin->getPluginFile(), [$this, 'deactivateSyncReviews']);
         add_action($this->getReviewsHook(), [$this, 'syncReviews']);
         add_action('wp_ajax_' . $this->getManualSyncAction(), [$this, 'manualReviewSync']);
+        add_action(
+            sprintf(
+                'after_plugin_row_%1$s/%1$s.php',
+                $this->plugin->getSlug()
+            ),
+            [$this, 'showCustomPluginNotification'],
+            10
+        );
     }
 
     public function activateSyncReviews() {
@@ -183,6 +191,22 @@ class WooCommerce {
                 $this->getGtinMetaKey(),
                 wc_clean(wp_unslash($_POST[$this->getGtinMetaKey()]))
             );
+        }
+    }
+
+    public function showCustomPluginNotification() {
+        $readme = wp_remote_fopen(sprintf(
+            'https://plugins.svn.wordpress.org/%s/trunk/readme.txt',
+            $this->plugin->getSlug()
+        ));
+        $pattern = '/===\sUpgrade\sNotice\s===\s* 
+               =\s' . preg_quote($this->get_plugin_version($this->plugin->getSlug())) . '\s=\s
+               (?:.+\R)?(.+)/x';
+        preg_match($pattern, $readme, $matches);
+        if (isset($matches[1])) {
+            echo sprintf(
+                '<tr class="active"><td>&nbsp;</td><td colspan="2"><li>%s</li></td></tr>',
+                $matches[1]);
         }
     }
 
