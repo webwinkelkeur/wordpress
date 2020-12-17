@@ -206,8 +206,21 @@ class WooCommerce {
         if (isset($matches[1])) {
             echo sprintf(
                 '<tr class="active"><td>&nbsp;</td><td colspan="2"><li>%s</li></td></tr>',
-                $matches[1]);
+                $this->convertReadmeLinkToHtml($matches[1]));
         }
+    }
+
+    private function convertReadmeLinkToHtml(string $notice_text): string {
+        $pattern = '/\[(?<link_label>.+)\]\[(?<link_url>.+)\]/';
+        preg_match($pattern, $notice_text, $link_matches);
+        if (isset($link_matches['link_label'], $link_matches['link_url'])) {
+            $link = sprintf('<a target="_blank" href="%s">%s</a>',
+                $link_matches['link_url'],
+                $link_matches['link_label']
+            );
+            return preg_replace($pattern, $link, $notice_text, 1);
+        }
+        return $notice_text;
     }
 
     private function get_plugin_version($plugin_name) {
