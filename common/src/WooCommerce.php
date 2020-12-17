@@ -195,10 +195,7 @@ class WooCommerce {
     }
 
     public function showCustomPluginNotification() {
-        $readme = wp_remote_fopen(sprintf(
-            'https://plugins.svn.wordpress.org/%s/trunk/readme.txt',
-            $this->plugin->getSlug()
-        ));
+        $readme = wp_remote_fopen($this->getPluginReadme());
         $pattern = '/===\sUpgrade\sNotice\s===\s* 
                =\s' . preg_quote($this->get_plugin_version($this->plugin->getSlug())) . '\s=\s
                (?:.+\R)?(.+)/x';
@@ -221,6 +218,13 @@ class WooCommerce {
             return preg_replace($pattern, $link, $notice_text, 1);
         }
         return $notice_text;
+    }
+
+    private function getPluginReadme() {
+        return sprintf(
+            'https://plugins.svn.wordpress.org/%s/trunk/readme.txt',
+            $this->plugin->getSlug()
+        );
     }
 
     private function get_plugin_version($plugin_name) {
