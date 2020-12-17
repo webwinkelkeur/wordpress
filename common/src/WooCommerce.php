@@ -9,6 +9,8 @@ use WC_Product_Factory;
 use WP_Comment_Query;
 
 class WooCommerce {
+    const PLUGIN_README_URL = 'https://plugins.svn.wordpress.org/%s/trunk/readme.txt';
+
     private $plugin;
 
     public function __construct(BasePlugin $plugin) {
@@ -222,7 +224,7 @@ class WooCommerce {
 
     private function getPluginReadme() {
         return sprintf(
-            'https://plugins.svn.wordpress.org/%s/trunk/readme.txt',
+            self::PLUGIN_README_URL,
             $this->plugin->getSlug()
         );
     }
