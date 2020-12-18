@@ -52,7 +52,9 @@ abstract class BasePlugin {
 
     public function activatePlugin() {
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
         $this->noticeDismissed();
+
         dbDelta('
             CREATE TABLE `' . $this->getInviteErrorsTable() . '` (
                 `id` int NOT NULL AUTO_INCREMENT,
@@ -67,7 +69,7 @@ abstract class BasePlugin {
         ');
     }
 
-    public function get_plugin_version($plugin_name) {
+    public function getPluginVersion($plugin_name) {
         if (!function_exists('get_plugins')) {
             require_once ABSPATH . 'wp-admin/includes/plugin.php';
         }
@@ -252,7 +254,7 @@ abstract class BasePlugin {
     public function getNoticeText() {
         $readme = wp_remote_fopen($this->getPluginReadme());
         $pattern = '/===\sUpgrade\sNotice\s===\s* 
-               =\s' . preg_quote($this->get_plugin_version($this->getSlug())) . '\s=\s
+               =\s' . preg_quote($this->getPluginVersion($this->getSlug())) . '\s=\s
                (?:.+\R)?(.+)/x';
         preg_match($pattern, $readme, $matches);
         if (isset($matches[1])) {
@@ -304,7 +306,7 @@ abstract class BasePlugin {
     public function noticeDismissed() {
         update_option(
             $this->getOptionName('last_notice_version'),
-            $this->get_plugin_version($this->getSlug())
+            $this->getPluginVersion($this->getSlug())
         );
     }
 
@@ -313,7 +315,7 @@ abstract class BasePlugin {
         if (
             $last_notice_version
             && version_compare(
-                $this->get_plugin_version($this->getSlug()),
+                $this->getPluginVersion($this->getSlug()),
                 $last_notice_version,
                 '>')
         ) {

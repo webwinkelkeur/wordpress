@@ -109,8 +109,8 @@ class WooCommerce {
             'customer_name' => $customer_name,
             'phone_numbers' => array_values(array_filter(array_unique($phones))),
             'order_total'   => $order->get_total(),
-            'plugin_version' => $this->plugin->get_plugin_version($this->plugin->getSlug()),
-            'platform_version' => 'wp-' . $wp_version . '-wc-' . $this->plugin->get_plugin_version('woocommerce'),
+            'plugin_version' => $this->plugin->getPluginVersion($this->plugin->getSlug()),
+            'platform_version' => 'wp-' . $wp_version . '-wc-' . $this->plugin->getPluginVersion('woocommerce'),
         ];
         if (get_option($this->plugin->getOptionName('invite')) == 2) {
             $data['max_invitations_per_email'] = 1;
