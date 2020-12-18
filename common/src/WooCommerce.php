@@ -9,7 +9,6 @@ use WC_Product_Factory;
 use WP_Comment_Query;
 
 class WooCommerce {
-
     private $plugin;
 
     public function __construct(BasePlugin $plugin) {
