@@ -36,9 +36,6 @@ abstract class BasePlugin {
     public function init() {
         register_activation_hook($this->getPluginFile(), [$this, 'activatePlugin']);
         add_action('plugins_loaded', [$this, 'loadTranslations']);
-        add_action('admin_enqueue_scripts', [$this, 'addNoticeDismissScript']);
-        add_action('admin_notices', [$this, 'showCustomNotice']);
-        add_action('wp_ajax_' . $this->getNoticeDismissHook(), [$this, 'noticeDismissed']);
 
         if (is_admin()) {
             $this->admin = new Admin($this);
@@ -47,6 +44,11 @@ abstract class BasePlugin {
         }
 
         $this->woocommerce = new WooCommerce($this);
+        add_action('admin_enqueue_scripts', [$this, 'addNoticeDismissScript']);
+        add_action('wp_ajax_' . $this->getNoticeDismissHook(), [$this, 'noticeDismissed']);
+        if ($this->shouldDisplayNotice()) {
+            add_action('admin_notices', [$this, 'showCustomNotice']);
+        }
     }
 
     public function activatePlugin() {
@@ -227,7 +229,9 @@ abstract class BasePlugin {
     public function showCustomNotice() {
         $class = 'notice notice-info is-dismissible ' . $this->getCustomNoticeClass();
         $message = $this->getNoticeText();
-        printf('<div class="%s"><p>%s</p></div>', esc_attr($class), $message);
+        if (!empty($message)) {
+            printf('<div class="%s"><p>%s</p></div>', esc_attr($class), $message);
+        }
     }
 
     public function getNoticeText() {
@@ -271,22 +275,36 @@ abstract class BasePlugin {
             'notice-update',
             $js_file
         );
-        wp_enqueue_script('notice-update', $js_file);
         wp_localize_script('notice-update', 'notice_params', [
             'class' => $this->getCustomNoticeClass(),
             'hook'  => $this->getNoticeDismissHook(),
         ]);
+        wp_enqueue_script('notice-update');
     }
 
     public function noticeDismissed() {
         update_option(
-            $this->getOptionName('notice_version'),
+            $this->getOptionName('last_notice_version'),
             $this->woocommerce->get_plugin_version($this->getSlug())
         );
-       echo  get_option($this->getOptionName('notice_version'));
+       echo  get_option($this->getOptionName('last_notice_version'));
     }
 
     private function getNoticeDismissHook() {
         return $this->getOptionName('notice-dismiss');
+    }
+
+    private function shouldDisplayNotice(): bool {
+        $last_notice_version = get_option($this->getOptionName('last_notice_version'));
+        if (
+            $last_notice_version
+            && version_compare(
+                $this->woocommerce->get_plugin_version($this->getSlug()),
+                $last_notice_version,
+                '>')
+        ) {
+            return true;
+        }
+        return false;
     }
 }
