@@ -109,8 +109,8 @@ class WooCommerce {
             'customer_name' => $customer_name,
             'phone_numbers' => array_values(array_filter(array_unique($phones))),
             'order_total'   => $order->get_total(),
-            'plugin_version' => $this->get_plugin_version('webwinkelkeur'),
-            'platform_version' => 'wp-' . $wp_version . '-wc-' . $this->get_plugin_version('woocommerce'),
+            'plugin_version' => $this->plugin->get_plugin_version('webwinkelkeur'),
+            'platform_version' => 'wp-' . $wp_version . '-wc-' . $this->plugin->get_plugin_version('woocommerce'),
         ];
         if (get_option($this->plugin->getOptionName('invite')) == 2) {
             $data['max_invitations_per_email'] = 1;
@@ -185,22 +185,6 @@ class WooCommerce {
                 wc_clean(wp_unslash($_POST[$this->getGtinMetaKey()]))
             );
         }
-    }
-
-    public function get_plugin_version($plugin_name) {
-        if (!function_exists('get_plugins')) {
-            require_once ABSPATH . 'wp-admin/includes/plugin.php';
-        }
-
-        // Create the plugins folder and file variables
-        $plugin_folder = get_plugins('/' . $plugin_name);
-        $plugin_file = $plugin_name . '.php';
-
-        // If the plugin version number is set, return it
-        if (isset($plugin_folder[$plugin_file]['Version'])) {
-            return $plugin_folder[$plugin_file]['Version'];
-        }
-        return null;
     }
 
     private function insert_comment($order_id, $content) {

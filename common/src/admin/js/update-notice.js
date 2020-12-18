@@ -5,9 +5,6 @@ jQuery(function ($) {
                 type: 'POST',
                 data: {
                     action: notice_params.hook,
-                },
-                success: function (response) {
-                    console.log(response);
                 }
             });
     });

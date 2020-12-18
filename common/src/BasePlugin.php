@@ -36,7 +36,11 @@ abstract class BasePlugin {
     public function init() {
         register_activation_hook($this->getPluginFile(), [$this, 'activatePlugin']);
         add_action('plugins_loaded', [$this, 'loadTranslations']);
-
+        add_action('admin_enqueue_scripts', [$this, 'addNoticeDismissScript']);
+        add_action('wp_ajax_' . $this->getNoticeDismissHook(), [$this, 'noticeDismissed']);
+        if ($this->shouldDisplayNotice()) {
+            add_action('admin_notices', [$this, 'showCustomNotice']);
+        }
         if (is_admin()) {
             $this->admin = new Admin($this);
         } else {
@@ -44,16 +48,11 @@ abstract class BasePlugin {
         }
 
         $this->woocommerce = new WooCommerce($this);
-        add_action('admin_enqueue_scripts', [$this, 'addNoticeDismissScript']);
-        add_action('wp_ajax_' . $this->getNoticeDismissHook(), [$this, 'noticeDismissed']);
-        if ($this->shouldDisplayNotice()) {
-            add_action('admin_notices', [$this, 'showCustomNotice']);
-        }
     }
 
     public function activatePlugin() {
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-
+        $this->noticeDismissed();
         dbDelta('
             CREATE TABLE `' . $this->getInviteErrorsTable() . '` (
                 `id` int NOT NULL AUTO_INCREMENT,
@@ -66,6 +65,22 @@ abstract class BasePlugin {
                 KEY `reported` (`reported`)
             )
         ');
+    }
+
+    public function get_plugin_version($plugin_name) {
+        if (!function_exists('get_plugins')) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+
+        // Create the plugins folder and file variables
+        $plugin_folder = get_plugins('/' . $plugin_name);
+        $plugin_file = $plugin_name . '.php';
+
+        // If the plugin version number is set, return it
+        if (isset($plugin_folder[$plugin_file]['Version'])) {
+            return $plugin_folder[$plugin_file]['Version'];
+        }
+        return null;
     }
 
     public function loadTranslations() {
@@ -237,12 +252,32 @@ abstract class BasePlugin {
     public function getNoticeText() {
         $readme = wp_remote_fopen($this->getPluginReadme());
         $pattern = '/===\sUpgrade\sNotice\s===\s* 
-               =\s' . preg_quote($this->woocommerce->get_plugin_version($this->getSlug())) . '\s=\s
+               =\s' . preg_quote($this->get_plugin_version($this->getSlug())) . '\s=\s
                (?:.+\R)?(.+)/x';
         preg_match($pattern, $readme, $matches);
         if (isset($matches[1])) {
                return $this->convertReadmeLinkToHtml($matches[1]);
         }
+    }
+
+    public function addNoticeDismissScript() {
+        $js_file = plugin_dir_url(__FILE__) . 'admin/js/update-notice.js';
+        wp_register_script(
+            'notice-update',
+            $js_file
+        );
+        wp_localize_script('notice-update', 'notice_params', [
+            'class' => $this->getCustomNoticeClass(),
+            'hook'  => $this->getNoticeDismissHook(),
+        ]);
+        wp_enqueue_script('notice-update');
+    }
+
+    public function noticeDismissed() {
+        update_option(
+            $this->getOptionName('last_notice_version'),
+            $this->get_plugin_version($this->getSlug())
+        );
     }
 
     private function convertReadmeLinkToHtml(string $notice_text): string {
@@ -269,27 +304,6 @@ abstract class BasePlugin {
         return $this->getOptionName('custom_notice');
     }
 
-    public function addNoticeDismissScript() {
-        $js_file = plugin_dir_url(__FILE__) . 'admin/js/update-notice.js';
-        wp_register_script(
-            'notice-update',
-            $js_file
-        );
-        wp_localize_script('notice-update', 'notice_params', [
-            'class' => $this->getCustomNoticeClass(),
-            'hook'  => $this->getNoticeDismissHook(),
-        ]);
-        wp_enqueue_script('notice-update');
-    }
-
-    public function noticeDismissed() {
-        update_option(
-            $this->getOptionName('last_notice_version'),
-            $this->woocommerce->get_plugin_version($this->getSlug())
-        );
-       echo  get_option($this->getOptionName('last_notice_version'));
-    }
-
     private function getNoticeDismissHook() {
         return $this->getOptionName('notice-dismiss');
     }
@@ -299,7 +313,7 @@ abstract class BasePlugin {
         if (
             $last_notice_version
             && version_compare(
-                $this->woocommerce->get_plugin_version($this->getSlug()),
+                $this->get_plugin_version($this->getSlug()),
                 $last_notice_version,
                 '>')
         ) {
