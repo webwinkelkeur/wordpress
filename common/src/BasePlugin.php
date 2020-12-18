@@ -36,9 +36,9 @@ abstract class BasePlugin {
     public function init() {
         register_activation_hook($this->getPluginFile(), [$this, 'activatePlugin']);
         add_action('plugins_loaded', [$this, 'loadTranslations']);
-        add_action('admin_enqueue_scripts', [$this, 'addNoticeDismissScript']);
-        add_action('wp_ajax_' . $this->getNoticeDismissedAjaxHook(), [$this, 'noticeDismissed']);
-        if ($this->shouldDisplayNotice()) {
+        add_action('admin_enqueue_scripts', [$this, 'addCustomNoticeDismissScript']);
+        add_action('wp_ajax_' . $this->getCustomNoticeDismissedAjaxHook(), [$this, 'customNoticeDismissed']);
+        if ($this->shouldDisplayCustomNotice()) {
             add_action('admin_notices', [$this, 'showCustomNotice']);
         }
         if (is_admin()) {
@@ -53,7 +53,7 @@ abstract class BasePlugin {
     public function activatePlugin() {
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-        $this->noticeDismissed();
+        $this->customNoticeDismissed();
 
         dbDelta('
             CREATE TABLE `' . $this->getInviteErrorsTable() . '` (
@@ -245,13 +245,13 @@ abstract class BasePlugin {
 
     public function showCustomNotice() {
         $class = 'notice notice-info is-dismissible ' . $this->getCustomNoticeClass();
-        $message = $this->getNoticeText();
+        $message = $this->getCustomNoticeText();
         if (!empty($message)) {
             printf('<div class="%s"><p>%s</p></div>', esc_attr($class), $message);
         }
     }
 
-    public function getNoticeText() {
+    public function getCustomNoticeText() {
         $readme = wp_remote_fopen($this->getPluginReadme());
         $pattern = '/===\sUpgrade\sNotice\s===\s* 
                =\s' . preg_quote($this->getPluginVersion($this->getSlug())) . '\s=\s
@@ -282,7 +282,7 @@ abstract class BasePlugin {
         return $notice_text;
     }
 
-    public function addNoticeDismissScript() {
+    public function addCustomNoticeDismissScript() {
         $js_file = plugin_dir_url(__FILE__) . 'admin/js/update-notice.js';
         wp_register_script(
             'notice-update',
@@ -290,7 +290,7 @@ abstract class BasePlugin {
         );
         wp_localize_script('notice-update', 'notice_params', [
             'class' => $this->getCustomNoticeClass(),
-            'hook' => $this->getNoticeDismissedAjaxHook(),
+            'hook' => $this->getCustomNoticeDismissedAjaxHook(),
         ]);
         wp_enqueue_script('notice-update');
     }
@@ -299,18 +299,18 @@ abstract class BasePlugin {
         return $this->getOptionName('custom_notice');
     }
 
-    private function getNoticeDismissedAjaxHook(): string {
+    private function getCustomNoticeDismissedAjaxHook(): string {
         return $this->getOptionName('notice-dismiss');
     }
 
-    public function noticeDismissed() {
+    public function customNoticeDismissed() {
         update_option(
             $this->getOptionName('last_notice_version'),
             $this->getPluginVersion($this->getSlug())
         );
     }
 
-    private function shouldDisplayNotice(): bool {
+    private function shouldDisplayCustomNotice(): bool {
         $last_notice_version = get_option($this->getOptionName('last_notice_version'));
         if (
             $last_notice_version
