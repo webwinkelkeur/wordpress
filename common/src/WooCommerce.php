@@ -109,7 +109,7 @@ class WooCommerce {
             'customer_name' => $customer_name,
             'phone_numbers' => array_values(array_filter(array_unique($phones))),
             'order_total'   => $order->get_total(),
-            'plugin_version' => $this->plugin->get_plugin_version('webwinkelkeur'),
+            'plugin_version' => $this->plugin->get_plugin_version($this->plugin->getSlug()),
             'platform_version' => 'wp-' . $wp_version . '-wc-' . $this->plugin->get_plugin_version('woocommerce'),
         ];
         if (get_option($this->plugin->getOptionName('invite')) == 2) {
