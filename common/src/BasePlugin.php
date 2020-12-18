@@ -37,7 +37,7 @@ abstract class BasePlugin {
         register_activation_hook($this->getPluginFile(), [$this, 'activatePlugin']);
         add_action('plugins_loaded', [$this, 'loadTranslations']);
         add_action('admin_enqueue_scripts', [$this, 'addNoticeDismissScript']);
-        add_action('wp_ajax_' . $this->getNoticeDismissHook(), [$this, 'noticeDismissed']);
+        add_action('wp_ajax_' . $this->getNoticeDismissedAjaxHook(), [$this, 'noticeDismissed']);
         if ($this->shouldDisplayNotice()) {
             add_action('admin_notices', [$this, 'showCustomNotice']);
         }
@@ -256,27 +256,14 @@ abstract class BasePlugin {
                (?:.+\R)?(.+)/x';
         preg_match($pattern, $readme, $matches);
         if (isset($matches[1])) {
-               return $this->convertReadmeLinkToHtml($matches[1]);
+            return $this->convertReadmeLinkToHtml($matches[1]);
         }
     }
 
-    public function addNoticeDismissScript() {
-        $js_file = plugin_dir_url(__FILE__) . 'admin/js/update-notice.js';
-        wp_register_script(
-            'notice-update',
-            $js_file
-        );
-        wp_localize_script('notice-update', 'notice_params', [
-            'class' => $this->getCustomNoticeClass(),
-            'hook'  => $this->getNoticeDismissHook(),
-        ]);
-        wp_enqueue_script('notice-update');
-    }
-
-    public function noticeDismissed() {
-        update_option(
-            $this->getOptionName('last_notice_version'),
-            $this->get_plugin_version($this->getSlug())
+    private function getPluginReadme(): string {
+        return sprintf(
+            self::PLUGIN_README_URL,
+            $this->getSlug()
         );
     }
 
@@ -293,19 +280,32 @@ abstract class BasePlugin {
         return $notice_text;
     }
 
-    private function getPluginReadme() {
-        return sprintf(
-            self::PLUGIN_README_URL,
-            $this->getSlug()
+    public function addNoticeDismissScript() {
+        $js_file = plugin_dir_url(__FILE__) . 'admin/js/update-notice.js';
+        wp_register_script(
+            'notice-update',
+            $js_file
         );
+        wp_localize_script('notice-update', 'notice_params', [
+            'class' => $this->getCustomNoticeClass(),
+            'hook' => $this->getNoticeDismissedAjaxHook(),
+        ]);
+        wp_enqueue_script('notice-update');
     }
 
-    private function getCustomNoticeClass() {
+    private function getCustomNoticeClass(): string {
         return $this->getOptionName('custom_notice');
     }
 
-    private function getNoticeDismissHook() {
+    private function getNoticeDismissedAjaxHook(): string {
         return $this->getOptionName('notice-dismiss');
+    }
+
+    public function noticeDismissed() {
+        update_option(
+            $this->getOptionName('last_notice_version'),
+            $this->get_plugin_version($this->getSlug())
+        );
     }
 
     private function shouldDisplayNotice(): bool {
