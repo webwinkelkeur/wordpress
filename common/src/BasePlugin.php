@@ -4,6 +4,8 @@ namespace Valued\WordPress;
 use ReflectionClass;
 
 abstract class BasePlugin {
+    const PLUGIN_README_URL = 'https://plugins.svn.wordpress.org/%s/trunk/readme.txt';
+
     protected static $instances = [];
 
     public $admin;
@@ -34,6 +36,9 @@ abstract class BasePlugin {
     public function init() {
         register_activation_hook($this->getPluginFile(), [$this, 'activatePlugin']);
         add_action('plugins_loaded', [$this, 'loadTranslations']);
+        add_action('admin_enqueue_scripts', [$this, 'addNoticeDismissScript']);
+        add_action('admin_notices', [$this, 'showCustomNotice']);
+        add_action('wp_ajax_' . $this->getNoticeDismissHook(), [$this, 'noticeDismissed']);
 
         if (is_admin()) {
             $this->admin = new Admin($this);
@@ -217,5 +222,71 @@ abstract class BasePlugin {
 
     private function isValidGtin(string $value): bool {
         return preg_match('/^\d{8}(?:\d{4,6})?$/', $value);
+    }
+
+    public function showCustomNotice() {
+        $class = 'notice notice-info is-dismissible ' . $this->getCustomNoticeClass();
+        $message = $this->getNoticeText();
+        printf('<div class="%s"><p>%s</p></div>', esc_attr($class), $message);
+    }
+
+    public function getNoticeText() {
+        $readme = wp_remote_fopen($this->getPluginReadme());
+        $pattern = '/===\sUpgrade\sNotice\s===\s* 
+               =\s' . preg_quote($this->woocommerce->get_plugin_version($this->getSlug())) . '\s=\s
+               (?:.+\R)?(.+)/x';
+        preg_match($pattern, $readme, $matches);
+        if (isset($matches[1])) {
+               return $this->convertReadmeLinkToHtml($matches[1]);
+        }
+    }
+
+    private function convertReadmeLinkToHtml(string $notice_text): string {
+        $pattern = '/\[(?<link_label>.+)\]\[(?<link_url>.+)\]/';
+        preg_match($pattern, $notice_text, $link_matches);
+        if (isset($link_matches['link_label'], $link_matches['link_url'])) {
+            $link = sprintf('<a target="_blank" href="%s">%s</a>',
+                $link_matches['link_url'],
+                $link_matches['link_label']
+            );
+            return preg_replace($pattern, $link, $notice_text, 1);
+        }
+        return $notice_text;
+    }
+
+    private function getPluginReadme() {
+        return sprintf(
+            self::PLUGIN_README_URL,
+            $this->getSlug()
+        );
+    }
+
+    private function getCustomNoticeClass() {
+        return $this->getOptionName('custom_notice');
+    }
+
+    public function addNoticeDismissScript() {
+        $js_file = plugin_dir_url(__FILE__) . 'admin/js/update-notice.js';
+        wp_register_script(
+            'notice-update',
+            $js_file
+        );
+        wp_enqueue_script('notice-update', $js_file);
+        wp_localize_script('notice-update', 'notice_params', [
+            'class' => $this->getCustomNoticeClass(),
+            'hook'  => $this->getNoticeDismissHook(),
+        ]);
+    }
+
+    public function noticeDismissed() {
+        update_option(
+            $this->getOptionName('notice_version'),
+            $this->woocommerce->get_plugin_version($this->getSlug())
+        );
+       echo  get_option($this->getOptionName('notice_version'));
+    }
+
+    private function getNoticeDismissHook() {
+        return $this->getOptionName('notice-dismiss');
     }
 }

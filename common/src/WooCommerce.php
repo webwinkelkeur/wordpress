@@ -9,7 +9,6 @@ use WC_Product_Factory;
 use WP_Comment_Query;
 
 class WooCommerce {
-    const PLUGIN_README_URL = 'https://plugins.svn.wordpress.org/%s/trunk/readme.txt';
 
     private $plugin;
 
@@ -23,14 +22,6 @@ class WooCommerce {
         register_deactivation_hook($this->plugin->getPluginFile(), [$this, 'deactivateSyncReviews']);
         add_action($this->getReviewsHook(), [$this, 'syncReviews']);
         add_action('wp_ajax_' . $this->getManualSyncAction(), [$this, 'manualReviewSync']);
-        add_action(
-            sprintf(
-                'after_plugin_row_%1$s/%1$s.php',
-                $this->plugin->getSlug()
-            ),
-            [$this, 'showCustomPluginNotification'],
-            10
-        );
     }
 
     public function activateSyncReviews() {
@@ -196,40 +187,7 @@ class WooCommerce {
         }
     }
 
-    public function showCustomPluginNotification() {
-        $readme = wp_remote_fopen($this->getPluginReadme());
-        $pattern = '/===\sUpgrade\sNotice\s===\s* 
-               =\s' . preg_quote($this->get_plugin_version($this->plugin->getSlug())) . '\s=\s
-               (?:.+\R)?(.+)/x';
-        preg_match($pattern, $readme, $matches);
-        if (isset($matches[1])) {
-            echo sprintf(
-                '<tr class="active"><td>&nbsp;</td><td colspan="2"><li>%s</li></td></tr>',
-                $this->convertReadmeLinkToHtml($matches[1]));
-        }
-    }
-
-    private function convertReadmeLinkToHtml(string $notice_text): string {
-        $pattern = '/\[(?<link_label>.+)\]\[(?<link_url>.+)\]/';
-        preg_match($pattern, $notice_text, $link_matches);
-        if (isset($link_matches['link_label'], $link_matches['link_url'])) {
-            $link = sprintf('<a target="_blank" href="%s">%s</a>',
-                $link_matches['link_url'],
-                $link_matches['link_label']
-            );
-            return preg_replace($pattern, $link, $notice_text, 1);
-        }
-        return $notice_text;
-    }
-
-    private function getPluginReadme() {
-        return sprintf(
-            self::PLUGIN_README_URL,
-            $this->plugin->getSlug()
-        );
-    }
-
-    private function get_plugin_version($plugin_name) {
+    public function get_plugin_version($plugin_name) {
         if (!function_exists('get_plugins')) {
             require_once ABSPATH . 'wp-admin/includes/plugin.php';
         }
