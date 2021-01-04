@@ -273,7 +273,7 @@ abstract class BasePlugin {
     private function shouldDisplayUpdateNotice(): bool {
         return version_compare(
             $this->getVersion(),
-            get_option($this->getOptionName('last_notice_version')),
+            get_option($this->getOptionName('last_notice_version'), ''),
             '>'
         );
     }
