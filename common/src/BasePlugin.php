@@ -67,22 +67,6 @@ abstract class BasePlugin {
         ');
     }
 
-    public function getPluginVersion($plugin_name) {
-        if (!function_exists('get_plugins')) {
-            require_once ABSPATH . 'wp-admin/includes/plugin.php';
-        }
-
-        // Create the plugins folder and file variables
-        $plugin_folder = get_plugins('/' . $plugin_name);
-        $plugin_file = $plugin_name . '.php';
-
-        // If the plugin version number is set, return it
-        if (isset($plugin_folder[$plugin_file]['Version'])) {
-            return $plugin_folder[$plugin_file]['Version'];
-        }
-        return null;
-    }
-
     public function loadTranslations() {
         load_plugin_textdomain(
             'webwinkelkeur',
