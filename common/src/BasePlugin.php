@@ -35,7 +35,7 @@ abstract class BasePlugin {
         register_activation_hook($this->getPluginFile(), [$this, 'activatePlugin']);
         add_action('plugins_loaded', [$this, 'loadTranslations']);
         add_action('admin_enqueue_scripts', [$this, 'addUpdateNoticeDismissScript']);
-        add_action('wp_ajax_' . $this->getUpdateNoticeDismissedAjaxHook(), [$this, 'updateNoticeDismissed']);
+        add_action('wp_ajax_' . $this->getUpdateNoticeDismissedAjaxHook(), [$this, 'dismissUpdateNotice']);
         if ($this->shouldDisplayUpdateNotice()) {
             add_action('admin_notices', [$this, 'showUpdateNotice']);
         }
@@ -51,7 +51,7 @@ abstract class BasePlugin {
     public function activatePlugin() {
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-        $this->updateNoticeDismissed();
+        $this->dismissUpdateNotice();
 
         dbDelta('
             CREATE TABLE `' . $this->getInviteErrorsTable() . '` (
@@ -280,7 +280,7 @@ abstract class BasePlugin {
         return $this->getOptionName('notice_dismiss');
     }
 
-    public function updateNoticeDismissed() {
+    public function dismissUpdateNotice() {
         update_option(
             $this->getOptionName('last_notice_version'),
             $this->getPluginVersion($this->getSlug())
