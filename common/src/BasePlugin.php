@@ -34,7 +34,11 @@ abstract class BasePlugin {
     public function init() {
         register_activation_hook($this->getPluginFile(), [$this, 'activatePlugin']);
         add_action('plugins_loaded', [$this, 'loadTranslations']);
-
+        add_action('admin_enqueue_scripts', [$this, 'addUpdateNoticeDismissScript']);
+        add_action('wp_ajax_' . $this->getUpdateNoticeDismissedAjaxHook(), [$this, 'dismissUpdateNotice']);
+        if ($this->shouldDisplayUpdateNotice()) {
+            add_action('admin_notices', [$this, 'showUpdateNotice']);
+        }
         if (is_admin()) {
             $this->admin = new Admin($this);
         } else {
@@ -46,6 +50,8 @@ abstract class BasePlugin {
 
     public function activatePlugin() {
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+        $this->dismissUpdateNotice();
 
         dbDelta('
             CREATE TABLE `' . $this->getInviteErrorsTable() . '` (
@@ -217,5 +223,62 @@ abstract class BasePlugin {
 
     private function isValidGtin(string $value): bool {
         return preg_match('/^\d{8}(?:\d{4,6})?$/', $value);
+    }
+
+    public function showUpdateNotice() {
+        $class = 'notice notice-info is-dismissible ' . $this->getUpdateNoticeClass();
+        $message = $this->getUpdateMessage();
+        if (!empty($message)) {
+            printf('<div class="%s">%s</div>', esc_attr($class), $message);
+        }
+    }
+
+    private function getUpdateMessage() {
+        return $this->getUpdateNotices()[$this->getVersion()] ?? null;
+    }
+
+    protected function getUpdateNotices(): array {
+        return [];
+    }
+
+    public function addUpdateNoticeDismissScript() {
+        $js_file = plugin_dir_url(__FILE__) . 'admin/js/update-notice.js';
+        $script_name = $this->getOptionName('notice_update');
+        wp_register_script(
+            $script_name,
+            $js_file
+        );
+        wp_localize_script($script_name, 'notice_params', [
+            'class' => $this->getUpdateNoticeClass(),
+            'hook' => $this->getUpdateNoticeDismissedAjaxHook(),
+        ]);
+        wp_enqueue_script($script_name);
+    }
+
+    private function getUpdateNoticeClass(): string {
+        return $this->getOptionName('custom_notice');
+    }
+
+    private function getUpdateNoticeDismissedAjaxHook(): string {
+        return $this->getOptionName('notice_dismiss');
+    }
+
+    public function dismissUpdateNotice() {
+        update_option(
+            $this->getOptionName('last_notice_version'),
+            $this->getVersion()
+        );
+    }
+
+    private function shouldDisplayUpdateNotice(): bool {
+        return version_compare(
+            $this->getVersion(),
+            get_option($this->getOptionName('last_notice_version'), ''),
+            '>'
+        );
+    }
+
+    private function getVersion(): string {
+        return '$VERSION$';
     }
 }
