@@ -34,7 +34,6 @@ abstract class BasePlugin {
     public function init() {
         register_activation_hook($this->getPluginFile(), [$this, 'activatePlugin']);
         add_action('plugins_loaded', [$this, 'loadTranslations']);
-
         add_action('admin_enqueue_scripts', [$this, 'addCustomNoticeDismissScript']);
         add_action('wp_ajax_' . $this->getCustomNoticeDismissedAjaxHook(), [$this, 'customNoticeDismissed']);
         if ($this->shouldDisplayCustomNotice()) {
