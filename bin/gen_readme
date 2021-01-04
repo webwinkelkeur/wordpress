@@ -24,7 +24,6 @@ $sections = [
     'Installation' => $info['readme']['installation'] ?? '',
     'Frequently' => $info['readme']['faq'] ?? '',
     'Changelog' => file_get_contents(__DIR__ . '/../changelog.md'),
-    'Upgrade Notice' => $info['readme']['upgrade_notice'] ?? '',
 ];
 
 $parts = [trim("
