@@ -294,6 +294,7 @@ abstract class BasePlugin {
             && version_compare(
                 $this->getPluginVersion($this->getSlug()),
                 $last_notice_version,
-                '>');
+                '>'
+            );
     }
 }
