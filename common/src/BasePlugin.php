@@ -250,12 +250,11 @@ abstract class BasePlugin {
     }
 
     private function getUpdateMessage() {
-        $update_notices_file = WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . $this->getSlug() . '/src/UpdateNotices.php';
-        if (file_exists($update_notices_file)) {
-            $updates = include $update_notices_file;
-            return $updates[$this->getPluginVersion($this->getSlug())] ?? null;
-        }
-        return null;
+        return $this->getUpdateNotices()[$this->getVersion()] ?? null;
+    }
+
+    protected function getUpdateNotices(): array {
+        return [];
     }
 
     public function addUpdateNoticeDismissScript() {
@@ -283,7 +282,7 @@ abstract class BasePlugin {
     public function dismissUpdateNotice() {
         update_option(
             $this->getOptionName('last_notice_version'),
-            $this->getPluginVersion($this->getSlug())
+            $this->getVersion()
         );
     }
 
@@ -291,9 +290,13 @@ abstract class BasePlugin {
         $last_notice_version = get_option($this->getOptionName('last_notice_version'));
         return $last_notice_version
             && version_compare(
-                $this->getPluginVersion($this->getSlug()),
+                $this->getVersion(),
                 $last_notice_version,
                 '>'
             );
+    }
+
+    private function getVersion(): string {
+        return '$VERSION$';
     }
 }

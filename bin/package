@@ -21,7 +21,8 @@ git archive HEAD | tar xf - -C "$tmp"
 
 cd "$tmp"
 
-perl -p -i -e 's/\$VERSION\$/'"$version"'/g' */*.php
+find . -type f -name '*.php' -exec grep --null -l -F '$VERSION$' {} + |
+xargs -0 perl -p -i -e 's/\$VERSION\$/'"$version"'/g'
 
 make >&2
 
