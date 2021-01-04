@@ -4,8 +4,6 @@ namespace Valued\WordPress;
 use ReflectionClass;
 
 abstract class BasePlugin {
-    const PLUGIN_README_URL = 'https://plugins.svn.wordpress.org/%s/trunk/readme.txt';
-
     protected static $instances = [];
 
     public $admin;
@@ -36,6 +34,7 @@ abstract class BasePlugin {
     public function init() {
         register_activation_hook($this->getPluginFile(), [$this, 'activatePlugin']);
         add_action('plugins_loaded', [$this, 'loadTranslations']);
+
         add_action('admin_enqueue_scripts', [$this, 'addCustomNoticeDismissScript']);
         add_action('wp_ajax_' . $this->getCustomNoticeDismissedAjaxHook(), [$this, 'customNoticeDismissed']);
         if ($this->shouldDisplayCustomNotice()) {
@@ -245,54 +244,33 @@ abstract class BasePlugin {
 
     public function showCustomNotice() {
         $class = 'notice notice-info is-dismissible ' . $this->getCustomNoticeClass();
-        $message = $this->getCustomNoticeText();
+        $message = $this->getUpdateMessage();
         if (!empty($message)) {
-            printf('<div class="%s"><p>%s</p></div>', esc_attr($class), $message);
+            printf('<div class="%s">%s</div>', esc_attr($class), $message);
         }
     }
 
-    public function getCustomNoticeText() {
-        $readme = wp_remote_fopen($this->getPluginReadme());
-        $pattern = '/===\sUpgrade\sNotice\s===\s* 
-               =\s' . preg_quote($this->getPluginVersion($this->getSlug())) . '\s=\s
-               (?:.+\R)?(.+)/x';
-        preg_match($pattern, $readme, $matches);
-        if (isset($matches[1])) {
-            return $this->convertReadmeLinkToHtml($matches[1]);
+    private function getUpdateMessage() {
+        $update_notices_file = WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . $this->getSlug() . '/src/UpdateNotices.php';
+        if (file_exists($update_notices_file)) {
+            $updates = include $update_notices_file;
+            return $updates[$this->getPluginVersion($this->getSlug())] ?? null;
         }
-    }
-
-    private function getPluginReadme(): string {
-        return sprintf(
-            self::PLUGIN_README_URL,
-            $this->getSlug()
-        );
-    }
-
-    private function convertReadmeLinkToHtml(string $notice_text): string {
-        $pattern = '/\[(?<link_label>.+)\]\[(?<link_url>.+)\]/';
-        preg_match($pattern, $notice_text, $link_matches);
-        if (isset($link_matches['link_label'], $link_matches['link_url'])) {
-            $link = sprintf('<a target="_blank" href="%s">%s</a>',
-                $link_matches['link_url'],
-                $link_matches['link_label']
-            );
-            return preg_replace($pattern, $link, $notice_text, 1);
-        }
-        return $notice_text;
+        return null;
     }
 
     public function addCustomNoticeDismissScript() {
         $js_file = plugin_dir_url(__FILE__) . 'admin/js/update-notice.js';
+        $script_name = $this->getOptionName('notice_update');
         wp_register_script(
-            'notice-update',
+            $script_name,
             $js_file
         );
-        wp_localize_script('notice-update', 'notice_params', [
+        wp_localize_script($script_name, 'notice_params', [
             'class' => $this->getCustomNoticeClass(),
             'hook' => $this->getCustomNoticeDismissedAjaxHook(),
         ]);
-        wp_enqueue_script('notice-update');
+        wp_enqueue_script($script_name);
     }
 
     private function getCustomNoticeClass(): string {
@@ -300,7 +278,7 @@ abstract class BasePlugin {
     }
 
     private function getCustomNoticeDismissedAjaxHook(): string {
-        return $this->getOptionName('notice-dismiss');
+        return $this->getOptionName('notice_dismiss');
     }
 
     public function customNoticeDismissed() {
@@ -312,15 +290,10 @@ abstract class BasePlugin {
 
     private function shouldDisplayCustomNotice(): bool {
         $last_notice_version = get_option($this->getOptionName('last_notice_version'));
-        if (
-            $last_notice_version
+        return $last_notice_version
             && version_compare(
                 $this->getPluginVersion($this->getSlug()),
                 $last_notice_version,
-                '>')
-        ) {
-            return true;
-        }
-        return false;
+                '>');
     }
 }
