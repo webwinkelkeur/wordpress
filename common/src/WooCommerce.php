@@ -17,7 +17,7 @@ class WooCommerce {
         add_action('woocommerce_checkout_update_order_meta', [$this, 'set_order_language']);
         add_action('woocommerce_product_options_sku', [$this, 'addGtinOption']);
         add_action('woocommerce_admin_process_product_object', [$this, 'saveGtinOption']);
-        register_activation_hook($this->plugin->getPluginFile(), [$this, 'activateSyncReviews']);
+        add_action('init', [$this, 'activateSyncReviews']);
         register_deactivation_hook($this->plugin->getPluginFile(), [$this, 'deactivateSyncReviews']);
         add_action($this->getReviewsHook(), [$this, 'syncReviews']);
         add_action('wp_ajax_' . $this->getManualSyncAction(), [$this, 'manualReviewSync']);
