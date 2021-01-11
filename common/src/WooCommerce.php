@@ -24,6 +24,12 @@ class WooCommerce {
     }
 
     public function activateSyncReviews() {
+        if (
+            defined('DISABLE_WP_CRON')
+            && DISABLE_WP_CRON && get_option($this->plugin->getOptionName('product_reviews'))
+        ) {
+            add_action('admin_notices', [$this, 'wpCronDisabledNotice']);
+        }
         if (!wp_next_scheduled($this->getReviewsHook())) {
             wp_schedule_event(time(), 'twicedaily', $this->getReviewsHook());
         }
@@ -31,6 +37,14 @@ class WooCommerce {
 
     public function deactivateSyncReviews() {
         wp_clear_scheduled_hook($this->getReviewsHook());
+    }
+
+    public function wpCronDisabledNotice() {
+        if (get_admin_page_title() == $this->plugin->getName()) {
+            $class = 'notice notice-info';
+            $message = __('The DISABLE_WP_CRON constant is set to true in your wordpress configurations. Automatic product reviews sync will not work.');
+            printf('<div class="%1$s"><p>%2$s</p></div>', esc_attr($class), esc_html($message));
+        }
     }
 
     public function orderStatusChanged(int $order_id, string $old_status, string $new_status) {
