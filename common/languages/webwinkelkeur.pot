@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: webwinkelkeur 1.0\n"
 "Report-Msgid-Bugs-To: info@kiboit.com\n"
-"POT-Creation-Date: 2020-05-22 09:15+0300\n"
+"POT-Creation-Date: 2021-01-12 09:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,143 +17,254 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: common/admin.php:34
-#. common/admin.php:34
+#: common/src/Admin.php:40
+#. common/src/Admin.php:40
 msgid "Settings"
 msgstr ""
 
-#: common/admin.php:62
-#. common/admin.php:62
+#: common/src/Admin.php:52
+#. common/src/Admin.php:52
 msgid "Your shop ID is required."
 msgstr ""
 
-#: common/admin.php:64
-#. common/admin.php:64
+#: common/src/Admin.php:55
+#. common/src/Admin.php:55
 msgid "Your shop ID can only contain digits."
 msgstr ""
 
-#: common/admin.php:67
-#. common/admin.php:67
+#: common/src/Admin.php:61
+#. common/src/Admin.php:61
+msgid "This is not a valid API key."
+msgstr ""
+
+#: common/src/Admin.php:100
+#. common/src/Admin.php:100
 msgid "To send invitations, your API key is required."
 msgstr ""
 
-#: common/admin.php:92
-#. common/admin.php:92
+#: common/src/Admin.php:138
+#. common/src/Admin.php:138
 #, php-format
 msgid "An error occurred while requesting the %s invitation:"
 msgstr ""
 
-#: common/woocommerce.php:122
-#. common/woocommerce.php:122
+#: common/src/PhpCompatibilityCheck.php:13
+#. common/src/PhpCompatibilityCheck.php:13
+#, php-format
+msgid "The %s plugin is not compatible with PHP %s. Please upgrade to PHP 7.0.0 or higher."
+msgstr ""
+
+#: common/src/WooCommerce.php:45
+#. common/src/WooCommerce.php:45
+msgid "The DISABLE_WP_CRON constant is set to true in your wordpress configurations. Automatic product reviews sync will not work."
+msgstr ""
+
+#: common/src/WooCommerce.php:158
+#. common/src/WooCommerce.php:158
 #, php-format
 msgid "The %s invitation could not be sent."
 msgstr ""
 
-#: webwinkelkeur/options.php:7
-#. webwinkelkeur/options.php:7
+#: common/src/WooCommerce.php:168
+#. common/src/WooCommerce.php:168
+#, php-format
+msgid "An invitation was sent to %s dashboard."
+msgstr ""
+
+#: common/src/WooCommerce.php:189
+#. common/src/WooCommerce.php:189
+#, php-format
+msgid "Add the %s for this product"
+msgstr ""
+
+#: common/src/WooCommerce.php:439
+#. common/src/WooCommerce.php:439
+msgid "Not registered."
+msgstr ""
+
+#: common/templates/options.php:6
+#. common/templates/options.php:6
 msgid "Your changes have been saved."
 msgstr ""
 
-#: webwinkelkeur/options.php:13
-#. webwinkelkeur/options.php:13
+#: common/templates/options.php:14
+#. common/templates/options.php:14
 msgid "Shop ID"
 msgstr ""
 
-#: webwinkelkeur/options.php:17
-#. webwinkelkeur/options.php:17
+#: common/templates/options.php:18
+#. common/templates/options.php:18
 msgid "API key"
 msgstr ""
 
-#: webwinkelkeur/options.php:20
-#. webwinkelkeur/options.php:20
+#: common/templates/options.php:22
+#. common/templates/options.php:22
 #, php-format
 msgid "You'll find this information after logging in on %s."
 msgstr ""
 
-#: webwinkelkeur/options.php:25
-#. webwinkelkeur/options.php:25
+#: common/templates/options.php:33
+#. common/templates/options.php:33
 msgid "JavaScript integration"
 msgstr ""
 
-#: webwinkelkeur/options.php:29
-#. webwinkelkeur/options.php:29
+#: common/templates/options.php:38
+#. common/templates/options.php:38
 #, php-format
 msgid "Yes, add the %s JavaScript to my website."
 msgstr ""
 
-#: webwinkelkeur/options.php:32
-#. webwinkelkeur/options.php:32
+#: common/templates/options.php:42
+#. common/templates/options.php:42
 #, php-format
 msgid "Use the JavaScript integration to add the sidebar and the tooltip to your website.<br>All settings for the sidebar and tooltip are located on the %s."
 msgstr ""
 
-#: webwinkelkeur/options.php:32
-#. webwinkelkeur/options.php:32
+#: common/templates/options.php:46
+#. common/templates/options.php:46
 #, php-format
 msgid "%s Dashboard"
 msgstr ""
 
-#: webwinkelkeur/options.php:37
-#. webwinkelkeur/options.php:37
+#: common/templates/options.php:53
+#. common/templates/options.php:53
 msgid "Invitations"
 msgstr ""
 
-#: webwinkelkeur/options.php:42
-#. webwinkelkeur/options.php:42
+#: common/templates/options.php:58
+#. common/templates/options.php:58
 msgid "Yes, after every order."
 msgstr ""
 
-#: webwinkelkeur/options.php:46
-#. webwinkelkeur/options.php:46
+#: common/templates/options.php:62
+#. common/templates/options.php:62
 msgid "Yes, after a customer's first order."
 msgstr ""
 
-#: webwinkelkeur/options.php:50
-#. webwinkelkeur/options.php:50
+#: common/templates/options.php:66
+#. common/templates/options.php:66
 msgid "No, don't send invitations."
 msgstr ""
 
-#: webwinkelkeur/options.php:54
-#. webwinkelkeur/options.php:54
+#: common/templates/options.php:73
+#. common/templates/options.php:73
+msgid "Order status for invitations"
+msgstr ""
+
+#: common/templates/options.php:77
+#. common/templates/options.php:77
 msgid "Install and activate WooCommerce to use this functionality."
 msgstr ""
 
-#: webwinkelkeur/options.php:64
-#. webwinkelkeur/options.php:64
-msgid "Do not send order information to WebwinkelKeur"
+#: common/templates/options.php:90
+#. common/templates/options.php:90
+msgid "The invitation is only sent when the order has the checked status."
 msgstr ""
 
-#: webwinkelkeur/options.php:66
-#. webwinkelkeur/options.php:66
-msgid "Please note: not all WebwinkelKeur functionality will be available if you check this option!"
+#: common/templates/options.php:104
+#. common/templates/options.php:104
+#, php-format
+msgid "Do not send my order information to %s (checking this option disables product reviews!)."
 msgstr ""
 
-#: webwinkelkeur/options.php:73
-#. webwinkelkeur/options.php:73
+#: common/templates/options.php:109
+#. common/templates/options.php:109
+#, php-format
+msgid "Please note: not all %s functionality will be available if you check this option!"
+msgstr ""
+
+#: common/templates/options.php:118
+#. common/templates/options.php:118
 msgid "Invitation delay"
 msgstr ""
 
-#: webwinkelkeur/options.php:76
-#. webwinkelkeur/options.php:76
+#: common/templates/options.php:121
+#. common/templates/options.php:121
 msgid "The invitation will be send after the specified amount of days since the order has been shipped."
 msgstr ""
 
-#: webwinkelkeur/options.php:81
-#. webwinkelkeur/options.php:81
+#: common/templates/options.php:126
+#. common/templates/options.php:126
+msgid "Product reviews"
+msgstr ""
+
+#: common/templates/options.php:134
+#. common/templates/options.php:134
+msgid "Import product reviews to WooCommerce."
+msgstr ""
+
+#: common/templates/options.php:138
+#. common/templates/options.php:138
+#, php-format
+msgid "Automatically display product reviews collected using %s on your WooCommerce shop."
+msgstr ""
+
+#: common/templates/options.php:146
+#. common/templates/options.php:146
+msgid "Sync manually"
+msgstr ""
+
+#: common/templates/options.php:149
+#. common/templates/options.php:149
+msgid "Synced successfully"
+msgstr ""
+
+#: common/templates/options.php:152
+#. common/templates/options.php:152
+msgid "Last sync"
+msgstr ""
+
+#: common/templates/options.php:154
+#. common/templates/options.php:154
+msgid "Next sync"
+msgstr ""
+
+#: common/templates/options.php:165
+#. common/templates/options.php:165
+msgid "Automatic detection"
+msgstr ""
+
+#: common/templates/options.php:166
+#. common/templates/options.php:166
+msgid "Suggested keys"
+msgstr ""
+
+#: common/templates/options.php:169
+#. common/templates/options.php:169
+msgid "Other keys"
+msgstr ""
+
+#: common/templates/options.php:176
+#. common/templates/options.php:176
+msgid "Tell this plugin where to find the product <strong>GTIN</strong> by selecting a custom key. For example: if you use a field called <strong>_productcode</strong> to store the <strong>GTIN</strong>, you should select  <strong>_product_code</strong>. Our plugin also supports certain 3rd party plugins. If we found a supported plugin, this box is set to <strong>Automatic detection</strong>, you can still choose to select another key."
+msgstr ""
+
+#: common/templates/options.php:182
+#. common/templates/options.php:182
 msgid "Add rich snippet"
 msgstr ""
 
-#: webwinkelkeur/options.php:85
-#. webwinkelkeur/options.php:85
+#: common/templates/options.php:186
+#. common/templates/options.php:186
 msgid "Yes, add a rich snippet to the footer of my website."
 msgstr ""
 
-#: webwinkelkeur/options.php:88
-#. webwinkelkeur/options.php:88
+#: common/templates/options.php:189
+#. common/templates/options.php:189
 msgid "This allows Google to show your rating in the search results. Use at your own risk."
 msgstr ""
 
-#: webwinkelkeur/options.php:89
-#. webwinkelkeur/options.php:89
+#: common/templates/options.php:190
+#. common/templates/options.php:190
 msgid "More information."
+msgstr ""
+
+#: webwinkelkeur/src/Plugin.php:27
+#. webwinkelkeur/src/Plugin.php:27
+msgid "New: WebwinkelKeur Product Reviews for WooCommerce"
+msgstr ""
+
+#: webwinkelkeur/src/Plugin.php:29
+#. webwinkelkeur/src/Plugin.php:29
+msgid "Read more"
 msgstr ""
