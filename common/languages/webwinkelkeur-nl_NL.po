@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: webwinkelkeur 1.0\n"
 "Report-Msgid-Bugs-To: info@kiboit.com\n"
 "POT-Creation-Date: 2021-01-12 09:20+0200\n"
-"PO-Revision-Date: 2021-01-12 13:24+0200\n"
+"PO-Revision-Date: 2021-01-12 15:29+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -90,7 +90,7 @@ msgstr "Voed de %s toe voor dit product"
 #. common/src/WooCommerce.php:439
 #: common/src/WooCommerce.php:439
 msgid "Not registered."
-msgstr "Niet geregistreerd"
+msgstr "Niet geregistreerd."
 
 #. common/templates/options.php:6
 #: common/templates/options.php:6
@@ -171,7 +171,7 @@ msgstr "Order status voor uitnodigingen"
 msgid "Install and activate WooCommerce to use this functionality."
 msgstr ""
 "Installeer en activeer WooCommerce om deze functionaliteit te kunnen "
-"gebruiken"
+"gebruiken."
 
 #. common/templates/options.php:90
 #: common/templates/options.php:90
