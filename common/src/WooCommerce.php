@@ -26,7 +26,8 @@ class WooCommerce {
     public function activateSyncReviews() {
         if (
             defined('DISABLE_WP_CRON')
-            && DISABLE_WP_CRON && get_option($this->plugin->getOptionName('product_reviews'))
+            && DISABLE_WP_CRON
+            && get_option($this->plugin->getOptionName('product_reviews'))
         ) {
             add_action('admin_notices', [$this, 'wpCronDisabledNotice']);
         }
