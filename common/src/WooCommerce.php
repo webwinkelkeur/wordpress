@@ -43,7 +43,7 @@ class WooCommerce {
         if (get_admin_page_title() == $this->plugin->getName()) {
             $class = 'notice notice-info';
             $message = __('The DISABLE_WP_CRON constant is set to true in your wordpress configurations. Automatic product reviews sync will not work.');
-            printf('<div class="%1$s"><p>%2$s</p></div>', esc_attr($class), esc_html($message));
+            printf('<div class="%s"><p>%s</p></div>', esc_attr($class), esc_html($message));
         }
     }
 
