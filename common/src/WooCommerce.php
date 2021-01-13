@@ -17,13 +17,16 @@ class WooCommerce {
         add_action('woocommerce_checkout_update_order_meta', [$this, 'set_order_language']);
         add_action('woocommerce_product_options_sku', [$this, 'addGtinOption']);
         add_action('woocommerce_admin_process_product_object', [$this, 'saveGtinOption']);
-        register_activation_hook($this->plugin->getPluginFile(), [$this, 'activateSyncReviews']);
+        add_action('init', [$this, 'activateSyncReviews']);
         register_deactivation_hook($this->plugin->getPluginFile(), [$this, 'deactivateSyncReviews']);
         add_action($this->getReviewsHook(), [$this, 'syncReviews']);
         add_action('wp_ajax_' . $this->getManualSyncAction(), [$this, 'manualReviewSync']);
     }
 
     public function activateSyncReviews() {
+        if (!$this->isSyncedToday() && $this->isProductReviewsEnabled()) {
+            add_action('admin_notices', [$this, 'autoSyncNotice']);
+        }
         if (!wp_next_scheduled($this->getReviewsHook())) {
             wp_schedule_event(time(), 'twicedaily', $this->getReviewsHook());
         }
@@ -36,6 +39,14 @@ class WooCommerce {
     public function orderStatusChanged(int $order_id, string $old_status, string $new_status) {
         if ($this->statusReached($new_status)) {
             $this->sendInvite($order_id);
+        }
+    }
+
+    public function autoSyncNotice() {
+        if (get_admin_page_title() == $this->plugin->getName()) {
+            $class = 'notice notice-info';
+            $message = __('Automatic product review sync did not run in the last 24 hours. Make sure that you have cron jobs configured, or sync manually.', 'webwinkelkeur');
+            printf('<div class="%s"><p>%s</p></div>', esc_attr($class), esc_html($message));
         }
     }
 
@@ -160,7 +171,7 @@ class WooCommerce {
     public function addGtinOption() {
         if (
             GtinHandler::getActivePlugin()
-            || !get_option($this->plugin->getOptionName('product_reviews'))
+            || !$this->isProductReviewsEnabled()
             || get_option($this->plugin->getOptionName('custom_gtin') != $this->getGtinMetaKey())
         ) {
             return;
@@ -291,7 +302,8 @@ class WooCommerce {
     }
 
     public function syncReviews() {
-        if (!get_option($this->plugin->getOptionName('product_reviews'))
+        if (
+            !$this->isProductReviewsEnabled()
             || !$this->plugin->isWoocommerceActivated()
         ) {
             return;
@@ -423,5 +435,13 @@ class WooCommerce {
             return htmlentities(date("Y-m-d H:i:s", $date));
         }
         return __('Not registered.', 'webwinkelkeur');
+    }
+
+    private function isProductReviewsEnabled(): bool {
+        return get_option($this->plugin->getOptionName('product_reviews'));
+    }
+
+    private function isSyncedToday(): bool {
+        return strtotime($this->getLastReviewSync()) > strtotime('-24 hours');
     }
 }
