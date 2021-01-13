@@ -24,7 +24,7 @@ class WooCommerce {
     }
 
     public function activateSyncReviews() {
-        if (!$this->isSyncedToday() && get_option($this->plugin->getOptionName('product_reviews'))) {
+        if (!$this->isSyncedToday() && $this->isProductReviewsEnabled()) {
             add_action('admin_notices', [$this, 'autoSyncNotice']);
         }
         if (!wp_next_scheduled($this->getReviewsHook())) {
@@ -171,7 +171,7 @@ class WooCommerce {
     public function addGtinOption() {
         if (
             GtinHandler::getActivePlugin()
-            || !get_option($this->plugin->getOptionName('product_reviews'))
+            || !$this->isProductReviewsEnabled()
             || get_option($this->plugin->getOptionName('custom_gtin') != $this->getGtinMetaKey())
         ) {
             return;
@@ -302,7 +302,8 @@ class WooCommerce {
     }
 
     public function syncReviews() {
-        if (!get_option($this->plugin->getOptionName('product_reviews'))
+        if (
+            !$this->isProductReviewsEnabled()
             || !$this->plugin->isWoocommerceActivated()
         ) {
             return;
@@ -434,6 +435,10 @@ class WooCommerce {
             return htmlentities(date("Y-m-d H:i:s", $date));
         }
         return __('Not registered.', 'webwinkelkeur');
+    }
+
+    private function isProductReviewsEnabled(): bool {
+        return get_option($this->plugin->getOptionName('product_reviews'));
     }
 
     private function isSyncedToday(): bool {
