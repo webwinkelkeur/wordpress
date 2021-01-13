@@ -1,3 +1,7 @@
+= 3.3 - 2021-01-13 =
+* Add notice about product reviews feature.
+* Make sure product review scheduled task is registered on every load.
+
 = 3.2 - 2020-12-15 =
 * Add sample values to GTIN meta/attribute selector.
 * Add button for manually syncing product reviews.
