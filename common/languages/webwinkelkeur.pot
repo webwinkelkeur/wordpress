@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: webwinkelkeur 1.0\n"
 "Report-Msgid-Bugs-To: info@kiboit.com\n"
-"POT-Creation-Date: 2021-01-12 09:20+0200\n"
+"POT-Creation-Date: 2021-01-13 13:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -54,31 +54,26 @@ msgstr ""
 msgid "The %s plugin is not compatible with PHP %s. Please upgrade to PHP 7.0.0 or higher."
 msgstr ""
 
-#: common/src/WooCommerce.php:45
-#. common/src/WooCommerce.php:45
-msgid "The DISABLE_WP_CRON constant is set to true in your wordpress configurations. Automatic product reviews sync will not work."
-msgstr ""
-
-#: common/src/WooCommerce.php:158
-#. common/src/WooCommerce.php:158
+#: common/src/WooCommerce.php:144
+#. common/src/WooCommerce.php:144
 #, php-format
 msgid "The %s invitation could not be sent."
 msgstr ""
 
-#: common/src/WooCommerce.php:168
-#. common/src/WooCommerce.php:168
+#: common/src/WooCommerce.php:154
+#. common/src/WooCommerce.php:154
 #, php-format
 msgid "An invitation was sent to %s dashboard."
 msgstr ""
 
-#: common/src/WooCommerce.php:189
-#. common/src/WooCommerce.php:189
+#: common/src/WooCommerce.php:175
+#. common/src/WooCommerce.php:175
 #, php-format
 msgid "Add the %s for this product"
 msgstr ""
 
-#: common/src/WooCommerce.php:439
-#. common/src/WooCommerce.php:439
+#: common/src/WooCommerce.php:425
+#. common/src/WooCommerce.php:425
 msgid "Not registered."
 msgstr ""
 
