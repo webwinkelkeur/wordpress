@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: webwinkelkeur 1.0\n"
 "Report-Msgid-Bugs-To: info@kiboit.com\n"
-"POT-Creation-Date: 2021-01-13 13:45+0200\n"
+"POT-Creation-Date: 2021-01-13 14:19+0200\n"
 "PO-Revision-Date: 2021-01-12 15:29+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -59,26 +59,33 @@ msgstr ""
 "De %s plugin is niet verenigbaar met PHP %s. Graag upgraden naar PHP 7.0.0 "
 "of hoger."
 
-#. common/src/WooCommerce.php:144
-#: common/src/WooCommerce.php:144
+#. common/src/WooCommerce.php:48
+#: common/src/WooCommerce.php:48
+msgid ""
+"Automatic product review sync did not run in the last 24 hours. Make sure "
+"that you have cron jobs configured, or sync manually."
+msgstr ""
+
+#. common/src/WooCommerce.php:155
+#: common/src/WooCommerce.php:155
 #, php-format
 msgid "The %s invitation could not be sent."
 msgstr "%s uitnodiging kon niet worden verstuurd."
 
-#. common/src/WooCommerce.php:154
-#: common/src/WooCommerce.php:154
+#. common/src/WooCommerce.php:165
+#: common/src/WooCommerce.php:165
 #, php-format
 msgid "An invitation was sent to %s dashboard."
 msgstr "Een uitnodiging is verstuurd naar het dashboard van %s."
 
-#. common/src/WooCommerce.php:175
-#: common/src/WooCommerce.php:175
+#. common/src/WooCommerce.php:186
+#: common/src/WooCommerce.php:186
 #, php-format
 msgid "Add the %s for this product"
 msgstr "Voed de %s toe voor dit product"
 
-#. common/src/WooCommerce.php:425
-#: common/src/WooCommerce.php:425
+#. common/src/WooCommerce.php:436
+#: common/src/WooCommerce.php:436
 msgid "Not registered."
 msgstr "Niet geregistreerd."
 
