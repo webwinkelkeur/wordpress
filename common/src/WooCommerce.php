@@ -24,6 +24,9 @@ class WooCommerce {
     }
 
     public function activateSyncReviews() {
+        if (!$this->isSyncedToday() && get_option($this->plugin->getOptionName('product_reviews'))) {
+            add_action('admin_notices', [$this, 'autoSyncNotice']);
+        }
         if (!wp_next_scheduled($this->getReviewsHook())) {
             wp_schedule_event(time(), 'twicedaily', $this->getReviewsHook());
         }
@@ -36,6 +39,14 @@ class WooCommerce {
     public function orderStatusChanged(int $order_id, string $old_status, string $new_status) {
         if ($this->statusReached($new_status)) {
             $this->sendInvite($order_id);
+        }
+    }
+
+    public function autoSyncNotice() {
+        if (get_admin_page_title() == $this->plugin->getName()) {
+            $class = 'notice notice-info';
+            $message = __('Automatic product review sync did not run in the last 24 hours. Make sure that you have cron jobs configured, or sync manually.', 'webwinkelkeur');
+            printf('<div class="%s"><p>%s</p></div>', esc_attr($class), esc_html($message));
         }
     }
 
@@ -423,5 +434,9 @@ class WooCommerce {
             return htmlentities(date("Y-m-d H:i:s", $date));
         }
         return __('Not registered.', 'webwinkelkeur');
+    }
+
+    private function isSyncedToday(): bool {
+        return strtotime($this->getLastReviewSync()) > strtotime('-24 hours');
     }
 }
