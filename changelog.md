@@ -1,3 +1,6 @@
+= 3.4 - 2021-01-27 =
+* Support GTINs stored via Yoast SEO.
+
 = 3.3 - 2021-01-13 =
 * Add notice about product reviews feature.
 * Make sure product review scheduled task is registered on every load.
