@@ -11,15 +11,15 @@ class GtinHandler {
 
     private $gtin_meta_key;
 
-    public function __construct(string $gtin_meta_key) {
-        $this->gtin_meta_key = $gtin_meta_key;
-    }
-
     public function setProduct(\WC_Product $product) {
         $this->product = $product;
     }
 
-    public static function getActivePlugin() {
+    public function setGtinMetaKey(string $gtin_meta_key) {
+        $this->gtin_meta_key = $gtin_meta_key;
+    }
+
+    public function getActivePlugin() {
         foreach ($this->getSupportedPlugins() as $plugin_name => $callback) {
             if (is_plugin_active($plugin_name)) {
                 return $plugin_name;

@@ -110,7 +110,8 @@ abstract class BasePlugin {
     }
 
     public function getActiveGtinPlugin() {
-        return GtinHandler::getActivePlugin();
+        $gtin_handler = new GtinHandler();
+        return $gtin_handler->getActivePlugin();
     }
 
     public function getProductMetaKeys(): array {

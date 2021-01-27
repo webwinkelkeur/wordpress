@@ -169,8 +169,9 @@ class WooCommerce {
     }
 
     public function addGtinOption() {
+        $gtin_handler = new GtinHandler();
         if (
-            GtinHandler::getActivePlugin()
+            $gtin_handler->getActivePlugin()
             || !$this->isProductReviewsEnabled()
             || get_option($this->plugin->getOptionName('custom_gtin') != $this->getGtinMetaKey())
         ) {
@@ -277,7 +278,8 @@ class WooCommerce {
             if (!$product) {
                 continue;
             }
-            $gtin_handler = new GtinHandler($this->getGtinMetaKey());
+            $gtin_handler = new GtinHandler();
+            $gtin_handler->setGtinMetaKey($this->getGtinMetaKey());
             $gtin_handler->setProduct($product);
             $products[] = [
                 'id' => $product->get_id(),
