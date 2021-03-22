@@ -1,3 +1,6 @@
+= 3.5 - 2021-03-22 =
+* Allow overriding the sidebar template by creating `webwinkelkeur/sidebar.php` in your theme.
+
 = 3.4 - 2021-01-27 =
 * Support GTINs stored via Yoast SEO.
 
