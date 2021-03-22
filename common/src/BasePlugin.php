@@ -96,8 +96,15 @@ abstract class BasePlugin {
     public function render($__template, array $__scope) {
         extract($__scope);
         ob_start();
-        require __DIR__ . '/../templates/' . $__template . '.php';
+        require $this->locateTemplate($__template);
         return ob_get_clean();
+    }
+
+    private function locateTemplate($template) {
+        if (wp_using_themes() && $result = locate_template('webwinkelkeur/' . $template . '.php')) {
+            return $result;
+        }
+        return __DIR__ . '/../templates/' . $template . '.php';
     }
 
     public function getPluginFile() {
@@ -155,13 +162,14 @@ abstract class BasePlugin {
 
     private function getProductKeys(): array {
         $custom_keys = array_merge($this->getProductMetaKeys(), $this->getCustomAttributes());
-        return array_map(function ($value) {
-            return [
-                'option_value' => $value['type'] . $value['name'],
-                'label' => $value['name'] . ' (e.g. "' . $value['example_value'] . '")',
-                'suggested' => $this->isValidGtin($value['example_value']),
-            ];
-        },
+        return array_map(
+            function ($value) {
+                return [
+                    'option_value' => $value['type'] . $value['name'],
+                    'label' => $value['name'] . ' (e.g. "' . $value['example_value'] . '")',
+                    'suggested' => $this->isValidGtin($value['example_value']),
+                ];
+            },
             $custom_keys
         );
     }
