@@ -1,3 +1,6 @@
+= 3.8 - 2021-03-31 =
+* Add missing template file to make manual product sync show its status again.
+
 = 3.7 - 2021-03-31 =
 * Bump tested WordPress version to 5.7.
 
