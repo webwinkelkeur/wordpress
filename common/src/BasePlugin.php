@@ -282,12 +282,33 @@ abstract class BasePlugin {
     private function shouldDisplayUpdateNotice(): bool {
         return version_compare(
             $this->getVersion(),
-            get_option($this->getOptionName('last_notice_version'), ''),
+            $this->getOption($this->getOptionName('last_notice_version'), ''),
             '>'
         );
     }
 
     private function getVersion(): string {
         return '$VERSION$';
+    }
+
+    private function getDefaultConfig(): array {
+        return [
+            'invite_delay' => 3,
+            'javascript' => true,
+            'order_statuses' => WooCommerce::DEFAULT_ORDER_STATUS,
+            'product_reviews' => true,
+        ];
+    }
+
+    public function getOption($name, $default = null) {
+        $value = get_option($this->getOptionName($name), null);
+        if ($value !== null) {
+            return $value;
+        }
+        $defaults = $this->getDefaultConfig();
+        if (isset($defaults[$name])) {
+            return $defaults[$name];
+        }
+        return $default;
     }
 }

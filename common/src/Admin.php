@@ -4,17 +4,6 @@ namespace Valued\WordPress;
 class Admin {
     private $plugin;
 
-    const DEFAULT_ORDER_STATUS = ['wc-completed'];
-
-    protected function get_default_config() {
-        return [
-            'invite_delay' => 3,
-            'javascript' => true,
-            'order_statuses' => self::DEFAULT_ORDER_STATUS,
-            'product_reviews' => true,
-        ];
-    }
-
     public function __construct(BasePlugin $plugin) {
         $this->plugin = $plugin;
         add_action('admin_menu', [$this, 'admin_menu']);
@@ -74,10 +63,8 @@ class Admin {
             'rich_snippet' => 'boolval',
         ];
 
-        $config = $this->get_default_config();
-
         foreach (array_keys($fields) as $field_name) {
-            $value = get_option($this->plugin->getOptionName($field_name), false);
+            $value = $this->plugin->getOption($field_name, false);
             if ($value !== false) {
                 $config[$field_name] = $value;
             } elseif (!isset($config[$field_name])) {

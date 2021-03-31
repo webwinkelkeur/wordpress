@@ -77,7 +77,7 @@
                         <p class="description"><?php _e('Install and activate WooCommerce to use this functionality.', 'webwinkelkeur'); ?></p>
                     <?php else: ?>
                         <fieldset>
-                            <div style="height: 150px; overflow: auto;">
+                            <div class="webwinkelkeur-order-statuses">
                                 <?php foreach (wc_get_order_statuses() as $key => $label): ?>
                                     <label>
                                         <input type="checkbox" name="<?= $plugin->getOptionName('order_statuses[]'); ?>"
@@ -142,12 +142,18 @@
                     </fieldset>
                     <fieldset>
                         <label>
-                            <button class="button" <?= !$config['product_reviews'] ? 'disabled' : ''; ?> type="button" id="<?= $plugin->getOptionName('manual_sync_btn'); ?>" onClick="triggerManualSync()">
+                            <button class="button webwinkelkeur-sync-btn"
+                                    <?= !$config['product_reviews'] ? 'disabled' : ''; ?>
+                            >
                                 <?= __('Sync manually', 'webwinkelkeur'); ?>
                             </button>
-                            <span id='successful-sync' hidden style="color:#0ED826">&#10003;
-                                <?= __('Synced successfully', 'webwinkelkeur'); ?>
-                            </span>
+                            <button class="button webwinkelkeur-sync-btn"
+                                    data-all="yes"
+                                    <?= !$config['product_reviews'] ? 'disabled' : ''; ?>
+                            >
+                                <?= __('Sync all reviews manually', 'webwinkelkeur'); ?>
+                            </button>
+                            <div id='successful-sync' hidden></div>
                         </label> <br>
                         <p> <?= __('Last sync', 'webwinkelkeur'); ?>: <b><?= $plugin->woocommerce->getLastReviewSync(); ?></b>
                         </p>
@@ -196,23 +202,58 @@
     </div>
 </form>
 <script>
-    function triggerManualSync() {
-        <?php $nonce = wp_create_nonce($plugin->woocommerce->getManualSyncNonce());?>
-        jQuery.ajax({
-            type: "post",
-            url: "admin-ajax.php",
-            data: <?= json_encode([
-                'action' => $plugin->woocommerce->getManualSyncAction(),
-                '_ajax_nonce' => $nonce,
-            ]); ?>,
-            success: function (response) {
-                if (response.status) {
-                    jQuery("#successful-sync").show();
+    (function ($) {
+        function triggerManualSync(all) {
+            var $success = $("#successful-sync");
+            var $buttons = $('.webwinkelkeur-sync-btn');
+
+            $success.show();
+            $success[0].className = '';
+            $success.text(<?= json_encode(__("Syncing product reviews...", 'webwinkelkeur')); ?>);
+
+            $buttons.prop('disabled', true);
+
+            $.post(
+                "admin-ajax.php",
+                {
+                    action: <?= json_encode($plugin->woocommerce->getManualSyncAction()); ?>,
+                    sync_all: all ? 'yes' : 'no',
+                    _ajax_nonce:
+                        <?= json_encode(wp_create_nonce($plugin->woocommerce->getManualSyncNonce())); ?>
+                }
+            ).done(function (response) {
+                console.log(response);
+                if (response && response.status !== undefined) {
+                    $success.show().html(response.message);
+                    $success[0].className =
+                        response.status ? 'webwinkelkeur-success' : 'webwinkelkeur-error';
                 } else {
                     alert('Something went wrong with syncing.');
                 }
-                console.log(response);
-            }
+            }).always(function () {
+                $buttons.prop('disabled', false);
+            });
+        }
+
+        $(document).on('click', '.webwinkelkeur-sync-btn', function (ev) {
+            ev.preventDefault();
+            triggerManualSync(this.dataset.all === 'yes');
         });
-    }
+    })(jQuery);
 </script>
+<style>
+    .webwinkelkeur-order-statuses {
+        display: flex;
+        flex-wrap: wrap;
+        max-width: 600px;
+    }
+    .webwinkelkeur-order-statuses label {
+        width: 200px;
+    }
+    .webwinkelkeur-success {
+        color: #0ED826;
+    }
+    .webwinkelkeur-error {
+        color: red;
+    }
+</style>
