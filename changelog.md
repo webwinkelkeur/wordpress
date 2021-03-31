@@ -1,3 +1,8 @@
+= 3.6 - 2021-03-31 =
+* Fix product review sync when settings form has not been saved since this functionality was added.
+* Add button to sync all product reviews manually.
+* Show error messages when manual product sync fails.
+
 = 3.5 - 2021-03-22 =
 * Allow overriding the sidebar template by creating `webwinkelkeur/sidebar.php` in your theme.
 
