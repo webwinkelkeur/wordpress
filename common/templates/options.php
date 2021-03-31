@@ -153,7 +153,7 @@
                             >
                                 <?= __('Sync all reviews manually', 'webwinkelkeur'); ?>
                             </button>
-                            <span id='successful-sync' hidden></span>
+                            <div id='successful-sync' hidden></div>
                         </label> <br>
                         <p> <?= __('Last sync', 'webwinkelkeur'); ?>: <b><?= $plugin->woocommerce->getLastReviewSync(); ?></b>
                         </p>
@@ -205,7 +205,14 @@
     (function ($) {
         function triggerManualSync(all) {
             var $success = $("#successful-sync");
-            $success.hide();
+            var $buttons = $('.webwinkelkeur-sync-btn');
+
+            $success.show();
+            $success[0].className = '';
+            $success.text(<?= json_encode(__("Syncing product reviews...", 'webwinkelkeur')); ?>);
+
+            $buttons.prop('disabled', true);
+
             $.post(
                 "admin-ajax.php",
                 {
@@ -223,6 +230,8 @@
                 } else {
                     alert('Something went wrong with syncing.');
                 }
+            }).always(function () {
+                $buttons.prop('disabled', false);
             });
         }
 
