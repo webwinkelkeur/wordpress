@@ -291,7 +291,7 @@ abstract class BasePlugin {
         return '$VERSION$';
     }
 
-    public function getDefaultConfig(): array {
+    private function getDefaultConfig(): array {
         return [
             'invite_delay' => 3,
             'javascript' => true,
