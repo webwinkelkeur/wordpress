@@ -299,10 +299,18 @@ class WooCommerce {
     public function manualReviewSync() {
         check_ajax_referer($this->getManualSyncNonce());
         try {
-            $this->doSyncReviews();
-            wp_send_json(['status' => true]);
+            $details = $this->doSyncReviews(isset($_POST['sync_all']) && $_POST['sync_all'] == 'yes');
+            wp_send_json([
+                'status' => true,
+                'message' => $this->plugin->render('woocommerce_review_sync_status', [
+                    'details' => $details,
+                ]),
+            ]);
         } catch (\Exception $e) {
-            wp_send_json(['status' => false, 'message' => $e->getMessage()]);
+            wp_send_json([
+                'status' => false,
+                'message' => htmlentities($e->getMessage()),
+            ]);
         }
         wp_die();
     }
@@ -314,7 +322,7 @@ class WooCommerce {
         }
     }
 
-    private function doSyncReviews() {
+    private function doSyncReviews($sync_all = false) {
         if (!$this->isProductReviewsEnabled()) {
             throw new \RuntimeException("Product reviews are disabled");
         }
@@ -325,7 +333,11 @@ class WooCommerce {
         $shop_id = get_option($this->plugin->getOptionName('wwk_shop_id'));
         $api_key = get_option($this->plugin->getOptionName('wwk_api_key'));
         $api = new API($api_domain, $shop_id, $api_key);
-        $last_synced = get_option($this->plugin->getOptionName('last_synced')) ?: null;
+        if ($sync_all) {
+            $last_synced = null;
+        } else {
+            $last_synced = get_option($this->plugin->getOptionName('last_synced')) ?: null;
+        }
         $reviews = $api->getReviews($last_synced);
         if (!$reviews->count()) {
             throw new \RuntimeException(sprintf(
@@ -333,34 +345,48 @@ class WooCommerce {
                 $last_synced ?: "forever"
             ));
         }
-        $this->processReviews($reviews);
+        $successes = 0;
+        $errors = [];
+        foreach ($reviews as $review) {
+            try {
+                $this->processReview($review);
+                $successes++;
+            } catch (\Exception $e) {
+                $errors[] = $e->getMessage();
+            }
+        }
         if ($last_modified = (string) ($reviews[0]->modified ?? null)) {
             update_option($this->plugin->getOptionName('last_synced'), $last_modified);
         }
         update_option($this->plugin->getOptionName('last_executed_sync'), date(\DateTime::RFC3339));
+        return [
+            'successes' => $successes,
+            'errors' => $errors,
+        ];
     }
 
-    private function processReviews(\SimpleXMLElement $reviews) {
-        foreach ($reviews as $review) {
-            $comment_data = $this->getCommentData($review);
-            if (empty($comment_data)) {
-                continue;
-            }
-            $comment_id = $this->getExistingComment(
-                $comment_data['comment_post_ID'],
-                $comment_data['comment_author_email'],
-                (int) $review->review_id
-            );
-            $deleted = (int) $review->deleted;
+    private function processReview(\SimpleXMLElement $review) {
+        $comment_data = $this->getCommentData($review);
+        $comment_id = $this->getExistingComment(
+            $comment_data['comment_post_ID'],
+            $comment_data['comment_author_email'],
+            (int) $review->review_id
+        );
+        if ((int) $review->deleted) {
             if ($comment_id) {
-                $comment_data['comment_ID'] = $comment_id;
-                if ($deleted) {
-                    wp_delete_comment($comment_id);
-                    continue;
+                if (!wp_delete_comment($comment_id)) {
+                    throw new RuntimeException("Could not delete review: {$comment_id}");
                 }
-                wp_update_comment($comment_data);
-            } elseif (!$deleted) {
-                wp_insert_comment($comment_data);
+            }
+        } elseif ($comment_id) {
+            $comment_data['comment_ID'] = $comment_id;
+            if (wp_update_comment($comment_data) === false) {
+                throw new RuntimeException("Could not update review: {$comment_id}");
+            }
+        } else {
+            if (!wp_insert_comment($comment_data)) {
+                throw new RuntimeException(
+                    "Could not insert review for product: {$comment_data['comment_post_ID']}");
             }
         }
     }
@@ -384,7 +410,7 @@ class WooCommerce {
         $pf = new WC_Product_Factory();
         $product_id = (int) $review->products->product->external_id;
         if (!$pf->get_product($product_id)) {
-            return null;
+            throw new RuntimeException(sprintf("No product with ID {$product_id}"));
         }
         $author_email = sanitize_text_field((string) $review->email);
         return [

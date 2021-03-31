@@ -142,12 +142,18 @@
                     </fieldset>
                     <fieldset>
                         <label>
-                            <button class="button" <?= !$config['product_reviews'] ? 'disabled' : ''; ?> type="button" id="<?= $plugin->getOptionName('manual_sync_btn'); ?>" onClick="triggerManualSync()">
+                            <button class="button webwinkelkeur-sync-btn"
+                                    <?= !$config['product_reviews'] ? 'disabled' : ''; ?>
+                            >
                                 <?= __('Sync manually', 'webwinkelkeur'); ?>
                             </button>
-                            <span id='successful-sync' hidden style="color:#0ED826">&#10003;
-                                <?= __('Synced successfully', 'webwinkelkeur'); ?>
-                            </span>
+                            <button class="button webwinkelkeur-sync-btn"
+                                    data-all="yes"
+                                    <?= !$config['product_reviews'] ? 'disabled' : ''; ?>
+                            >
+                                <?= __('Sync all reviews manually', 'webwinkelkeur'); ?>
+                            </button>
+                            <span id='successful-sync' hidden></span>
                         </label> <br>
                         <p> <?= __('Last sync', 'webwinkelkeur'); ?>: <b><?= $plugin->woocommerce->getLastReviewSync(); ?></b>
                         </p>
@@ -196,26 +202,35 @@
     </div>
 </form>
 <script>
-    function triggerManualSync() {
-        var $success = jQuery("#successful-sync");
-        $success.hide();
-        jQuery.post(
-            "admin-ajax.php",
-            <?= json_encode([
-                'action' => $plugin->woocommerce->getManualSyncAction(),
-                '_ajax_nonce' => wp_create_nonce($plugin->woocommerce->getManualSyncNonce()),
-            ]); ?>
-        ).done(function (response) {
-            console.log(response);
-            if (response.status === true) {
-                $success.show();
-            } else if (response.status === false) {
-                alert(response.message);
-            } else {
-                alert('Something went wrong with syncing.');
-            }
+    (function ($) {
+        function triggerManualSync(all) {
+            var $success = $("#successful-sync");
+            $success.hide();
+            $.post(
+                "admin-ajax.php",
+                {
+                    action: <?= json_encode($plugin->woocommerce->getManualSyncAction()); ?>,
+                    sync_all: all ? 'yes' : 'no',
+                    _ajax_nonce:
+                        <?= json_encode(wp_create_nonce($plugin->woocommerce->getManualSyncNonce())); ?>
+                }
+            ).done(function (response) {
+                console.log(response);
+                if (response && response.status !== undefined) {
+                    $success.show().html(response.message);
+                    $success[0].className =
+                        response.status ? 'webwinkelkeur-success' : 'webwinkelkeur-error';
+                } else {
+                    alert('Something went wrong with syncing.');
+                }
+            });
+        }
+
+        $(document).on('click', '.webwinkelkeur-sync-btn', function (ev) {
+            ev.preventDefault();
+            triggerManualSync(this.dataset.all === 'yes');
         });
-    }
+    })(jQuery);
 </script>
 <style>
     .webwinkelkeur-order-statuses {
@@ -225,5 +240,11 @@
     }
     .webwinkelkeur-order-statuses label {
         width: 200px;
+    }
+    .webwinkelkeur-success {
+        color: #0ED826;
+    }
+    .webwinkelkeur-error {
+        color: red;
     }
 </style>
