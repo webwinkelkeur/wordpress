@@ -37,6 +37,8 @@ services:
     image: mariadb:10.3
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    ports:
+      - "13776:3306"
 
 volumes:
   www:

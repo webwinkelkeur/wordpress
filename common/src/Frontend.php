@@ -14,7 +14,7 @@ class Frontend {
     private $enable_rich_snippet = true;
 
     protected function is_sidebar_inactive() {
-        return !get_option($this->plugin->getOptionName('javascript'));
+        return !$this->plugin->getOption('javascript');
     }
 
     public function __construct(BasePlugin $plugin) {
@@ -24,7 +24,7 @@ class Frontend {
             return;
         }
 
-        $this->wwk_shop_id = (int) get_option($this->plugin->getOptionName('wwk_shop_id'));
+        $this->wwk_shop_id = (int) $this->plugin->getOption('wwk_shop_id');
         if (!$this->wwk_shop_id) {
             return;
         }
@@ -42,7 +42,7 @@ class Frontend {
             add_action($action, [$this, 'sidebar']);
         }
 
-        if (get_option($this->plugin->getOptionName('rich_snippet'))) {
+        if ($this->plugin->getOption('rich_snippet')) {
             add_action('wp_footer', [$this, 'rich_snippet']);
             add_action('woocommerce_before_single_product', [$this, 'disable_rich_snippet']);
         }

@@ -9,6 +9,8 @@ use WC_Product_Factory;
 use WP_Comment_Query;
 
 class WooCommerce {
+    const DEFAULT_ORDER_STATUS = ['wc-completed'];
+
     private $plugin;
 
     public function __construct(BasePlugin $plugin) {
@@ -60,13 +62,13 @@ class WooCommerce {
         global $wp_version;
 
         // invites enabled?
-        if (!get_option($this->plugin->getOptionName('invite'))) {
+        if (!$this->plugin->getOption('invite')) {
             return;
         }
 
         $api_domain = $this->plugin->getDashboardDomain();
-        $shop_id = get_option($this->plugin->getOptionName('wwk_shop_id'));
-        $api_key = get_option($this->plugin->getOptionName('wwk_api_key'));
+        $shop_id = $this->plugin->getOption('wwk_shop_id');
+        $api_key = $this->plugin->getOption('wwk_api_key');
 
         if (!$shop_id || !$api_key) {
             return;
@@ -93,7 +95,7 @@ class WooCommerce {
             return;
         }
 
-        $invite_delay = (int) get_option($this->plugin->getOptionName('invite_delay'));
+        $invite_delay = (int) $this->plugin->getOption('invite_delay');
         if ($invite_delay < 0) {
             $invite_delay = 0;
         }
@@ -122,11 +124,11 @@ class WooCommerce {
             'plugin_version' => $this->get_plugin_version('webwinkelkeur'),
             'platform_version' => 'wp-' . $wp_version . '-wc-' . $this->get_plugin_version('woocommerce'),
         ];
-        if (get_option($this->plugin->getOptionName('invite')) == 2) {
+        if ($this->plugin->getOption('invite') == 2) {
             $data['max_invitations_per_email'] = 1;
         }
 
-        $with_order_data = !get_option($this->plugin->getOptionName('limit_order_data')) && is_callable([$order, 'get_data']);
+        $with_order_data = !$this->plugin->getOption('limit_order_data') && is_callable([$order, 'get_data']);
         if ($with_order_data) {
             $order_arr = $this->get_data($order, []);
             $customer_arr = !empty($order_arr['customer_id']) ? $this->get_data(new WC_Customer($order_arr['customer_id']), []) : [];
@@ -173,7 +175,7 @@ class WooCommerce {
         if (
             $gtin_handler->getActivePlugin()
             || !$this->isProductReviewsEnabled()
-            || get_option($this->plugin->getOptionName('custom_gtin') != $this->getGtinMetaKey())
+            || $this->plugin->getOption('custom_gtin') != $this->getGtinMetaKey()
         ) {
             return;
         }
@@ -261,7 +263,7 @@ class WooCommerce {
     }
 
     private function statusReached(string $new_status): bool {
-        $selected_statuses = get_option($this->plugin->getOptionName('order_statuses')) ?: Admin::DEFAULT_ORDER_STATUS;
+        $selected_statuses = $this->plugin->getOption('order_statuses') ?: Admin::DEFAULT_ORDER_STATUS;
         foreach ($selected_statuses as $selected_status) {
             if ($new_status == preg_replace('/^wc-/', '', $selected_status)) {
                 return true;
@@ -288,7 +290,7 @@ class WooCommerce {
                 'image_url' => get_the_post_thumbnail_url($product->get_id()) ?: null,
                 'sku' => $product->get_sku(),
                 'gtin' => $gtin_handler->getGtin(
-                    get_option($this->plugin->getOptionName('custom_gtin')) ?: null
+                    $this->plugin->getOption('custom_gtin') ?: null
                 ),
                 'reviews_allowed' => $product->get_reviews_allowed(),
             ];
@@ -330,13 +332,13 @@ class WooCommerce {
             throw new \RuntimeException("WooCommerce is not active");
         }
         $api_domain = $this->plugin->getDashboardDomain();
-        $shop_id = get_option($this->plugin->getOptionName('wwk_shop_id'));
-        $api_key = get_option($this->plugin->getOptionName('wwk_api_key'));
+        $shop_id = $this->plugin->getOption('wwk_shop_id');
+        $api_key = $this->plugin->getOption('wwk_api_key');
         $api = new API($api_domain, $shop_id, $api_key);
         if ($sync_all) {
             $last_synced = null;
         } else {
-            $last_synced = get_option($this->plugin->getOptionName('last_synced')) ?: null;
+            $last_synced = $this->plugin->getOption('last_synced') ?: null;
         }
         $reviews = $api->getReviews($last_synced);
         if (!$reviews->count()) {
@@ -465,7 +467,7 @@ class WooCommerce {
 
     public function getLastReviewSync(): string {
         return $this->getReviewSyncDate(strtotime(
-            get_option($this->plugin->getOptionName('last_executed_sync'))
+            $this->plugin->getOption('last_executed_sync')
         ));
     }
 
@@ -477,7 +479,7 @@ class WooCommerce {
     }
 
     private function isProductReviewsEnabled(): bool {
-        return get_option($this->plugin->getOptionName('product_reviews'));
+        return $this->plugin->getOption('product_reviews');
     }
 
     private function isSyncedToday(): bool {
