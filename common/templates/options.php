@@ -77,7 +77,7 @@
                         <p class="description"><?php _e('Install and activate WooCommerce to use this functionality.', 'webwinkelkeur'); ?></p>
                     <?php else: ?>
                         <fieldset>
-                            <div style="height: 150px; overflow: auto;">
+                            <div class="webwinkelkeur-order-statuses">
                                 <?php foreach (wc_get_order_statuses() as $key => $label): ?>
                                     <label>
                                         <input type="checkbox" name="<?= $plugin->getOptionName('order_statuses[]'); ?>"
@@ -216,3 +216,13 @@
         });
     }
 </script>
+<style>
+    .webwinkelkeur-order-statuses {
+        display: flex;
+        flex-wrap: wrap;
+        max-width: 600px;
+    }
+    .webwinkelkeur-order-statuses label {
+        width: 200px;
+    }
+</style>
