@@ -197,21 +197,22 @@
 </form>
 <script>
     function triggerManualSync() {
-        <?php $nonce = wp_create_nonce($plugin->woocommerce->getManualSyncNonce());?>
-        jQuery.ajax({
-            type: "post",
-            url: "admin-ajax.php",
-            data: <?= json_encode([
+        var $success = jQuery("#successful-sync");
+        $success.hide();
+        jQuery.post(
+            "admin-ajax.php",
+            <?= json_encode([
                 'action' => $plugin->woocommerce->getManualSyncAction(),
-                '_ajax_nonce' => $nonce,
-            ]); ?>,
-            success: function (response) {
-                if (response.status) {
-                    jQuery("#successful-sync").show();
-                } else {
-                    alert('Something went wrong with syncing.');
-                }
-                console.log(response);
+                '_ajax_nonce' => wp_create_nonce($plugin->woocommerce->getManualSyncNonce()),
+            ]); ?>
+        ).done(function (response) {
+            console.log(response);
+            if (response.status === true) {
+                $success.show();
+            } else if (response.status === false) {
+                alert(response.message);
+            } else {
+                alert('Something went wrong with syncing.');
             }
         });
     }

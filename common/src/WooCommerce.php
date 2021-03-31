@@ -298,29 +298,40 @@ class WooCommerce {
 
     public function manualReviewSync() {
         check_ajax_referer($this->getManualSyncNonce());
-        $this->syncReviews();
-        wp_send_json(['status' => true]);
+        try {
+            $this->doSyncReviews();
+            wp_send_json(['status' => true]);
+        } catch (\Exception $e) {
+            wp_send_json(['status' => false, 'message' => $e->getMessage()]);
+        }
         wp_die();
     }
 
     public function syncReviews() {
-        if (
-            !$this->isProductReviewsEnabled()
-            || !$this->plugin->isWoocommerceActivated()
-        ) {
-            return;
+        try {
+            $this->doSyncReviews();
+        } catch (\Exception $e) {
+        }
+    }
+
+    private function doSyncReviews() {
+        if (!$this->isProductReviewsEnabled()) {
+            throw new \RuntimeException("Product reviews are disabled");
+        }
+        if (!$this->plugin->isWoocommerceActivated()) {
+            throw new \RuntimeException("WooCommerce is not active");
         }
         $api_domain = $this->plugin->getDashboardDomain();
         $shop_id = get_option($this->plugin->getOptionName('wwk_shop_id'));
         $api_key = get_option($this->plugin->getOptionName('wwk_api_key'));
         $api = new API($api_domain, $shop_id, $api_key);
-        try {
-            $reviews = $api->getReviews(
-                get_option($this->plugin->getOptionName('last_synced')) ?: null
-            );
-        } catch (WebwinkelKeurAPIError $e) {
-            $this->logApiError($e);
-            return;
+        $last_synced = get_option($this->plugin->getOptionName('last_synced')) ?: null;
+        $reviews = $api->getReviews($last_synced);
+        if (!$reviews->count()) {
+            throw new \RuntimeException(sprintf(
+                "No reviews to sync since %s",
+                $last_synced ?: "forever"
+            ));
         }
         $this->processReviews($reviews);
         if ($last_modified = (string) ($reviews[0]->modified ?? null)) {
