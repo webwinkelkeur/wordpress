@@ -1,3 +1,6 @@
+= 3.7 - 2021-03-31 =
+* Bump tested WordPress version to 5.7.
+
 = 3.6 - 2021-03-31 =
 * Fix product review sync when settings form has not been saved since this functionality was added.
 * Add button to sync all product reviews manually.
