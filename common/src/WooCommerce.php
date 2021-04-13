@@ -175,7 +175,10 @@ class WooCommerce {
         if (
             $gtin_handler->getActivePlugin()
             || !$this->isProductReviewsEnabled()
-            || $this->plugin->getOption('custom_gtin') != $this->getGtinMetaKey()
+            || (
+                !empty($this->plugin->getOption('custom_gtin'))
+                && $this->plugin->getOption('custom_gtin') != 'meta_key' . $this->getGtinMetaKey()
+            )
         ) {
             return;
         }
