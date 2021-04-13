@@ -1,3 +1,7 @@
+= 3.9 - 2021-04-13 =
+* Fix the GTIN field on the product page which is added if no field provided by
+  another plugin is selected.
+
 = 3.8 - 2021-03-31 =
 * Add missing template file to make manual product sync show its status again.
 
