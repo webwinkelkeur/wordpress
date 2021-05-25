@@ -266,7 +266,7 @@ class WooCommerce {
     }
 
     private function statusReached(string $new_status): bool {
-        $selected_statuses = $this->plugin->getOption('order_statuses') ?: Admin::DEFAULT_ORDER_STATUS;
+        $selected_statuses = $this->plugin->getOption('order_statuses') ?: WooCommerce::DEFAULT_ORDER_STATUS;
         foreach ($selected_statuses as $selected_status) {
             if ($new_status == preg_replace('/^wc-/', '', $selected_status)) {
                 return true;
