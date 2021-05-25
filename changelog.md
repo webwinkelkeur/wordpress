@@ -1,3 +1,6 @@
+= 3.10 - 2021-05-25 =
+* Fix usage of undefined `DEFAULT_ORDER_STATUS` constant.
+
 = 3.9 - 2021-04-13 =
 * Fix the GTIN field on the product page which is added if no field provided by
   another plugin is selected.
