@@ -131,8 +131,6 @@ abstract class BasePlugin {
                 p.post_type = 'product'
                 AND pm.meta_key <> ''
                 AND pm.meta_value <> ''
-            ORDER BY p.ID DESC
-            LIMIT 1000
         ");
         return array_map(
             function ($value) {
@@ -198,7 +196,9 @@ abstract class BasePlugin {
             JOIN {$wpdb->posts} posts
             ON meta.post_id = posts.id 
             WHERE posts.post_type = 'product' 
-            AND meta.meta_key='_product_attributes';";
+            AND meta.meta_key='_product_attributes'
+            ORDER BY posts.id DESC
+            LIMIT 1000;";
 
         $data = $wpdb->get_results($sql);
         foreach ($data as $value) {
