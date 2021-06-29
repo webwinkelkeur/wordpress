@@ -145,18 +145,17 @@ abstract class BasePlugin {
     }
 
     public function getProductKeys(string $selected_key): array {
-        $custom_keys = array_merge($this->getProductMetaKeys(), $this->getCustomAttributes());
         return array_map(
             function ($value) use ($selected_key) {
                 $option_value = $value['type'] . $value['name'];
                 return [
                     'option_value' => $option_value,
-                    'label' => $value['name'] . ' (e.g. "' . $value['example_value'] . '")',
+                    'label' => sprintf('%s (e.g. "%s")', $value['name'], $value['example_value']),
                     'suggested' => $this->isValidGtin($value['example_value']),
                     'selected' => $option_value == $selected_key,
                 ];
             },
-            $custom_keys
+            array_merge($this->getProductMetaKeys(), $this->getCustomAttributes())
         );
     }
 
