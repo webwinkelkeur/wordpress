@@ -469,7 +469,7 @@ class WooCommerce {
         return $this->plugin->getOptionName('product_keys');
     }
 
-    public function getProductKeys(): array {
+    public function getProductKeys() {
         $selected_key = $_GET['selected_key'];
         wp_send_json([
             'status' => true,
