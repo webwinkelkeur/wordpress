@@ -427,7 +427,7 @@ class WooCommerce {
             'comment_type' => 'review',
             'comment_meta' => [
                 $this->getReviewIdMetaKey() => (int) $review->review_id,
-                'rating' => (int) $review->ratings->overasll,
+                'rating' => (int) $review->ratings->overall,
             ],
             'comment_parent' => 0,
             'user_id' => get_user_by('email', $author_email)->ID ?? 0,
