@@ -535,7 +535,8 @@ class WooCommerce {
             WHERE posts.post_type = 'product' 
             AND meta.meta_key='_product_attributes'
             ORDER BY posts.id DESC
-            LIMIT 1000;";
+            LIMIT 1000;
+        ";
 
         $data = $wpdb->get_results($sql);
         foreach ($data as $value) {
