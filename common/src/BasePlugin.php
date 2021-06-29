@@ -144,30 +144,16 @@ abstract class BasePlugin {
         );
     }
 
-    public function getSelectOptions(string $selected_key, bool $suggested = false): string {
-        $options = '';
-        foreach ($this->getProductKeys() as $key) {
-            if ($key['suggested'] != $suggested) {
-                continue;
-            }
-            $options .= sprintf(
-                '<option value="%s"%s>%s</option>',
-                htmlentities($key['option_value']),
-                $key['option_value'] === $selected_key ? ' selected' : '',
-                htmlentities($key['label'])
-            );
-        }
-        return $options;
-    }
-
-    private function getProductKeys(): array {
+    public function getProductKeys(string $selected_key): array {
         $custom_keys = array_merge($this->getProductMetaKeys(), $this->getCustomAttributes());
         return array_map(
-            function ($value) {
+            function ($value) use ($selected_key) {
+                $option_value = $value['type'] . $value['name'];
                 return [
-                    'option_value' => $value['type'] . $value['name'],
+                    'option_value' => $option_value,
                     'label' => $value['name'] . ' (e.g. "' . $value['example_value'] . '")',
                     'suggested' => $this->isValidGtin($value['example_value']),
+                    'selected' => $option_value == $selected_key,
                 ];
             },
             $custom_keys

@@ -169,11 +169,9 @@
                         GTIN/EAN key
                         <select name="<?= $plugin->getOptionName('custom_gtin'); ?>">
                             <option value=""><?= $plugin->getActiveGtinPlugin() ? __('Automatic detection', 'webwinkelkeur') . ' (' . (explode('/', $plugin->getActiveGtinPlugin())[0] ?? '') . ')' : 'Select key'; ?></option>
-                            <optgroup label="<?= _e('Suggested keys', 'webwinkelkeur'); ?>">
-                                <?= $plugin->getSelectOptions($config['custom_gtin'], true); ?>
+                            <optgroup id="suggested-keys" label="<?= _e('Suggested keys', 'webwinkelkeur'); ?>">
                             </optgroup>
-                            <optgroup label="<?= _e('Other keys', 'webwinkelkeur'); ?>">
-                                <?= $plugin->getSelectOptions($config['custom_gtin']); ?>
+                            <optgroup id="other-keys" label="<?= _e('Other keys', 'webwinkelkeur'); ?>">
                             </optgroup>
                         </select>
                     </label>
@@ -203,6 +201,25 @@
 </form>
 <script>
     (function ($) {
+        $.get(
+            "admin-ajax.php",
+            {
+                action: <?= json_encode($plugin->woocommerce->getProductKeysAction()); ?>,
+                selected_key: <?= json_encode($config['custom_gtin']); ?>,
+            }
+        ).done(function (response) {
+            const options = response.data
+            for (const property in options) {
+                console.log(options[property]['label']);
+                $(options[property]['suggested'] ? "#suggested-keys" : "#other-keys")
+                    .append(new Option(options[property]['label'],
+                        options[property]['option_value'],
+                        false,
+                        options[property]['selected']
+                    ));
+            }
+        });
+
         function triggerManualSync(all) {
             var $success = $("#successful-sync");
             var $buttons = $('.webwinkelkeur-sync-btn');

@@ -23,6 +23,7 @@ class WooCommerce {
         register_deactivation_hook($this->plugin->getPluginFile(), [$this, 'deactivateSyncReviews']);
         add_action($this->getReviewsHook(), [$this, 'syncReviews']);
         add_action('wp_ajax_' . $this->getManualSyncAction(), [$this, 'manualReviewSync']);
+        add_action('wp_ajax_' . $this->getProductKeysAction(), [$this, 'getProductKeys']);
     }
 
     public function activateSyncReviews() {
@@ -426,7 +427,7 @@ class WooCommerce {
             'comment_type' => 'review',
             'comment_meta' => [
                 $this->getReviewIdMetaKey() => (int) $review->review_id,
-                'rating' => (int) $review->ratings->overall,
+                'rating' => (int) $review->ratings->overasll,
             ],
             'comment_parent' => 0,
             'user_id' => get_user_by('email', $author_email)->ID ?? 0,
@@ -462,6 +463,18 @@ class WooCommerce {
 
     public function getManualSyncNonce(): string {
         return $this->plugin->getOptionName('manual-sync-data');
+    }
+
+    public function getProductKeysAction(): string {
+        return $this->plugin->getOptionName('product_keys');
+    }
+
+    public function getProductKeys(): array {
+        wp_send_json([
+            'status' => true,
+            'data' => $this->plugin->getProductKeys($_GET['selected_key']),
+        ]);
+        wp_die();
     }
 
     public function getNextReviewSync(): string {
