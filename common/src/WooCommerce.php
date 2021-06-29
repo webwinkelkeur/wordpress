@@ -470,11 +470,93 @@ class WooCommerce {
     }
 
     public function getProductKeys(): array {
+        $selected_key = $_GET['selected_key'];
         wp_send_json([
             'status' => true,
-            'data' => $this->plugin->getProductKeys($_GET['selected_key']),
+            'data' => array_map(
+                function ($value) use ($selected_key) {
+                    $option_value = $value['type'] . $value['name'];
+                    return [
+                        'option_value' => $option_value,
+                        'label' => sprintf('%s (e.g. "%s")', $value['name'], $value['example_value']),
+                        'suggested' => $this->isValidGtin($value['example_value']),
+                        'selected' => $option_value == $selected_key,
+                    ];
+                },
+                array_merge($this->getProductMetaKeys(), $this->getCustomAttributes())
+            ),
         ]);
         wp_die();
+    }
+
+    public function getProductMetaKeys(): array {
+        global $wpdb;
+        $meta_keys = $wpdb->get_col("
+            SELECT DISTINCT(pm.meta_key)
+            FROM {$wpdb->posts} p
+            LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
+            WHERE
+                p.post_type = 'product'
+                AND pm.meta_key <> ''
+                AND pm.meta_value <> ''
+        ");
+        return array_map(
+            function ($value) {
+                return [
+                    'type' => 'meta_key',
+                    'name' => $value,
+                    'example_value' => substr($this->getMetaValue($value), 0, 15),
+                ];
+            },
+            $meta_keys
+        );
+    }
+
+    private function getMetaValue(string $meta_key) {
+        global $wpdb;
+        $sql = "
+            SELECT meta.meta_value
+            FROM {$wpdb->postmeta} meta
+            WHERE meta.meta_key = %s
+            AND meta.meta_value <> ''
+            ORDER BY meta.meta_id DESC
+            LIMIT 1;
+        ";
+        return $wpdb->get_var($wpdb->prepare($sql, $meta_key));
+    }
+
+    private function getCustomAttributes(): array {
+        global $wpdb;
+        $custom_attributes = [];
+        $sql = "
+            SELECT meta.meta_id, meta.meta_key as name, meta.meta_value 
+            FROM {$wpdb->postmeta} meta
+            JOIN {$wpdb->posts} posts
+            ON meta.post_id = posts.id 
+            WHERE posts.post_type = 'product' 
+            AND meta.meta_key='_product_attributes'
+            ORDER BY posts.id DESC
+            LIMIT 1000;";
+
+        $data = $wpdb->get_results($sql);
+        foreach ($data as $value) {
+            $product_attr = unserialize($value->meta_value);
+            if (!is_array($product_attr)) {
+                continue;
+            }
+            foreach ($product_attr as $arr_value) {
+                $custom_attributes[$arr_value['name']] = [
+                    'type' => 'custom_attribute',
+                    'name' => $arr_value['name'],
+                    'example_value' => substr($arr_value['value'], 0, 15),
+                ];
+            }
+        }
+        return $custom_attributes;
+    }
+
+    private function isValidGtin(string $value): bool {
+        return preg_match('/^\d{8}(?:\d{4,6})?$/', $value);
     }
 
     public function getNextReviewSync(): string {
