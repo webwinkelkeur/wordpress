@@ -491,7 +491,8 @@ class WooCommerce {
 
     public function getProductMetaKeys(): array {
         global $wpdb;
-        $meta_keys = $wpdb->get_col("
+        $meta_keys=[];
+        $meta_keys_data = $wpdb->get_col("
             SELECT DISTINCT(pm.meta_key)
             FROM {$wpdb->posts} p
             LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
@@ -500,16 +501,14 @@ class WooCommerce {
                 AND pm.meta_key <> ''
                 AND pm.meta_value <> ''
         ");
-        return array_map(
-            function ($value) {
-                return [
-                    'type' => 'meta_key',
-                    'name' => $value,
-                    'example_value' => substr($this->getMetaValue($value), 0, 15),
-                ];
-            },
-            $meta_keys
-        );
+        foreach ($meta_keys_data as $value) {
+            $meta_keys[$value] =[
+                'type' => 'meta_key',
+                'name' => $value,
+                'example_value' => substr($this->getMetaValue($value), 0, 15),
+            ];
+        }
+        return $meta_keys;
     }
 
     private function getMetaValue(string $meta_key) {
