@@ -131,6 +131,8 @@ abstract class BasePlugin {
                 p.post_type = 'product'
                 AND pm.meta_key <> ''
                 AND pm.meta_value <> ''
+            ORDER BY p.ID DESC
+            LIMIT 1000
         ");
         return array_map(
             function ($value) {
