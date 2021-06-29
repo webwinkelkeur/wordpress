@@ -169,9 +169,9 @@
                         GTIN/EAN key
                         <select name="<?= $plugin->getOptionName('custom_gtin'); ?>">
                             <option value=""><?= $plugin->getActiveGtinPlugin() ? __('Automatic detection', 'webwinkelkeur') . ' (' . (explode('/', $plugin->getActiveGtinPlugin())[0] ?? '') . ')' : 'Select key'; ?></option>
-                            <optgroup id="suggested-keys" label="<?= _e('Suggested keys', 'webwinkelkeur'); ?>">
+                            <optgroup class="webwinkelkeur-suggested-keys" label="<?= _e('Suggested keys', 'webwinkelkeur'); ?>">
                             </optgroup>
-                            <optgroup id="other-keys" label="<?= _e('Other keys', 'webwinkelkeur'); ?>">
+                            <optgroup class="webwinkelkeur-other-keys" label="<?= _e('Other keys', 'webwinkelkeur'); ?>">
                             </optgroup>
                         </select>
                     </label>
@@ -201,21 +201,19 @@
 </form>
 <script>
     (function ($) {
-        $.get(
-            "admin-ajax.php",
+        $.get("admin-ajax.php",
             {
                 action: <?= json_encode($plugin->woocommerce->getProductKeysAction()); ?>,
-                selected_key: <?= json_encode($config['custom_gtin']); ?>,
+                selected_key: <?= json_encode($config["custom_gtin"]); ?>,
             }
         ).done(function (response) {
-            const options = response.data
+            const options = response.data;
             for (const property in options) {
-                console.log(options[property]['label']);
-                $(options[property]['suggested'] ? "#suggested-keys" : "#other-keys")
-                    .append(new Option(options[property]['label'],
-                        options[property]['option_value'],
+                $(options[property]["suggested"] ? ".webwinkelkeur-suggested-keys" : ".webwinkelkeur-other-keys")
+                    .append(new Option(options[property]["label"],
+                        options[property]["option_value"],
                         false,
-                        options[property]['selected']
+                        options[property]["selected"]
                     ));
             }
         });
