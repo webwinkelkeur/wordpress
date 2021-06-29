@@ -207,13 +207,7 @@ abstract class BasePlugin {
                 continue;
             }
             foreach ($product_attr as $arr_value) {
-                if (
-                    !$this->isUniqueAttribute($custom_attributes, $arr_value['name']) ||
-                    empty($arr_value['value'])
-                ) {
-                    continue;
-                }
-                $custom_attributes[] = [
+                $custom_attributes[$arr_value['name']] = [
                     'type' => 'custom_attribute',
                     'name' => $arr_value['name'],
                     'example_value' => substr($arr_value['value'], 0, 15),
@@ -221,15 +215,6 @@ abstract class BasePlugin {
             }
         }
         return $custom_attributes;
-    }
-
-    private function isUniqueAttribute(array $array, string $value): bool {
-        foreach ($array as $item) {
-            if (isset($item['name']) && $item['name'] == $value) {
-                return false;
-            }
-        }
-        return true;
     }
 
     private function isValidGtin(string $value): bool {
