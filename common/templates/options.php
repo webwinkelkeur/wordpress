@@ -165,8 +165,18 @@
             <tr>
                 <th scope="row"></th>
                 <td>
-                    <label class="webwinkelkeur-gtin-label">
+                    <label>
                         GTIN/EAN key:
+                        <select disabled hidden name=<?= json_encode($plugin->getOptionName('custom_gtin')); ?>>
+                            <option value=""><?= htmlentities($plugin->getActiveGtinPlugin() ? sprintf('%s (%s)',
+                                    __('Automatic detection', 'webwinkelkeur'),
+                                    explode('/', $plugin->getActiveGtinPlugin())[0] ?? ''
+                                ) : 'Select key'); ?></option>
+                            <optgroup class="webwinkelkeur-suggested-keys" label="<?= _e('Suggested keys', 'webwinkelkeur'); ?>">
+                            </optgroup>
+                            <optgroup class="webwinkelkeur-other-keys" label="<?= _e('Other keys', 'webwinkelkeur'); ?>">
+                            </optgroup>
+                        </select>
                     </label>
                     <span class="spinner is-active"></span>
                     <p class="description">
@@ -201,31 +211,25 @@
                 'selected_key' => $config["custom_gtin"],
             ]); ?>,
         ).done(function (response) {
-            if (response && response.status !== undefined) {
-                const options = response.data;
-                let select = $('<select name=<?= json_encode($plugin->getOptionName('custom_gtin')); ?>>').appendTo(".webwinkelkeur-gtin-label");
-                select.append(
-                    new Option(
-                        <?= json_encode($plugin->getActiveGtinPlugin() ? __('Automatic detection', 'webwinkelkeur') . ' (' . (explode('/', $plugin->getActiveGtinPlugin())[0] ?? '') . ')' : 'Select key');?>)
-                )
-                let suggestedKeys = $('<optgroup label=<?= json_encode(_e('Suggested keys', 'webwinkelkeur')); ?>>').appendTo(select)
-                let otherKeys = $('<optgroup label=<?= json_encode(_e('Other keys', 'webwinkelkeur')); ?>>').appendTo(select)
-                for (const property in options) {
-                    $option = new Option(options[property]["label"],
-                        options[property]["option_value"],
-                        false,
-                        options[property]["selected"]
-                    );
-                    if (options[property]["suggested"]) {
-                        suggestedKeys.append($option);
-                    } else {
-                        otherKeys.append($option);
-                    }
-                }
-                $(".spinner").removeClass("is-active");
-            } else {
+            if (!response || response.status === undefined) {
                 alert('Could not load product keys.');
+                return;
             }
+            var options = response.data;
+            for (var property in options) {
+               if (options.hasOwnProperty(property)) {
+                   var option = new Option(options[property]["label"],
+                       options[property]["option_value"],
+                       options[property]["selected"],
+                       options[property]["selected"]
+                   );
+                   $(`.${options[property]["suggested"] ? "webwinkelkeur-suggested-keys" : "webwinkelkeur-other-keys"}`)
+                       .append(option);
+               }
+            }
+            $(".spinner").removeClass("is-active");
+            $('[name=<?= json_encode($plugin->getOptionName("custom_gtin")); ?>]')
+                .prop({"disabled": false, "hidden": false})
         });
 
         function triggerManualSync(all) {
@@ -272,15 +276,19 @@
         flex-wrap: wrap;
         max-width: 600px;
     }
+
     .webwinkelkeur-order-statuses label {
         width: 200px;
     }
+
     .webwinkelkeur-success {
         color: #0ED826;
     }
+
     .webwinkelkeur-error {
         color: red;
     }
+
     .spinner {
         float: none;
     }
