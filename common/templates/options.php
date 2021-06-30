@@ -228,7 +228,7 @@
                }
             }
             $(".spinner").removeClass("is-active");
-            $('[name=<?= json_encode($plugin->getOptionName("custom_gtin")); ?>]')
+            $(<?= json_encode(sprintf('[name="%s"]', $plugin->getOptionName("custom_gtin"))); ?>)
                 .prop({"disabled": false, "hidden": false})
         });
 
