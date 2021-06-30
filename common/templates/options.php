@@ -205,7 +205,8 @@
 </form>
 <script>
     (function ($) {
-        $.get("admin-ajax.php",
+        $.get(
+            "admin-ajax.php",
             <?= json_encode([
                 'action' => $plugin->woocommerce->getProductKeysAction(),
                 'selected_key' => $config["custom_gtin"],
