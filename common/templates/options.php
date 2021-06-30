@@ -167,7 +167,7 @@
                 <td>
                     <label>
                         GTIN/EAN key:
-                        <select disabled hidden name=<?= json_encode($plugin->getOptionName('custom_gtin')); ?>>
+                        <select disabled hidden name="<?= htmlentities($plugin->getOptionName('custom_gtin')) ?>">
                             <option value=""><?= htmlentities($plugin->getActiveGtinPlugin() ? sprintf('%s (%s)',
                                     __('Automatic detection', 'webwinkelkeur'),
                                     explode('/', $plugin->getActiveGtinPlugin())[0] ?? ''
