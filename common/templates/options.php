@@ -165,16 +165,10 @@
             <tr>
                 <th scope="row"></th>
                 <td>
-                    <label>
-                        GTIN/EAN key
-                        <select name="<?= $plugin->getOptionName('custom_gtin'); ?>">
-                            <option value=""><?= $plugin->getActiveGtinPlugin() ? __('Automatic detection', 'webwinkelkeur') . ' (' . (explode('/', $plugin->getActiveGtinPlugin())[0] ?? '') . ')' : 'Select key'; ?></option>
-                            <optgroup class="webwinkelkeur-suggested-keys" label="<?= _e('Suggested keys', 'webwinkelkeur'); ?>">
-                            </optgroup>
-                            <optgroup class="webwinkelkeur-other-keys" label="<?= _e('Other keys', 'webwinkelkeur'); ?>">
-                            </optgroup>
-                        </select>
+                    <label class="webwinkelkeur-gtin-label">
+                        GTIN/EAN key:
                     </label>
+                    <span class="spinner is-active"></span>
                     <p class="description">
                         <?=
                         __('Tell this plugin where to find the product <strong>GTIN</strong> by selecting a custom key. For example: if you use a field called <strong>_productcode</strong> to store the <strong>GTIN</strong>, you should select  <strong>_product_code</strong>. Our plugin also supports certain 3rd party plugins. If we found a supported plugin, this box is set to <strong>Automatic detection</strong>, you can still choose to select another key.', 'webwinkelkeur')
@@ -207,14 +201,30 @@
                 selected_key: <?= json_encode($config["custom_gtin"]); ?>,
             }
         ).done(function (response) {
-            const options = response.data;
-            for (const property in options) {
-                $(options[property]["suggested"] ? ".webwinkelkeur-suggested-keys" : ".webwinkelkeur-other-keys")
-                    .append(new Option(options[property]["label"],
+            if (response && response.status !== undefined) {
+                const options = response.data;
+                let select = $('<select name=<?= json_encode($plugin->getOptionName('custom_gtin')); ?>>').appendTo(".webwinkelkeur-gtin-label");
+                select.append(
+                    new Option(
+                        <?= json_encode($plugin->getActiveGtinPlugin() ? __('Automatic detection', 'webwinkelkeur') . ' (' . (explode('/', $plugin->getActiveGtinPlugin())[0] ?? '') . ')' : 'Select key');?>)
+                )
+                let suggestedKeys = $('<optgroup label=<?= json_encode(_e('Suggested keys', 'webwinkelkeur')); ?>>').appendTo(select)
+                let otherKeys = $('<optgroup label=<?= json_encode(_e('Other keys', 'webwinkelkeur')); ?>>').appendTo(select)
+                for (const property in options) {
+                    $option = new Option(options[property]["label"],
                         options[property]["option_value"],
                         false,
                         options[property]["selected"]
-                    ));
+                    );
+                    if (options[property]["suggested"]) {
+                        suggestedKeys.append($option);
+                    } else {
+                        otherKeys.append($option);
+                    }
+                }
+                $(".spinner").removeClass("is-active");
+            } else {
+                alert('Could not load product keys.');
             }
         });
 
@@ -270,5 +280,8 @@
     }
     .webwinkelkeur-error {
         color: red;
+    }
+    .spinner {
+        float: none;
     }
 </style>
