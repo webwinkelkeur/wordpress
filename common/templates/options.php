@@ -209,7 +209,7 @@
             <?= json_encode([
                 'action' => $plugin->woocommerce->getProductKeysAction(),
                 'selected_key' => $config["custom_gtin"],
-            ]); ?>,
+            ]); ?>
         ).done(function (response) {
             if (!response || response.status === undefined) {
                 alert('Could not load product keys.');
