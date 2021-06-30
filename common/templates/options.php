@@ -196,10 +196,10 @@
 <script>
     (function ($) {
         $.get("admin-ajax.php",
-            {
-                action: <?= json_encode($plugin->woocommerce->getProductKeysAction()); ?>,
-                selected_key: <?= json_encode($config["custom_gtin"]); ?>,
-            }
+            <?= json_encode([
+                'action' => $plugin->woocommerce->getProductKeysAction(),
+                'selected_key' => $config["custom_gtin"],
+            ]); ?>,
         ).done(function (response) {
             if (response && response.status !== undefined) {
                 const options = response.data;
