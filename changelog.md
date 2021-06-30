@@ -1,3 +1,6 @@
+= 3.11 - 2021-06-30 =
+* Retrieve possible GTIN meta keys, attributes in an asynchronous request.
+
 = 3.10 - 2021-05-25 =
 * Fix usage of undefined `DEFAULT_ORDER_STATUS` constant.
 
