@@ -219,12 +219,13 @@
             var options = response.data;
             for (var property in options) {
                if (options.hasOwnProperty(property)) {
-                   var option = new Option(options[property]["label"],
-                       options[property]["option_value"],
-                       options[property]["selected"],
-                       options[property]["selected"]
+                   var option = new Option(
+                       options[property].label,
+                       options[property].option_value,
+                       options[property].selected,
+                       options[property].selected
                    );
-                   $(`.${options[property]["suggested"] ? "webwinkelkeur-suggested-keys" : "webwinkelkeur-other-keys"}`)
+                   $(`.${options[property].suggested ? "webwinkelkeur-suggested-keys" : "webwinkelkeur-other-keys"}`)
                        .append(option);
                }
             }
