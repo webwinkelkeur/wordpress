@@ -474,7 +474,7 @@ class WooCommerce {
         wp_send_json([
             'status' => true,
             'data' => array_map(
-                function ($value) use ($selected_key) {
+                function (array $value) use ($selected_key): array {
                     $option_value = $value['type'] . $value['name'];
                     return [
                         'option_value' => $option_value,
