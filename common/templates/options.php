@@ -166,17 +166,19 @@
                 <th scope="row"></th>
                 <td>
                     <label>
-                        GTIN/EAN key
-                        <select name="<?= $plugin->getOptionName('custom_gtin'); ?>">
-                            <option value=""><?= $plugin->getActiveGtinPlugin() ? __('Automatic detection', 'webwinkelkeur') . ' (' . (explode('/', $plugin->getActiveGtinPlugin())[0] ?? '') . ')' : 'Select key'; ?></option>
-                            <optgroup label="<?= _e('Suggested keys', 'webwinkelkeur'); ?>">
-                                <?= $plugin->getSelectOptions($config['custom_gtin'], true); ?>
+                        GTIN/EAN key:
+                        <select disabled hidden name="<?= htmlentities($plugin->getOptionName('custom_gtin')) ?>">
+                            <option value=""><?= htmlentities($plugin->getActiveGtinPlugin() ? sprintf('%s (%s)',
+                                    __('Automatic detection', 'webwinkelkeur'),
+                                    explode('/', $plugin->getActiveGtinPlugin())[0] ?? ''
+                                ) : 'Select key'); ?></option>
+                            <optgroup class="webwinkelkeur-suggested-keys" label="<?= _e('Suggested keys', 'webwinkelkeur'); ?>">
                             </optgroup>
-                            <optgroup label="<?= _e('Other keys', 'webwinkelkeur'); ?>">
-                                <?= $plugin->getSelectOptions($config['custom_gtin']); ?>
+                            <optgroup class="webwinkelkeur-other-keys" label="<?= _e('Other keys', 'webwinkelkeur'); ?>">
                             </optgroup>
                         </select>
                     </label>
+                    <span class="spinner is-active"></span>
                     <p class="description">
                         <?=
                         __('Tell this plugin where to find the product <strong>GTIN</strong> by selecting a custom key. For example: if you use a field called <strong>_productcode</strong> to store the <strong>GTIN</strong>, you should select  <strong>_product_code</strong>. Our plugin also supports certain 3rd party plugins. If we found a supported plugin, this box is set to <strong>Automatic detection</strong>, you can still choose to select another key.', 'webwinkelkeur')
@@ -203,6 +205,35 @@
 </form>
 <script>
     (function ($) {
+        $.get(
+            "admin-ajax.php",
+            <?= json_encode([
+                'action' => $plugin->woocommerce->getProductKeysAction(),
+                'selected_key' => $config["custom_gtin"],
+            ]); ?>
+        ).done(function (response) {
+            if (!response || response.status === undefined) {
+                alert('Could not load product keys.');
+                return;
+            }
+            var options = response.data;
+            for (var property in options) {
+               if (options.hasOwnProperty(property)) {
+                   var option = new Option(
+                       options[property].label,
+                       options[property].option_value,
+                       options[property].selected,
+                       options[property].selected
+                   );
+                   $(`.${options[property].suggested ? "webwinkelkeur-suggested-keys" : "webwinkelkeur-other-keys"}`)
+                       .append(option);
+               }
+            }
+            $(".spinner").removeClass("is-active");
+            $(<?= json_encode(sprintf('[name="%s"]', $plugin->getOptionName("custom_gtin"))); ?>)
+                .prop({"disabled": false, "hidden": false})
+        });
+
         function triggerManualSync(all) {
             var $success = $("#successful-sync");
             var $buttons = $('.webwinkelkeur-sync-btn');
@@ -247,13 +278,20 @@
         flex-wrap: wrap;
         max-width: 600px;
     }
+
     .webwinkelkeur-order-statuses label {
         width: 200px;
     }
+
     .webwinkelkeur-success {
         color: #0ED826;
     }
+
     .webwinkelkeur-error {
         color: red;
+    }
+
+    .spinner {
+        float: none;
     }
 </style>
