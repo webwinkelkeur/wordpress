@@ -540,7 +540,11 @@ class WooCommerce {
 
         $data = $wpdb->get_results($sql);
         foreach ($data as $value) {
-            $product_attr = unserialize($value->meta_value);
+            try {
+                $product_attr = unserialize($value->meta_value, ['allowed_classes' => false]);
+            } catch (\Throwable $e) {
+                continue;
+            }
             if (!is_array($product_attr)) {
                 continue;
             }
