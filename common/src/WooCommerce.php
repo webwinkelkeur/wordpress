@@ -395,8 +395,8 @@ class WooCommerce {
                 throw new RuntimeException(
                     "Could not insert review for product: {$comment_data['comment_post_ID']}");
             }
+            WC_Comments::clear_transients($comment_data['comment_post_ID']);
         }
-        WC_Comments::clear_transients($comment_data['comment_post_ID']);
     }
 
     private function getExistingComment(int $post_id, string $author_email, int $review_id) {
