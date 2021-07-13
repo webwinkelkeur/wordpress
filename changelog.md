@@ -1,3 +1,6 @@
+= 3.12 - 2021-07-13 =
+* Clear WooCommerce review cache after inserting a new product review.
+
 = 3.11 - 2021-06-30 =
 * Retrieve possible GTIN meta keys, attributes in an asynchronous request.
 
