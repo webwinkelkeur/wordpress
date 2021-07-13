@@ -7,6 +7,7 @@ use RuntimeException;
 use WC_Customer;
 use WC_Product_Factory;
 use WP_Comment_Query;
+use WC_Comments;
 
 class WooCommerce {
     const DEFAULT_ORDER_STATUS = ['wc-completed'];
@@ -394,6 +395,7 @@ class WooCommerce {
                 throw new RuntimeException(
                     "Could not insert review for product: {$comment_data['comment_post_ID']}");
             }
+            WC_Comments::clear_transients($comment_data['comment_post_ID']);
         }
     }
 
