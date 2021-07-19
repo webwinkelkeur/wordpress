@@ -1,3 +1,6 @@
+= 3.13 - 2021-07-19 =
+* Bump **Tested up to** to WordPress 5.8.
+
 = 3.12 - 2021-07-13 =
 * Clear WooCommerce review cache after inserting a new product review.
 
