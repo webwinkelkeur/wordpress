@@ -1,3 +1,6 @@
+= 3.14 - 2021-09-08 =
+* Use `get_billing_email` method instead of `_billing_email` property to avoid a PHP warning.
+
 = 3.13 - 2021-07-19 =
 * Bump **Tested up to** to WordPress 5.8.
 
