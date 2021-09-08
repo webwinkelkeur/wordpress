@@ -88,7 +88,7 @@ class WooCommerce {
 
         $order_number = $order->get_order_number();
 
-        $email = get_post_meta($order_id, '_billing_email', true);
+        $email = $order->get_billing_email();
         if (!preg_match('|@|', $email)) {
             return;
         }
