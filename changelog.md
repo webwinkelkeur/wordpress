@@ -1,3 +1,6 @@
+= 3.15 - 2021-09-14 =
+* Rename `trustprofile.io` to `trustprofile.com`.
+
 = 3.14 - 2021-09-08 =
 * Use `get_billing_email` method instead of `_billing_email` property to avoid a PHP warning.
 
