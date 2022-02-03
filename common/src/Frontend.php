@@ -88,13 +88,10 @@ class Frontend {
 
         $transient = implode(':', [$this->plugin->getSlug(), 'rich_snippet', md5($url)]);
 
-	    if (!get_option('_transient_timeout_' . $transient, 0)) {
-		    delete_transient($transient);
+	    $data = get_transient($transient);
+	    if (is_array($data) && !empty($data[0]) && $data[0] > time()) {
+		    return $data[1];
 	    }
-
-        if ($result = get_transient($transient)) {
-            return $result;
-        }
 
         try {
             $result = $this->fetchRichSnippet($url);
@@ -102,7 +99,7 @@ class Frontend {
             return $this->log_error($e->getMessage());
         }
 
-        set_transient($transient, $result, 7200);
+	    set_transient($transient, [time() + 7200, $result], 7200);
 
         return $result;
     }
