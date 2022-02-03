@@ -88,8 +88,9 @@ class Frontend {
 
         $transient = implode(':', [$this->plugin->getSlug(), 'rich_snippet', md5($url)]);
 
-        if ($result = get_transient($transient)) {
-            return $result;
+        $data = get_transient($transient);
+        if (is_array($data) && !empty($data[0]) && $data[0] > time()) {
+            return $data[1];
         }
 
         try {
@@ -98,7 +99,7 @@ class Frontend {
             return $this->log_error($e->getMessage());
         }
 
-        set_transient($transient, $result, 7200);
+        set_transient($transient, [time() + 7200, $result], 7200);
 
         return $result;
     }
