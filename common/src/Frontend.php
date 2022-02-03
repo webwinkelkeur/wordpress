@@ -88,6 +88,10 @@ class Frontend {
 
         $transient = implode(':', [$this->plugin->getSlug(), 'rich_snippet', md5($url)]);
 
+	    if (!get_option('_transient_timeout_' . $transient, 0)) {
+		    delete_transient($transient);
+	    }
+
         if ($result = get_transient($transient)) {
             return $result;
         }
