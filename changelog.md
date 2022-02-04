@@ -1,3 +1,6 @@
+= 3.16 - 2022-02-04 =
+* Handle disappearing transient timeouts.
+
 = 3.15 - 2021-09-14 =
 * Rename `trustprofile.io` to `trustprofile.com`.
 
