@@ -83,7 +83,7 @@ class Frontend {
         $locale = explode('_', get_locale());
         $params = http_build_query([
             'id'   => $this->wwk_shop_id,
-            'lang' => $locale[0] ?? null,
+            'lang' => $locale[0],
         ]);
         $url = sprintf(
             'https://%s/webshops/rich_snippet?%s',
