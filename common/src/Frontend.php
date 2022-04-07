@@ -80,10 +80,15 @@ class Frontend {
     }
 
     private function get_rich_snippet() {
+        $locale = explode('_', get_locale());
+        $params = http_build_query([
+            'id'   => $this->wwk_shop_id,
+            'lang' => $locale[0],
+        ]);
         $url = sprintf(
-            'https://%s/webshops/rich_snippet?id=%d',
+            'https://%s/webshops/rich_snippet?%s',
             $this->plugin->getDashboardDomain(),
-            (int) $this->wwk_shop_id
+            $params
         );
 
         $transient = implode(':', [$this->plugin->getSlug(), 'rich_snippet', md5($url)]);
