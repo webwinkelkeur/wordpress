@@ -1,3 +1,6 @@
+= 3.17 - 2022-04-07 =
+* Use website language for rich snippet.
+
 = 3.16 - 2022-02-04 =
 * Handle disappearing transient timeouts.
 
