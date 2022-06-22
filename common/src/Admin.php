@@ -111,6 +111,17 @@ class Admin {
     public function invite_error_notices() {
         global $wpdb;
 
+        $table_exists = $wpdb->get_var("
+            SELECT COUNT(*)
+            FROM information_schema.TABLES
+            WHERE TABLE_SCHEMA = '{$wpdb->dbname}'
+            AND TABLE_NAME = '{$this->plugin->getInviteErrorsTable()}'
+        ");
+
+        if (!$table_exists) {
+            $this->plugin->createInvitesErrorTable();
+        }
+
         $errors = $wpdb->get_results("
             SELECT *
             FROM {$this->plugin->getInviteErrorsTable()}

@@ -49,9 +49,12 @@ abstract class BasePlugin {
     }
 
     public function activatePlugin() {
-        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-
         $this->dismissUpdateNotice();
+        $this->createInvitesErrorTable();
+    }
+
+    public function createInvitesErrorTable() {
+        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
         dbDelta('
             CREATE TABLE `' . $this->getInviteErrorsTable() . '` (
