@@ -1,3 +1,6 @@
+= 3.18 - 2022-06-27 =
+* Automatically create invitation errors table if it does not exist.
+
 = 3.17 - 2022-04-07 =
 * Use website language for rich snippet.
 
