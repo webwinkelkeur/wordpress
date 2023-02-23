@@ -1,3 +1,6 @@
+= 3.19 - 2022-02-23 =
+* Bump **Tested up to** to WordPress 6.1.1.
+
 = 3.18 - 2022-06-27 =
 * Automatically create invitation errors table if it does not exist.
 
