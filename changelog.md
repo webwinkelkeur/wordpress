@@ -1,3 +1,6 @@
+= 3.20 - 2023-04-05 =
+* Bump **Tested up to** to WordPress 6.2.
+
 = 3.19 - 2022-02-23 =
 * Bump **Tested up to** to WordPress 6.1.1.
 
