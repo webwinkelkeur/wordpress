@@ -25,6 +25,7 @@ class WooCommerce {
         add_action($this->getReviewsHook(), [$this, 'syncReviews']);
         add_action('wp_ajax_' . $this->getManualSyncAction(), [$this, 'manualReviewSync']);
         add_action('wp_ajax_' . $this->getProductKeysAction(), [$this, 'getProductKeys']);
+        add_action('wp_head', [$this, 'addOrderDataJsonThankYouPage']);
     }
 
     public function activateSyncReviews() {
@@ -588,5 +589,24 @@ class WooCommerce {
 
     private function isSyncedToday(): bool {
         return strtotime($this->getLastReviewSync()) > strtotime('-24 hours');
+    }
+
+    public function addOrderDataJsonThankYouPage() {
+        if (is_wc_endpoint_url('order-received')) {
+            if ($this->plugin->getOption('invite') == 3) {
+                $order_id = absint(get_query_var('order-received'));
+                $order = wc_get_order($order_id);
+                $data = json_encode([
+                    'orderId' => $order_id,
+                    'email' => $order->get_billing_email(),
+                    'firstName' => $order->get_billing_first_name(),
+                ]);
+                echo '<script type="application/json" id ="'
+                    . strtolower($this->plugin->getName())
+                    . '_order_completed">'
+                    . $data
+                    . '</script>';
+            }
+        }
     }
 }
