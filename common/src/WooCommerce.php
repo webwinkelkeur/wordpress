@@ -592,9 +592,9 @@ class WooCommerce {
     }
 
     public function addOrderDataJsonThankYouPage() {
-        if (is_wc_endpoint_url('order-received')) {
+        if (is_wc_endpoint_url(get_option('woocommerce_checkout_order_received_endpoint'))) {
             if ($this->plugin->getOption('invite') == 3) {
-                $order_id = absint(get_query_var('order-received'));
+                $order_id = absint(get_query_var(get_option('woocommerce_checkout_order_received_endpoint')));
                 $order = wc_get_order($order_id);
                 $data = json_encode([
                     'orderId' => $order_id,
