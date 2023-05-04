@@ -54,6 +54,11 @@
                 <td>
                     <fieldset>
                         <label>
+                            <input type="radio" name="<?= $plugin->getOptionName('invite');?>" value="3" <?= $config['invite'] == 3 ? 'checked' : ''; ?> />
+                            <?php _e('Pop-up after purchase at "thank you" page.
+Privacy first review option. Order data will only be shared after perission of the customer.', 'webwinkelkeur'); ?>
+                        </label><br>
+                        <label>
                             <input type="radio" name="<?= $plugin->getOptionName('invite');?>" value="1" <?= $config['invite'] == 1 ? 'checked' : ''; ?> />
                             <?php _e('Yes, after every order.', 'webwinkelkeur'); ?>
                         </label><br>
