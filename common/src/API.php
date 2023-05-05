@@ -66,11 +66,13 @@ class API {
 
     public function hasConsent(array $data): bool {
         $permission_url = $this->buildURL(
-            'https://'
-            . $this->api_domain
-            . '/api/order_permissions?order_number='
-            . $data['order'] . '&id='
-            . $this->shop_id, ['id' => $this->shop_id, 'code' => $this->api_key]
+            sprintf(
+                'https://%s/api/order_permissions?order_number=%u&id=%u',
+                $this->api_domain,
+                $data['order'],
+                $this->shop_id
+            ),
+            ['id' => $this->shop_id, 'code' => $this->api_key]
         );
         $permission_response = Requests::post($permission_url, []);
         $permission = json_decode($permission_response->body);
