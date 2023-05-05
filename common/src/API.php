@@ -68,13 +68,13 @@ class API {
         $permission_url = $this->buildURL(
             'https://'
             . $this->api_domain
-            . '/api/invite/has_permission?order_id='
-            . $data['order'] . '&webshop_id='
-            . $this->shop_id, ['id' => $this->shop_id, 'code' => $this->api_key,]
+            . '/api/order_permissions?order_number='
+            . $data['order'] . '&id='
+            . $this->shop_id, ['id' => $this->shop_id, 'code' => $this->api_key]
         );
-        $permission_response = Requests::post($permission_url, [], $data);
-        $permission = json_decode($permission_response);
-        return (isset($permission->status) && $permission->status == 'success');
+        $permission_response = Requests::post($permission_url, []);
+        $permission = json_decode($permission_response->body);
+        return $permission->has_given_permission;
     }
 }
 
