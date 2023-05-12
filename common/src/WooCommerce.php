@@ -29,7 +29,7 @@ class WooCommerce {
         add_action($this->getReviewsHook(), [$this, 'syncReviews']);
         add_action('wp_ajax_' . $this->getManualSyncAction(), [$this, 'manualReviewSync']);
         add_action('wp_ajax_' . $this->getProductKeysAction(), [$this, 'getProductKeys']);
-        add_action('wp_head', [$this, 'addOrderDataJsonThankYouPage']);
+        add_action('woocommerce_before_thankyou', [$this, 'addOrderDataJsonThankYouPage']);
     }
 
     public function activateSyncReviews() {
