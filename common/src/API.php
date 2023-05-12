@@ -77,7 +77,7 @@ class API {
         if ($response_code != 200) {
             throw new WebwinkelKeurAPIError(
                 $permission_url,
-                $permission->message ?? 'There was an error sending the invitation to the dashboard.'
+                $permission->message ?? 'There was an error retrieving the order consent.'
             );
         }
 
