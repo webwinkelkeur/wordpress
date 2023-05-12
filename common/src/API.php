@@ -65,17 +65,22 @@ class API {
     }
 
     public function hasConsent(array $data): bool {
-        $permission_url = $this->buildURL(
-            sprintf(
-                'https://%s/api/order_permissions?order_number=%u&id=%u',
-                $this->api_domain,
-                $data['order'],
-                $this->shop_id
-            ),
-            ['id' => $this->shop_id, 'code' => $this->api_key]
-        );
-        $permission_response = Requests::post($permission_url, []);
+        $params = [
+            'order_number' => $data['order'],
+            'id' => $this->shop_id,
+            'code' => $this->api_key,
+        ];
+        $permission_url = $this->buildURL('https://' . $this->api_domain . '/api/2.0/order_permissions.json', $params);
+        $permission_response = Requests::get($permission_url, []);
+        $response_code = $permission_response->status_code;
         $permission = json_decode($permission_response->body);
+        if ($response_code != 200) {
+            throw new WebwinkelKeurAPIError(
+                $permission_url,
+                $permission->message ?? $permission->body
+            );
+        }
+
         return $permission->has_given_permission;
     }
 }

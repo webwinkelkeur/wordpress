@@ -11,6 +11,10 @@ use WC_Comments;
 
 class WooCommerce {
     const DEFAULT_ORDER_STATUS = ['wc-completed'];
+    const DO_NOT_SEND = 0;
+    const AFTER_EVERY_ORDER = 1;
+    const AFTER_FIRST_ORDER = 2;
+    const POPUP_OPTION = 3;
 
     private $plugin;
 
@@ -149,8 +153,20 @@ class WooCommerce {
 
         // send invite
         $api = new API($api_domain, $shop_id, $api_key);
-        if ($this->plugin->getOption('invite') == 3 && !$api->hasConsent($data)) {
-            $this->insert_comment($order_id, 'Invite was not send as customer did not consent.');
+        try {
+            if ($this->plugin->getOption('invite') == self::POPUP_OPTION && !$api->hasConsent($data)) {
+                $this->insert_comment($order_id, 'Invite was not send as customer did not consent.');
+                return;
+            }
+        } catch (WebwinkelKeurAPIError $e) {
+            $this->logApiError($e);
+            $this->insert_comment(
+                $order_id,
+                sprintf(
+                    __('The %s invitation could not be sent.', 'webwinkelkeur'),
+                    $this->plugin->getName()
+                ) . ' ' . $e->getMessage()
+            );
             return;
         }
 
@@ -596,21 +612,21 @@ class WooCommerce {
     }
 
     public function addOrderDataJsonThankYouPage() {
-        if (is_wc_endpoint_url('order-received')) {
-            if ($this->plugin->getOption('invite') == 3) {
-                $order_id = absint(get_query_var(get_option('woocommerce_checkout_order_received_endpoint')));
-                $order = wc_get_order($order_id);
-                $data = json_encode([
-                    'orderId' => $order_id,
-                    'email' => $order->get_billing_email(),
-                    'firstName' => $order->get_billing_first_name(),
-                ]);
-                echo sprintf(
-                    '<script type="application/json" id ="%s_order_completed">%s</script>',
-                    strtolower($this->plugin->getName()),
-                    $data
-                );
-            }
+        if (!is_wc_endpoint_url('order-received') || $this->plugin->getOption('invite') != self::POPUP_OPTION) {
+            return;
         }
+        $order_id = absint(get_query_var(get_option('woocommerce_checkout_order_received_endpoint')));
+        $order = wc_get_order($order_id);
+        $data = json_encode([
+            'orderId' => $order_id,
+            'email' => $order->get_billing_email(),
+            'firstName' => $order->get_billing_first_name(),
+        ]);
+        echo sprintf(
+            '<script type="application/json" id ="%s_order_completed">%s</script>',
+            strtolower($this->plugin->getName()),
+            $data
+        );
+
     }
 }
