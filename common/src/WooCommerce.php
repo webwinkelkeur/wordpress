@@ -155,7 +155,7 @@ class WooCommerce {
         $api = new API($api_domain, $shop_id, $api_key);
         try {
             if ($this->plugin->getOption('invite') == self::POPUP_OPTION && !$api->hasConsent($data)) {
-                $this->insert_comment($order_id, 'Invite was not send as customer did not consent.');
+                $this->insert_comment($order_id, __('Invite was not send as customer did not consent.'));
                 return;
             }
         } catch (WebwinkelKeurAPIError $e) {
@@ -163,9 +163,9 @@ class WooCommerce {
             $this->insert_comment(
                 $order_id,
                 sprintf(
-                    __('The %s invitation could not be sent.', 'webwinkelkeur'),
-                    $this->plugin->getName()
-                ) . ' ' . $e->getMessage()
+                    __('The %s invitation could not be sent. %s', 'webwinkelkeur'),
+                    $this->plugin->getName(), $e->getMessage()
+                )
             );
             return;
         }
@@ -611,11 +611,10 @@ class WooCommerce {
         return strtotime($this->getLastReviewSync()) > strtotime('-24 hours');
     }
 
-    public function addOrderDataJsonThankYouPage() {
-        if (!is_wc_endpoint_url('order-received') || $this->plugin->getOption('invite') != self::POPUP_OPTION) {
+    public function addOrderDataJsonThankYouPage(int $order_id) {
+        if ($this->plugin->getOption('invite') != self::POPUP_OPTION) {
             return;
         }
-        $order_id = absint(get_query_var(get_option('woocommerce_checkout_order_received_endpoint')));
         $order = wc_get_order($order_id);
         $data = json_encode([
             'orderId' => $order_id,
