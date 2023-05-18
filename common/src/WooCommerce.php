@@ -617,7 +617,7 @@ class WooCommerce {
         }
         $order = wc_get_order($order_id);
         $data = json_encode([
-            'orderId' => $order_id,
+            'orderNumber' => $order_id,
             'email' => $order->get_billing_email(),
             'firstName' => $order->get_billing_first_name(),
         ]);
