@@ -66,7 +66,7 @@ class API {
 
     public function hasConsent(array $data): bool {
         $params = [
-            'order_number' => $data['order'],
+            'orderNumber' => $data['order'],
             'id' => $this->shop_id,
             'code' => $this->api_key,
         ];
@@ -81,7 +81,7 @@ class API {
             );
         }
 
-        return $permission->has_given_permission;
+        return $permission->has_consent;
     }
 }
 
