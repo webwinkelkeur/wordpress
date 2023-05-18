@@ -29,7 +29,7 @@ class WooCommerce {
         add_action($this->getReviewsHook(), [$this, 'syncReviews']);
         add_action('wp_ajax_' . $this->getManualSyncAction(), [$this, 'manualReviewSync']);
         add_action('wp_ajax_' . $this->getProductKeysAction(), [$this, 'getProductKeys']);
-        add_action('woocommerce_before_thankyou', [$this, 'addOrderDataJsonThankYouPage']);
+        add_action('wp_head', [$this, 'addOrderDataJsonThankYouPage']);
     }
 
     public function activateSyncReviews() {
@@ -611,10 +611,11 @@ class WooCommerce {
         return strtotime($this->getLastReviewSync()) > strtotime('-24 hours');
     }
 
-    public function addOrderDataJsonThankYouPage(int $order_id) {
-        if ($this->plugin->getOption('invite') != self::POPUP_OPTION) {
+    public function addOrderDataJsonThankYouPage() {
+        if (!is_wc_endpoint_url('order-received') || $this->plugin->getOption('invite') != self::POPUP_OPTION) {
             return;
         }
+        $order_id = absint(get_query_var(get_option('woocommerce_checkout_order_received_endpoint')));
         $order = wc_get_order($order_id);
         $data = json_encode([
             'orderNumber' => $order_id,
