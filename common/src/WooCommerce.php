@@ -612,18 +612,25 @@ class WooCommerce {
         }
         $order_id = absint(get_query_var(get_option('woocommerce_checkout_order_received_endpoint')));
         $order = wc_get_order($order_id);
-        $data = json_encode([
+        $order_data = [
             'orderNumber' => $order_id,
             'email' => $order->get_billing_email(),
             'firstName' => $order->get_billing_first_name(),
             'inviteDelay' => $this->getInviteDelay(),
-        ]);
+        ];
+
+        $shop_id = $this->plugin->getOption('wwk_shop_id');
+        $api_key = $this->plugin->getOption('wwk_api_key');
+        try {
+            $order_data['signature'] = (new Hash($shop_id, $api_key, $order_data))->getHash();
+        } catch (InvalidKeysException) {
+        }
+
         echo sprintf(
             '<script type="application/json" id ="%s_order_completed">%s</script>',
-            strtolower($this->plugin->getName()),
-            $data
+            htmlentities(strtolower($this->plugin->getName())),
+            json_encode($order_data, JSON_HEX_QUOT|JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS),
         );
-
     }
 
     private function getInviteDelay(): int {
