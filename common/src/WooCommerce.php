@@ -102,11 +102,6 @@ class WooCommerce {
             return;
         }
 
-        $invite_delay = (int) $this->plugin->getOption('invite_delay');
-        if ($invite_delay < 0) {
-            $invite_delay = 0;
-        }
-
         $invoice_address = $order->get_address('billing');
         $customer_name = $invoice_address['first_name']
             . ' ' . $invoice_address['last_name'];
@@ -122,7 +117,7 @@ class WooCommerce {
         $data = [
             'order'     => $order_number,
             'email'     => $email,
-            'delay'     => $invite_delay,
+            'delay'     => $this->getInviteDelay(),
             'language'  => $lang,
             'client'    => 'wordpress',
             'customer_name' => $customer_name,
@@ -621,6 +616,7 @@ class WooCommerce {
             'orderNumber' => $order_id,
             'email' => $order->get_billing_email(),
             'firstName' => $order->get_billing_first_name(),
+            'inviteDelay' => $this->getInviteDelay(),
         ]);
         echo sprintf(
             '<script type="application/json" id ="%s_order_completed">%s</script>',
@@ -628,5 +624,13 @@ class WooCommerce {
             $data
         );
 
+    }
+
+    private function getInviteDelay(): int {
+        $invite_delay = (int) $this->plugin->getOption('invite_delay');
+        if ($invite_delay < 0) {
+            $invite_delay = 0;
+        }
+        return $invite_delay;
     }
 }
