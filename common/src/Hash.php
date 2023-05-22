@@ -5,7 +5,16 @@ namespace Valued\WordPress;
 class Hash {
     private const ALGORITHM = 'sha512';
 
-    public function __construct(private mixed $webshopId, private mixed $apiKey, private array $data) {
+    private $webshopId;
+
+    private $apiKey;
+
+    private $data;
+
+    public function __construct($webshopId, $apiKey, array $data) {
+        $this->webshopId = $webshopId;
+        $this->apiKey = $apiKey;
+        $this->data = $data;
         $this->validateKeys();
     }
 
