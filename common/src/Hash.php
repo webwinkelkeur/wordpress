@@ -27,6 +27,3 @@ class Hash {
         }
     }
 }
-
-class InvalidKeysException extends \Exception {
-}
