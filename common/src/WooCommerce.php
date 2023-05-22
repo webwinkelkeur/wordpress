@@ -623,7 +623,7 @@ class WooCommerce {
         $api_key = $this->plugin->getOption('wwk_api_key');
         try {
             $order_data['signature'] = (new Hash($shop_id, $api_key, $order_data))->getHash();
-        } catch (InvalidKeysException) {
+        } catch (InvalidKeysException $e) {
         }
 
         echo sprintf(
