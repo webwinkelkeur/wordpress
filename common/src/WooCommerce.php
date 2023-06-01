@@ -149,7 +149,7 @@ class WooCommerce {
         // send invite
         $api = new API($api_domain, $shop_id, $api_key);
         try {
-            if ($this->plugin->getOption('invite') == self::POPUP_OPTION && !$api->hasConsent($data)) {
+            if ($this->plugin->getOption('invite') == self::POPUP_OPTION && !$api->hasConsent($order_number)) {
                 $this->insert_comment($order_id, __('Invite was not send as customer did not consent.'));
                 return;
             }

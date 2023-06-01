@@ -64,9 +64,9 @@ class API {
         return $address . '&' . $query_string;
     }
 
-    public function hasConsent(array $data): bool {
+    public function hasConsent(string $order_number): bool {
         $params = [
-            'orderNumber' => $data['order'],
+            'orderNumber' => $order_number,
             'id' => $this->shop_id,
             'code' => $this->api_key,
         ];
