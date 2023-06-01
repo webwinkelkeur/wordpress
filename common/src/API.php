@@ -25,7 +25,7 @@ class API {
             'last_synced' => $last_synced,
         ];
         $url = $this->buildURL('https://' . $this->api_domain . '/api/1.0/product_reviews.xml', $params);
-        $response = \WpOrg\Requests\Requests::get($url);
+        $response = Requests::get($url);
         if (isset($response->status_code) && $response->status_code >= 200 && $response->status_code < 300) {
             return simplexml_load_string($response->body)->reviews->review;
         }
@@ -43,7 +43,7 @@ class API {
 
         $url = $this->buildURL('https://' . $this->api_domain . '/api/1.0/invitations.json', $credentials);
 
-        $response = \WpOrg\Requests\Requests::post($url, [], $data);
+        $response = Requests::post($url, [], $data);
         $response->throw_for_status();
 
         $result = json_decode($response->body);
@@ -71,7 +71,7 @@ class API {
             'code' => $this->api_key,
         ];
         $permission_url = $this->buildURL('https://' . $this->api_domain . '/api/2.0/order_permissions.json', $params);
-        $permission_response = \WpOrg\Requests\Requests::get($permission_url);
+        $permission_response = Requests::get($permission_url);
         $response_code = $permission_response->status_code;
         $permission = json_decode($permission_response->body);
         if ($response_code != 200) {
