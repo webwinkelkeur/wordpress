@@ -61,7 +61,7 @@ use Valued\WordPress\WooCommerce;
                         <label>
                             <input type="radio" name="<?= $plugin->getOptionName('invite');?>" value="<?= Woocommerce::POPUP_OPTION ?>" <?= $config['invite'] == Woocommerce::POPUP_OPTION ? 'checked' : ''; ?> />
                             <?php _e('Pop-up after purchase at "thank you" page.
-Privacy first review option. Order data will only be shared after perission of the customer.', 'webwinkelkeur'); ?>
+Privacy first review option. Order data will only be shared after permission of the customer.', 'webwinkelkeur'); ?>
                         </label><br>
                         <label>
                             <input type="radio" name="<?= $plugin->getOptionName('invite');?>" value="<?= WooCommerce::AFTER_EVERY_ORDER ?>" <?= $config['invite'] == WooCommerce::AFTER_EVERY_ORDER ? 'checked' : ''; ?> />
