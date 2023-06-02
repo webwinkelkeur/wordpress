@@ -1,3 +1,6 @@
+= 3.21 - 2023-06-02 =
+* Add support for requesting consent before sending invitation.
+
 = 3.20 - 2023-04-05 =
 * Bump **Tested up to** to WordPress 6.2.
 
