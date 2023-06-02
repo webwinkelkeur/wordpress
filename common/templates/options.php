@@ -1,3 +1,8 @@
+<?php
+
+use Valued\WordPress\WooCommerce;
+
+?>
 <form method="POST" action="">
     <div class="wrap">
         <h2><?= $plugin->getName(); ?></h2>
@@ -47,22 +52,27 @@
             )
         ); ?>
                     </p>
-                </tda
+                </td>
             </tr>
             <tr valign="top">
                 <th scope="row"><?php _e('Invitations', 'webwinkelkeur'); ?></th>
                 <td>
                     <fieldset>
                         <label>
-                            <input type="radio" name="<?= $plugin->getOptionName('invite');?>" value="1" <?= $config['invite'] == 1 ? 'checked' : ''; ?> />
+                            <input type="radio" name="<?= $plugin->getOptionName('invite');?>" value="<?= Woocommerce::POPUP_OPTION ?>" <?= $config['invite'] == Woocommerce::POPUP_OPTION ? 'checked' : ''; ?> />
+                            <?php _e('Pop-up after purchase at "thank you" page.
+Privacy first review option. Order data will only be shared after permission of the customer.', 'webwinkelkeur'); ?>
+                        </label><br>
+                        <label>
+                            <input type="radio" name="<?= $plugin->getOptionName('invite');?>" value="<?= WooCommerce::AFTER_EVERY_ORDER ?>" <?= $config['invite'] == WooCommerce::AFTER_EVERY_ORDER ? 'checked' : ''; ?> />
                             <?php _e('Yes, after every order.', 'webwinkelkeur'); ?>
                         </label><br>
                         <label>
-                            <input type="radio" name="<?= $plugin->getOptionName('invite');?>" value="2" <?= $config['invite'] == 2 ? 'checked' : ''; ?> />
+                            <input type="radio" name="<?= $plugin->getOptionName('invite');?>" value="<?= WooCommerce::AFTER_FIRST_ORDER ?>" <?= $config['invite'] == WooCommerce::AFTER_FIRST_ORDER ? 'checked' : ''; ?> />
                             <?php _e('Yes, after a customer\'s first order.', 'webwinkelkeur'); ?>
                         </label><br>
                         <label>
-                            <input type="radio" name="<?= $plugin->getOptionName('invite');?>" value="0" <?= !$config['invite'] ? 'checked' : ''; ?> />
+                            <input type="radio" name="<?= $plugin->getOptionName('invite');?>" value="<?= WooCommerce::DO_NOT_SEND ?>" <?= !$config['invite'] ? 'checked' : ''; ?> />
                             <?php _e('No, don\'t send invitations.', 'webwinkelkeur'); ?>
                         </label>
                     </fieldset>

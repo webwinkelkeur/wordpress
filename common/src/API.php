@@ -63,6 +63,26 @@ class API {
         }
         return $address . '&' . $query_string;
     }
+
+    public function hasConsent(string $order_number): bool {
+        $params = [
+            'orderNumber' => $order_number,
+            'id' => $this->shop_id,
+            'code' => $this->api_key,
+        ];
+        $permission_url = $this->buildURL('https://' . $this->api_domain . '/api/2.0/order_permissions.json', $params);
+        $permission_response = Requests::get($permission_url);
+        $response_code = $permission_response->status_code;
+        $permission = json_decode($permission_response->body);
+        if ($response_code != 200) {
+            throw new WebwinkelKeurAPIError(
+                $permission_url,
+                $permission->message ?? 'There was an error retrieving the order consent.'
+            );
+        }
+
+        return $permission->has_consent;
+    }
 }
 
 class WebwinkelKeurAPIError extends Exception {

@@ -11,6 +11,10 @@ use WC_Comments;
 
 class WooCommerce {
     const DEFAULT_ORDER_STATUS = ['wc-completed'];
+    const DO_NOT_SEND = 0;
+    const AFTER_EVERY_ORDER = 1;
+    const AFTER_FIRST_ORDER = 2;
+    const POPUP_OPTION = 3;
 
     private $plugin;
 
@@ -25,6 +29,7 @@ class WooCommerce {
         add_action($this->getReviewsHook(), [$this, 'syncReviews']);
         add_action('wp_ajax_' . $this->getManualSyncAction(), [$this, 'manualReviewSync']);
         add_action('wp_ajax_' . $this->getProductKeysAction(), [$this, 'getProductKeys']);
+        add_action('wp_head', [$this, 'addOrderDataJsonThankYouPage']);
     }
 
     public function activateSyncReviews() {
@@ -97,11 +102,6 @@ class WooCommerce {
             return;
         }
 
-        $invite_delay = (int) $this->plugin->getOption('invite_delay');
-        if ($invite_delay < 0) {
-            $invite_delay = 0;
-        }
-
         $invoice_address = $order->get_address('billing');
         $customer_name = $invoice_address['first_name']
             . ' ' . $invoice_address['last_name'];
@@ -117,7 +117,7 @@ class WooCommerce {
         $data = [
             'order'     => $order_number,
             'email'     => $email,
-            'delay'     => $invite_delay,
+            'delay'     => $this->getInviteDelay(),
             'language'  => $lang,
             'client'    => 'wordpress',
             'customer_name' => $customer_name,
@@ -148,6 +148,22 @@ class WooCommerce {
 
         // send invite
         $api = new API($api_domain, $shop_id, $api_key);
+        try {
+            if ($this->plugin->getOption('invite') == self::POPUP_OPTION && !$api->hasConsent($order_number)) {
+                $this->insert_comment($order_id, __('Invite was not send as customer did not consent.'));
+                return;
+            }
+        } catch (WebwinkelKeurAPIError $e) {
+            $this->logApiError($e);
+            $this->insert_comment(
+                $order_id,
+                sprintf(
+                    __('The %s invitation could not be sent. %s', 'webwinkelkeur'),
+                    $this->plugin->getName(), $e->getMessage()
+                )
+            );
+            return;
+        }
 
         try {
             $api->invite($data);
@@ -588,5 +604,42 @@ class WooCommerce {
 
     private function isSyncedToday(): bool {
         return strtotime($this->getLastReviewSync()) > strtotime('-24 hours');
+    }
+
+    public function addOrderDataJsonThankYouPage() {
+        if (!is_wc_endpoint_url('order-received') || $this->plugin->getOption('invite') != self::POPUP_OPTION) {
+            return;
+        }
+
+        $shop_id = $this->plugin->getOption('wwk_shop_id');
+        $api_key = $this->plugin->getOption('wwk_api_key');
+        $order_id = absint(get_query_var(get_option('woocommerce_checkout_order_received_endpoint')));
+        $order = wc_get_order($order_id);
+        $order_data = [
+            'webshopId' => $shop_id,
+            'orderNumber' => $order_id,
+            'email' => $order->get_billing_email(),
+            'firstName' => $order->get_billing_first_name(),
+            'inviteDelay' => $this->getInviteDelay(),
+        ];
+
+        try {
+            $order_data['signature'] = (new Hash($shop_id, $api_key, $order_data))->getHash();
+        } catch (InvalidKeysException $e) {
+        }
+
+        echo sprintf(
+            '<script type="application/json" id ="%s_order_completed">%s</script>',
+            htmlentities(strtolower($this->plugin->getName())),
+            json_encode($order_data, JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS),
+        );
+    }
+
+    private function getInviteDelay(): int {
+        $invite_delay = (int) $this->plugin->getOption('invite_delay');
+        if ($invite_delay < 0) {
+            $invite_delay = 0;
+        }
+        return $invite_delay;
     }
 }
