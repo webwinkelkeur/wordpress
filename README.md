@@ -20,3 +20,16 @@ Two additional instances are available for testing:
 | 5.6.40      | http://localhost:13777 |
 | 7.0.33      | http://localhost:13778 |
 | 8+          | http://localhost:13779 |
+
+
+# Release
+
+Decide on a new version number and add it to the top of `changelog.md`.
+
+Commit the changelog, and tag the commit with the version number.
+
+    git tag 3.12345
+
+Release the new version:
+
+    ./bin/publish
