@@ -1,3 +1,6 @@
+= 3.22 - 2023-06-05 =
+* Fix issue with missing `is_wc_endpoint_url` function.
+
 = 3.21 - 2023-06-02 =
 * Add support for requesting consent before sending invitation.
 
