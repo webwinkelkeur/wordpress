@@ -607,6 +607,10 @@ class WooCommerce {
     }
 
     public function addOrderDataJsonThankYouPage() {
+        if (!function_exists('is_wc_endpoint_url')) {
+            return;
+        }
+
         if (!is_wc_endpoint_url('order-received') || $this->plugin->getOption('invite') != self::POPUP_OPTION) {
             return;
         }
@@ -631,7 +635,7 @@ class WooCommerce {
         echo sprintf(
             '<script type="application/json" id ="%s_order_completed">%s</script>',
             htmlentities(strtolower($this->plugin->getName())),
-            json_encode($order_data, JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS),
+            json_encode($order_data, JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS)
         );
     }
 
