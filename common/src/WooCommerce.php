@@ -607,7 +607,7 @@ class WooCommerce {
     }
 
     public function addOrderDataJsonThankYouPage() {
-        if (function_exists('is_wc_endpoint_url')) {
+        if (!function_exists('is_wc_endpoint_url')) {
             return;
         }
 
