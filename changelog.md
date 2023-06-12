@@ -1,3 +1,6 @@
+= 3.23 - 2023-06-12 =
+* Use `order_number` instead of `order_id`.
+
 = 3.22 - 2023-06-05 =
 * Fix issue with missing `is_wc_endpoint_url` function.
 
