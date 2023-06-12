@@ -621,7 +621,7 @@ class WooCommerce {
         $order = wc_get_order($order_id);
         $order_data = [
             'webshopId' => $shop_id,
-            'orderNumber' => $order_id,
+            'orderNumber' => $order->get_order_number(),
             'email' => $order->get_billing_email(),
             'firstName' => $order->get_billing_first_name(),
             'inviteDelay' => $this->getInviteDelay(),
