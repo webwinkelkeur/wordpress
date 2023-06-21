@@ -8,6 +8,7 @@ use WC_Customer;
 use WC_Product_Factory;
 use WP_Comment_Query;
 use WC_Comments;
+use Automattic\WooCommerce\Utilities\OrderUtil;
 
 class WooCommerce {
     const DEFAULT_ORDER_STATUS = ['wc-completed'];
@@ -60,11 +61,16 @@ class WooCommerce {
     }
 
     public function set_order_language($order_id) {
+        if ( OrderUtil::custom_orders_table_usage_is_enabled() ) {
             /** @var WC_Order $order */
             $order = wc_get_order($order_id);
-        if (!$order->get_meta('wpml_language') && defined('ICL_LANGUAGE_CODE')) {
-            $order->get_meta_data();
-            $order->update_meta_data('wpml_language', ICL_LANGUAGE_CODE);
+            if (!$order->get_meta('wpml_language') && defined('ICL_LANGUAGE_CODE')) {
+                $order->update_meta_data('wpml_language', ICL_LANGUAGE_CODE);
+            }
+        } else {
+            if (!get_post_meta($order_id, 'wpml_language') && defined('ICL_LANGUAGE_CODE')) {
+                update_post_meta($order_id, 'wpml_language', ICL_LANGUAGE_CODE);
+            }
         }
     }
 
@@ -114,8 +120,7 @@ class WooCommerce {
             $invoice_address['phone'] ?? null,
             $delivery_address['phone'] ?? null,
         ];
-
-        $lang = $order->get_meta('wpml_language', true);
+        $lang = OrderUtil::custom_orders_table_usage_is_enabled() ? $order->get_meta('wpml_language', true) : get_post_meta($order_id, 'wpml_language', true);
 
         $data = [
             'order'     => $order_number,
