@@ -208,10 +208,4 @@ abstract class BasePlugin {
         }
         return $default;
     }
-
-    public function checkHposExistsAndEnabled(): bool {
-        return class_exists('OrderUtil')
-            && method_exists(OrderUtil::class, 'custom_orders_table_usage_is_enabled')
-            && OrderUtil::custom_orders_table_usage_is_enabled();
-    }
 }
