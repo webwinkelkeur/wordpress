@@ -1,3 +1,7 @@
+= 3.24 - 2023-06-26 =
+* Fix default invite option.
+* Improve option labels.
+
 = 3.23 - 2023-06-12 =
 * Use `order_number` instead of `order_id`.
 
