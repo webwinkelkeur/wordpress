@@ -88,9 +88,9 @@ class Admin {
             }
 
             if (!$errors) {
-                $nonce = $_REQUEST['_wpnonce'];
-                if ( ! wp_verify_nonce( $nonce, 'submit_trustmark_settings' ) ) {
-                    exit;
+                if (empty($_REQUEST['_wpnonce']) || !wp_verify_nonce((string) $_REQUEST['_wpnonce'], $this->plugin->getOptionName('optisons_nonce'))) {
+                    http_response_code(400);
+                    die("Invalid nonce");
                 }
                 foreach ($config as $name => $value) {
                     if (is_bool($value)) {
