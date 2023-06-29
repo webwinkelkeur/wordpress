@@ -210,6 +210,7 @@ use Valued\WordPress\WooCommerce;
             </tr>
         </table>
         <?php submit_button(); ?>
+        <?php wp_nonce_field( 'submit_trustmark_settings' ); ?>
     </div>
 </form>
 <script>

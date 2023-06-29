@@ -88,6 +88,10 @@ class Admin {
             }
 
             if (!$errors) {
+                $nonce = $_REQUEST['_wpnonce'];
+                if ( ! wp_verify_nonce( $nonce, 'submit_trustmark_settings' ) ) {
+                    exit;
+                }
                 foreach ($config as $name => $value) {
                     if (is_bool($value)) {
                         // WordPress won't store `false' properly, so convert to 0.
