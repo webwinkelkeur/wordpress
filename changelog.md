@@ -1,3 +1,6 @@
+= 3.25 - 2023-06-29 =
+* Prevent settings updates through cross-site request forgery.
+
 = 3.24 - 2023-06-26 =
 * Fix default invite option.
 * Improve option labels.
