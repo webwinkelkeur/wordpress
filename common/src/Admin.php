@@ -88,7 +88,7 @@ class Admin {
             }
 
             if (!$errors) {
-                if (empty($_REQUEST['_wpnonce']) || !wp_verify_nonce((string) $_REQUEST['_wpnonce'], $this->plugin->getOptionName('optisons_nonce'))) {
+                if (empty($_REQUEST['_wpnonce']) || !wp_verify_nonce((string) $_REQUEST['_wpnonce'], $this->plugin->getOptionName('options_nonce'))) {
                     http_response_code(400);
                     die("Invalid nonce");
                 }
