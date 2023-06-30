@@ -5,11 +5,12 @@ $replace_sources_list = false;
 
 switch ($argv[1] ?? null) {
 case 'latest':
-    $version = '8.0.0RC5-apache';
+    $version = '8.2.7-apache';
     break;
 case 'min':
     $version = '7.0.33-apache';
     $wp_cli = true;
+    $replace_sources_list = true;
     break;
 case 'old':
     $version = '5.6.40-apache';
