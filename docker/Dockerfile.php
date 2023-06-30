@@ -1,6 +1,7 @@
 <?php
 
 $wp_cli = false;
+$replace_sources_list = false;
 
 switch ($argv[1] ?? null) {
 case 'latest':
@@ -12,6 +13,7 @@ case 'min':
     break;
 case 'old':
     $version = '5.6.40-apache';
+    $replace_sources_list = true;
     break;
 default:
     fwrite(STDERR, "Usage: {$argv[0]} { latest | min | old }\n");
@@ -20,6 +22,10 @@ default:
 
 ?>
 FROM php:<?= $version . "\n"; ?>
+
+<?php if ($replace_sources_list): ?>
+RUN echo "deb http://archive.debian.org/debian/ stretch main" > /etc/apt/sources.list
+<?php endif; ?>
 
 <?php if ($wp_cli): ?>
 RUN curl https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -o /usr/local/bin/wp
