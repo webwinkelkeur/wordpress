@@ -26,13 +26,17 @@ class API {
         ];
         $url = $this->buildURL('https://' . $this->api_domain . '/api/1.0/product_reviews.xml', $params);
         $response = Requests::get($url);
-        if (isset($response->status_code) && $response->status_code >= 200 && $response->status_code < 300) {
-            return simplexml_load_string($response->body)->reviews->review;
+        if (empty($response->status_code)) {
+            throw new WebwinkelKeurAPIError($url, "Could not retrieve product reviews XML: no response");
         }
-        throw new WebwinkelKeurAPIError(
-            $url,
-            isset($result->message) ? $result->message : $response->body
-        );
+        if ($response->status_code < 200 || $response->status_code >= 300) {
+            throw new WebwinkelKeurAPIError($url, "Could not retrieve product reviews XML: got HTTP {$response->status_code}");
+        }
+        $document = simplexml_load_string($response->body);
+        if (!$document) {
+            throw new WebwinkelKeurAPIError($url, "Could not retrieve product reviews XML: could not parse response as XML");
+        }
+        return $document->reviews->review;
     }
 
     public function invite(array $data) {
