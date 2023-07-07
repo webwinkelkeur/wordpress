@@ -16,11 +16,16 @@ if [[ ${WP_INSTALL:-} = yes ]]; then
 
 	if [[ ! -f .configured ]]; then
 		sudo -u www-data wp config create --dbuser=root --dbname=wordpress --dbhost=db --extra-php <<-EOF
+			define('WP_DEBUG', true);
+			define('WP_DEBUG_DISPLAY', false);
+			define('WP_DEBUG_LOG', true);
+
 			if (isset(\$_SERVER['SERVER_PORT'])) {
 				define('WP_SITEURL', sprintf('http://localhost:%d', \$_SERVER['SERVER_PORT']));
 				define('WP_HOME', WP_SITEURL);
 			}
 		EOF
+		perl -p -i -e "s/define\s*\(\s*'WP_DEBUG',\s*false\s*\);//g" wp-config.php
 		touch .configured
 	fi
 
