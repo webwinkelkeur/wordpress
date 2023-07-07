@@ -27,14 +27,20 @@ class API {
         $url = $this->buildURL('https://' . $this->api_domain . '/api/1.0/product_reviews.xml', $params);
         $response = Requests::get($url);
         if (empty($response->status_code)) {
-            throw new WebwinkelKeurAPIError($url, "Could not retrieve product reviews XML: no response");
+            throw new WebwinkelKeurAPIError($url, "Could not retrieve product reviews: no response");
         }
         if ($response->status_code < 200 || $response->status_code >= 300) {
-            throw new WebwinkelKeurAPIError($url, "Could not retrieve product reviews XML: got HTTP {$response->status_code}");
+            throw new WebwinkelKeurAPIError($url, "Could not retrieve product reviews: got HTTP {$response->status_code}");
         }
         $document = simplexml_load_string($response->body);
         if (!$document) {
-            throw new WebwinkelKeurAPIError($url, "Could not retrieve product reviews XML: could not parse response as XML");
+            throw new WebwinkelKeurAPIError($url, "Could not retrieve product reviews: could not parse response as XML");
+        }
+        if ($document->getName() === 'response' && (string) $document->status === 'error') {
+            throw new WebwinkelKeurAPIError($url, "Could not retrieve product reviews: {$document->message}");
+        }
+        if ($document->getName() !== 'feed') {
+            throw new WebwinkelKeurAPIError($url, "Could not retrieve product reviews: unexpected root tag: {$document->getName()}");
         }
         return $document->reviews->review;
     }

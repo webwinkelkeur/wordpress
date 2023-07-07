@@ -151,13 +151,12 @@ use Valued\WordPress\WooCommerce;
                     </fieldset>
                     <fieldset>
                         <label>
-                            <button class="button webwinkelkeur-sync-btn"
+                            <button class="button webwinkelkeur-sync-btn" type="button"
                                     <?= !$config['product_reviews'] ? 'disabled' : ''; ?>
                             >
                                 <?= __('Sync manually', 'webwinkelkeur'); ?>
                             </button>
-                            <button class="button webwinkelkeur-sync-btn"
-                                    data-all="yes"
+                            <button class="button webwinkelkeur-sync-btn" type="button" data-all="yes"
                                     <?= !$config['product_reviews'] ? 'disabled' : ''; ?>
                             >
                                 <?= __('Sync all reviews manually', 'webwinkelkeur'); ?>
