@@ -27,7 +27,14 @@ class API {
         $url = $this->buildURL('https://' . $this->api_domain . '/api/1.0/product_reviews.xml', $params);
         $response = Requests::get($url);
         if (isset($response->status_code) && $response->status_code >= 200 && $response->status_code < 300) {
-            return simplexml_load_string($response->body)->reviews->review;
+            $xml = simplexml_load_string($response->body);
+            if (!$xml) {
+                throw new WebwinkelKeurAPIError(
+                    $url,
+                    'GET Product reviews XML request returned an empty body'
+                );
+            }
+            return $xml->reviews->review;
         }
         throw new WebwinkelKeurAPIError(
             $url,
