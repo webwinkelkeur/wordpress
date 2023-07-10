@@ -1,3 +1,8 @@
+= 3.26 - 2023-07-10 =
+* Improve error handling for product review sync.
+* Don't trigger product review sync when submitting settings form with enter key.
+* Improve nonce handling.
+
 = 3.25 - 2023-06-29 =
 * Prevent settings updates through cross-site request forgery.
 
