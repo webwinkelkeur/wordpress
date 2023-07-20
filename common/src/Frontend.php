@@ -35,7 +35,6 @@ class Frontend {
 
         foreach ([
             'wp_head',
-            'wp_meta',
             'wp_footer',
             'wp_print_scripts',
         ] as $action) {
