@@ -61,12 +61,11 @@ class WooCommerce {
     }
 
     public function set_order_language($order_id) {
-        if (class_exists('Automattic\WooCommerce\Utilities\OrderUtil') && OrderUtil::custom_orders_table_usage_is_enabled()) {
-            /** @var WC_Order $order */
-            $order = wc_get_order($order_id);
-            if (!$order->get_meta('wpml_language') && defined('ICL_LANGUAGE_CODE')) {
-                $order->update_meta_data('wpml_language', ICL_LANGUAGE_CODE);
-            }
+        /** @var WC_Order $order */
+        $order = wc_get_order($order_id);
+        if (!$order->get_meta('wpml_language') && defined('ICL_LANGUAGE_CODE')) {
+            $order->update_meta_data('wpml_language', ICL_LANGUAGE_CODE);
+            $order->save();
         }
     }
 
