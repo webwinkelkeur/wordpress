@@ -2,7 +2,7 @@
 namespace Valued\WordPress;
 
 use ReflectionClass;
-use \Automattic\WooCommerce\Utilities\FeaturesUtil;
+use Automattic\WooCommerce\Utilities\FeaturesUtil;
 
 abstract class BasePlugin {
     protected static $instances = [];
@@ -40,7 +40,7 @@ abstract class BasePlugin {
         add_action('before_woocommerce_init', function() {
             if (class_exists(FeaturesUtil::class)) {
                 FeaturesUtil::declare_compatibility(
-                    'custom_order_tables', $this->getSlug() . '/' . $this->getSlug() . '.php', true
+                    'custom_order_tables', $this->getPluginFile(), true
                 );
             }
         });

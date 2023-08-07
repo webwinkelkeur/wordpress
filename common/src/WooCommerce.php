@@ -8,7 +8,6 @@ use WC_Customer;
 use WC_Product_Factory;
 use WP_Comment_Query;
 use WC_Comments;
-use Automattic\WooCommerce\Utilities\OrderUtil;
 
 class WooCommerce {
     const DEFAULT_ORDER_STATUS = ['wc-completed'];
