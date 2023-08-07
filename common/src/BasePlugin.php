@@ -39,7 +39,6 @@ abstract class BasePlugin {
         if ($this->shouldDisplayUpdateNotice()) {
             add_action('admin_notices', [$this, 'showUpdateNotice']);
         }
-        add_action('upgrader_process_complete', 'updateSettingOnUpgrade');
         if (is_admin()) {
             $this->admin = new Admin($this);
         } else {
@@ -125,8 +124,8 @@ abstract class BasePlugin {
         return $gtin_handler->getActivePlugin();
     }
 
-    public function updateSettingOnUpgrade() {
-        if (!$this->getOption('invite')) {
+    public function setDefaultInviteOption() {
+        if (is_null($this->getOption('invite'))) {
             update_option(
                 $this->getOptionName('invite'),
                 WooCommerce::AFTER_EVERY_ORDER
