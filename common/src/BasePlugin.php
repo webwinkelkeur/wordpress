@@ -196,6 +196,7 @@ abstract class BasePlugin {
             'javascript' => true,
             'order_statuses' => WooCommerce::DEFAULT_ORDER_STATUS,
             'product_reviews' => true,
+            'invite' => WooCommerce::AFTER_EVERY_ORDER,
         ];
     }
 
