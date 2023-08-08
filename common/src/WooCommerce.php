@@ -64,7 +64,7 @@ class WooCommerce {
         $order = wc_get_order($order_id);
         if (!$order->get_meta('wpml_language') && defined('ICL_LANGUAGE_CODE')) {
             $order->update_meta_data('wpml_language', ICL_LANGUAGE_CODE);
-            $order->save();
+            $order->save_meta_data();
         }
     }
 
