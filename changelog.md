@@ -1,3 +1,9 @@
+= 3.27 - 2023-08-09 =
+* Fix default option selection on settings page.
+* Make `wpml_language` order meta update compatible with WooCommerce High-Performance Order Storage.
+* Remove pointless `wp_meta` hook.
+* Reorder invitation options on settings page.
+
 = 3.26 - 2023-07-10 =
 * Improve error handling for product review sync.
 * Don't trigger product review sync when submitting settings form with enter key.
