@@ -114,7 +114,7 @@ class WooCommerce {
             $invoice_address['phone'] ?? null,
             $delivery_address['phone'] ?? null,
         ];
-        $lang = $order->get_meta('wpml_language', true);
+        $lang = $order->get_meta('wpml_language');
 
         $data = [
             'order'     => $order_number,

@@ -39,9 +39,7 @@ abstract class BasePlugin {
         add_action('wp_ajax_' . $this->getUpdateNoticeDismissedAjaxHook(), [$this, 'dismissUpdateNotice']);
         add_action('before_woocommerce_init', function() {
             if (class_exists(FeaturesUtil::class)) {
-                FeaturesUtil::declare_compatibility(
-                    'custom_order_tables', $this->getPluginFile(), true
-                );
+                FeaturesUtil::declare_compatibility('custom_order_tables', $this->getPluginFile());
             }
         });
         if ($this->shouldDisplayUpdateNotice()) {
