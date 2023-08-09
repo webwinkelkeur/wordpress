@@ -60,8 +60,11 @@ class WooCommerce {
     }
 
     public function set_order_language($order_id) {
-        if (!get_post_meta($order_id, 'wpml_language') && defined('ICL_LANGUAGE_CODE')) {
-            update_post_meta($order_id, 'wpml_language', ICL_LANGUAGE_CODE);
+        /** @var WC_Order $order */
+        $order = wc_get_order($order_id);
+        if (!$order->get_meta('wpml_language') && defined('ICL_LANGUAGE_CODE')) {
+            $order->update_meta_data('wpml_language', ICL_LANGUAGE_CODE);
+            $order->save_meta_data();
         }
     }
 
@@ -111,8 +114,7 @@ class WooCommerce {
             $invoice_address['phone'] ?? null,
             $delivery_address['phone'] ?? null,
         ];
-
-        $lang = get_post_meta($order_id, 'wpml_language', true);
+        $lang = $order->get_meta('wpml_language');
 
         $data = [
             'order'     => $order_number,

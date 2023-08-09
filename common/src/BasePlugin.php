@@ -2,6 +2,7 @@
 namespace Valued\WordPress;
 
 use ReflectionClass;
+use Automattic\WooCommerce\Utilities\FeaturesUtil;
 
 abstract class BasePlugin {
     protected static $instances = [];
@@ -36,6 +37,11 @@ abstract class BasePlugin {
         add_action('plugins_loaded', [$this, 'loadTranslations']);
         add_action('admin_enqueue_scripts', [$this, 'addUpdateNoticeDismissScript']);
         add_action('wp_ajax_' . $this->getUpdateNoticeDismissedAjaxHook(), [$this, 'dismissUpdateNotice']);
+        add_action('before_woocommerce_init', function() {
+            if (class_exists(FeaturesUtil::class)) {
+                FeaturesUtil::declare_compatibility('custom_order_tables', $this->getPluginFile());
+            }
+        });
         if ($this->shouldDisplayUpdateNotice()) {
             add_action('admin_notices', [$this, 'showUpdateNotice']);
         }
