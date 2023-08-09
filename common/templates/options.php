@@ -59,7 +59,7 @@ use Valued\WordPress\WooCommerce;
                 <td>
                     <fieldset>
                         <label>
-                            <input type="radio" name="<?= $plugin->getOptionName('invite');?>" value="<?= WooCommerce::AFTER_EVERY_ORDER ?>" <?= $config['invite'] == WooCommerce::AFTER_EVERY_ORDER || !$config['invite'] ? 'checked' : ''; ?> />
+                            <input type="radio" name="<?= $plugin->getOptionName('invite');?>" value="<?= WooCommerce::AFTER_EVERY_ORDER ?>" <?= $config['invite'] == WooCommerce::AFTER_EVERY_ORDER ? 'checked' : ''; ?> />
                             <?php _e('Yes, email after every order. (default)', 'webwinkelkeur'); ?>
                         </label><br>
                         <label>
