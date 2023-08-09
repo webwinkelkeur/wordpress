@@ -124,15 +124,6 @@ abstract class BasePlugin {
         return $gtin_handler->getActivePlugin();
     }
 
-    public function setDefaultInviteOption() {
-        if (is_null($this->getOption('invite'))) {
-            update_option(
-                $this->getOptionName('invite'),
-                WooCommerce::AFTER_EVERY_ORDER
-            );
-        }
-    }
-
     public function showUpdateNotice() {
         $class = 'notice notice-info is-dismissible ' . $this->getUpdateNoticeClass();
         $message = $this->getUpdateMessage();
