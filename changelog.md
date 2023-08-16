@@ -1,3 +1,6 @@
+= 3.28 - 2023-08-16 =
+* Fix passing `null` to `strtotime`.
+
 = 3.27 - 2023-08-09 =
 * Fix default option selection on settings page.
 * Make `wpml_language` order meta update compatible with WooCommerce High-Performance Order Storage.
