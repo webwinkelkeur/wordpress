@@ -589,7 +589,7 @@ class WooCommerce {
 
     public function getLastReviewSync(): string {
         return $this->getReviewSyncDate(strtotime(
-            $this->plugin->getOption('last_executed_sync')
+            $this->plugin->getOption('last_executed_sync') ?? '',
         ));
     }
 
@@ -605,7 +605,11 @@ class WooCommerce {
     }
 
     private function isSyncedToday(): bool {
-        return strtotime($this->getLastReviewSync()) > strtotime('-24 hours');
+        $last_sync = $this->plugin->getOption('last_executed_sync');
+        if (!$last_sync) {
+            return false;
+        }
+        return strtotime($last_sync) > strtotime('-24 hours');
     }
 
     public function addOrderDataJsonThankYouPage() {
