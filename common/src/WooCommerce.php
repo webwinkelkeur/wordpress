@@ -589,7 +589,7 @@ class WooCommerce {
 
     public function getLastReviewSync(): string {
         return $this->getReviewSyncDate(strtotime(
-            $this->plugin->getOption('last_executed_sync') ?? '',
+            $this->plugin->getOption('last_executed_sync') ?: '',
         ));
     }
 
