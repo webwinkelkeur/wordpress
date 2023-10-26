@@ -2,6 +2,10 @@
 namespace Valued\WordPress;
 
 use Exception;
+
+if (!defined('REQUESTS_SILENCE_PSR0_DEPRECATIONS')) {
+    define('REQUESTS_SILENCE_PSR0_DEPRECATIONS', true);
+}
 use Requests;
 
 class API {
