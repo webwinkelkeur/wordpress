@@ -1,3 +1,6 @@
+= 3.29 - 2023-10-30 =
+* Silence PSR-0 deprecation warnings for `Requests` class.
+
 = 3.28 - 2023-08-16 =
 * Fix passing `null` to `strtotime`.
 
