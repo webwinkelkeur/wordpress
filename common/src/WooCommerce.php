@@ -299,7 +299,12 @@ class WooCommerce {
         $pf = new WC_Product_Factory();
         $products = [];
         foreach ($order_arr['line_items'] as $line_item) {
-            $product = $pf->get_product($line_item['variation_id'] ?: $line_item['product_id']);
+            $product_id = $line_item['product_id'];
+            if (!empty($line_item['variation_id'])) {
+                $product_id = $line_item['variation_id'];
+            }
+
+            $product = $pf->get_product($product_id);
             if (!$product) {
                 continue;
             }
