@@ -552,7 +552,7 @@ class WooCommerce {
             FROM {$wpdb->postmeta} meta
             JOIN {$wpdb->posts} posts
             ON meta.post_id = posts.id 
-            WHERE posts.post_type = 'product' 
+            WHERE posts.post_type IN ('product', 'product_variation') 
             AND meta.meta_key='_product_attributes'
             ORDER BY posts.id DESC
             LIMIT 1000;
