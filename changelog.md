@@ -1,3 +1,6 @@
+= 3.30 - 2023-11-10 =
+* Use product variation if available for synchronizing products.
+
 = 3.29 - 2023-10-30 =
 * Silence PSR-0 deprecation warnings for `Requests` class.
 
