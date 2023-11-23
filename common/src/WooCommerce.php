@@ -659,7 +659,7 @@ class WooCommerce {
     }
 
     private function getProductImage(string $image_id): ?string {
-        $image_array = wp_get_attachment_image_src($image_id, 'thumbnail');
+        $image_array = wp_get_attachment_image_src($image_id);
         return $image_array[0] ?? null;
     }
 }
