@@ -315,7 +315,7 @@ class WooCommerce {
                 'id' => $product->get_id(),
                 'name' => $product->get_name(),
                 'url' => get_permalink($product->get_id()),
-                'image_url' => get_the_post_thumbnail_url($product->get_id()) ?: null,
+                'image_url' => $this->getProductImage($product->get_image_id()),
                 'sku' => $product->get_sku(),
                 'gtin' => $gtin_handler->getGtin(
                     $this->plugin->getOption('custom_gtin') ?: null
@@ -656,5 +656,10 @@ class WooCommerce {
             $invite_delay = 0;
         }
         return $invite_delay;
+    }
+
+    private function getProductImage(string $image_id): ?string {
+        $image_array = wp_get_attachment_image_src($image_id, 'thumbnail');
+        return $image_array[0] ?? null;
     }
 }
