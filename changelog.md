@@ -1,3 +1,6 @@
+= 3.31 - 2023-11-23 =
+* Fix product image for variations that don't have their own image.
+
 = 3.30 - 2023-11-10 =
 * Use product variation if available for synchronizing products.
 
