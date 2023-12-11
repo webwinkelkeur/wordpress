@@ -445,7 +445,7 @@ class WooCommerce {
             throw new RuntimeException(sprintf("No product with ID {$product_id}"));
         }
 
-        if ($product->get_parent_id() !== 0) {
+        if ($product->get_parent_id()) {
             $product_id = $product->get_parent_id();
         }
 
