@@ -440,9 +440,15 @@ class WooCommerce {
     private function getCommentData(\SimpleXMLElement $review) {
         $pf = new WC_Product_Factory();
         $product_id = (int) $review->products->product->external_id;
-        if (!$pf->get_product($product_id)) {
+
+        if (!$product = $pf->get_product($product_id)) {
             throw new RuntimeException(sprintf("No product with ID {$product_id}"));
         }
+
+        if ($product->get_parent_id()) {
+            $product_id = $product->get_parent_id();
+        }
+
         $author_email = sanitize_text_field((string) $review->email);
         return [
             'comment_post_ID' => $product_id,
