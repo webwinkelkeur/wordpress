@@ -1,3 +1,6 @@
+= 3.32 - 2023-12-11 =
+* Save reviews in the parent product of a variation, if available.
+
 = 3.31 - 2023-11-23 =
 * Fix product image for variations that don't have their own image.
 
