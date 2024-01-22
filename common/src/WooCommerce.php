@@ -396,6 +396,41 @@ class WooCommerce {
     }
 
     private function processReview(\SimpleXMLElement $review) {
+        if ($this->plugin->getOption('product_reviews_multisite') && is_multisite()) {
+            $this->syncMultiSite($review);
+        } else {
+            $this->doProcessReview($review);
+        }
+    }
+
+    private function syncMultiSite(\SimpleXMLElement $review) {
+        $is_synced = false;
+        foreach (get_sites() as $site) {
+            switch_to_blog($site->blog_id);
+            if ($this->processMultiSite($review)) {
+                $is_synced = true;
+            }
+            restore_current_blog();
+        }
+
+        if (!$is_synced) {
+            $this->failedInsertError((int) $review->products->product->external_id);
+        }
+    }
+
+    private function processMultiSite(\SimpleXMLElement $review): bool {
+        if (!wc_get_products([
+            'sku' => sanitize_text_field((string) $review->products->product->product_ids->skus->sku),
+            'id' => (int) $review->products->product->external_id,
+        ])) {
+            return false;
+        }
+
+        $this->doProcessReview($review);
+        return true;
+    }
+
+    private function doProcessReview(\SimpleXMLElement $review) {
         $comment_data = $this->getCommentData($review);
         $comment_id = $this->getExistingComment(
             $comment_data['comment_post_ID'],
@@ -415,8 +450,7 @@ class WooCommerce {
             }
         } else {
             if (!wp_insert_comment($comment_data)) {
-                throw new RuntimeException(
-                    "Could not insert review for product: {$comment_data['comment_post_ID']}");
+                $this->failedInsertError($comment_data['comment_post_ID']);
             }
             WC_Comments::clear_transients($comment_data['comment_post_ID']);
         }
@@ -667,5 +701,10 @@ class WooCommerce {
     private function getProductImage(string $image_id): ?string {
         $image_array = wp_get_attachment_image_src($image_id);
         return $image_array[0] ?? null;
+    }
+
+    private function failedInsertError(int $product_id): void {
+        throw new RuntimeException(
+            "Could not insert review for product: {$product_id}");
     }
 }
