@@ -698,12 +698,12 @@ class WooCommerce {
         return $invite_delay;
     }
 
-    private function getProductImage(string $image_id): ?string {
+    private function getProductImage(string $image_id) {
         $image_array = wp_get_attachment_image_src($image_id);
         return $image_array[0] ?? null;
     }
 
-    private function failedInsertError(int $product_id): void {
+    private function failedInsertError(int $product_id) {
         throw new RuntimeException(
             "Could not insert review for product: {$product_id}");
     }
