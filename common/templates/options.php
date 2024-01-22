@@ -151,6 +151,21 @@ use Valued\WordPress\WooCommerce;
                     </fieldset>
                     <fieldset>
                         <label>
+                            <input type="checkbox" name="<?= $plugin->getOptionName('product_reviews_multisite'); ?>" value="1" <?php if ($config['product_reviews_multisite']) {
+                                echo 'checked ';
+                            } ?> />
+                            <?= esc_html(
+                                __('Sync to Multi-site', 'webwinkelkeur')
+                            ); ?>
+                            <p class="description">
+                                <?= esc_html(
+                                    sprintf(__('Enable sync product reviews to multisite setup. Product will be matched by ID and SKU.', 'webwinkelkeur'), $plugin->getName())
+                                ); ?>
+                            </p>
+                        </label>
+                    </fieldset>
+                    <fieldset>
+                        <label>
                             <button class="button webwinkelkeur-sync-btn" type="button"
                                     <?= !$config['product_reviews'] ? 'disabled' : ''; ?>
                             >
