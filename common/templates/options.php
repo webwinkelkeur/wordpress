@@ -155,7 +155,7 @@ use Valued\WordPress\WooCommerce;
                                 echo 'checked ';
                             } ?> />
                             <?= esc_html(
-                                __('Sync to Multi-site', 'webwinkelkeur')
+                                __('Sync to Multisite', 'webwinkelkeur')
                             ); ?>
                             <p class="description">
                                 <?= esc_html(
