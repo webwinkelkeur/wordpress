@@ -56,6 +56,7 @@ class Admin {
             'invite_delay' => 'intval',
             'limit_order_data' => 'boolval',
             'product_reviews' => 'boolval',
+            'product_reviews_multisite' => 'boolval',
             'javascript' => 'boolval',
             'order_statuses' => function ($value) {
                 return array_map('strval', is_array($value) ? $value : []);
