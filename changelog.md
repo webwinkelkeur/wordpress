@@ -1,5 +1,5 @@
 = 3.33 - 2024-01-23 =
-* Support review sync in Multisite setup
+* Support review sync in multisite setup.
 
 = 3.32 - 2023-12-11 =
 * Save reviews in the parent product of a variation, if available.
