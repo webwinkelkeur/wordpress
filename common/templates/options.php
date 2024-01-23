@@ -151,9 +151,7 @@ use Valued\WordPress\WooCommerce;
                     </fieldset>
                     <fieldset>
                         <label>
-                            <input type="checkbox" name="<?= $plugin->getOptionName('product_reviews_multisite'); ?>" value="1" <?php if ($config['product_reviews_multisite']) {
-                                echo 'checked ';
-                            } ?> />
+                            <input type="checkbox" name="<?= $plugin->getOptionName('product_reviews_multisite'); ?>" value="1" <?= $config['product_reviews_multisite'] ? 'checked' : ''; ?> />
                             <?= esc_html(
                                 __('Sync to Multisite', 'webwinkelkeur')
                             ); ?>
