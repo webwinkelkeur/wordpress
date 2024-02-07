@@ -136,7 +136,7 @@ class WooCommerce {
         if ($with_order_data) {
             $order_arr = $this->get_data($order, []);
             $customer_arr = !empty($order_arr['customer_id']) ? $this->get_data(new WC_Customer($order_arr['customer_id']), []) : [];
-            $products = $this->get_product_data($order_arr);
+            $products = $this->get_product_data($order_arr, $lang);
             $order_data = [
                 'order' => $order_arr,
                 'customer' => $customer_arr,
@@ -295,7 +295,7 @@ class WooCommerce {
         return false;
     }
 
-    private function get_product_data(array $order_arr) {
+    private function get_product_data(array $order_arr, $lang) {
         $pf = new WC_Product_Factory();
         $products = [];
         foreach ($order_arr['line_items'] as $line_item) {
@@ -314,7 +314,7 @@ class WooCommerce {
             $products[] = [
                 'id' => $product->get_id(),
                 'name' => $product->get_name(),
-                'url' => get_permalink($product->get_id()),
+                'url' => $this->getProductUrl($product->get_id(), $lang),
                 'image_url' => $this->getProductImage($product->get_image_id()),
                 'sku' => $product->get_sku(),
                 'gtin' => $gtin_handler->getGtin(
@@ -706,5 +706,13 @@ class WooCommerce {
     private function failedInsertError(int $product_id) {
         throw new RuntimeException(
             "Could not insert review for product: {$product_id}");
+    }
+
+    private function getProductUrl(int $product_id, $lang): string {
+        $product_url = get_permalink($product_id);
+        if ($lang && has_filter('wpml_permalink')) {
+            $product_url = apply_filters('wpml_permalink', $product_url, $lang);
+        }
+        return $product_url;
     }
 }
