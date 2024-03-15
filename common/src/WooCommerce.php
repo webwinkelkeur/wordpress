@@ -314,7 +314,7 @@ class WooCommerce {
             $products[] = [
                 'id' => $product->get_id(),
                 'name' => $product->get_name(),
-                'url' => $this->getProductUrl($product->get_id(), $lang),
+                'url' => $this->getProductUrl($product_id, $lang),
                 'image_url' => $this->getProductImage($product->get_image_id()),
                 'sku' => $product->get_sku(),
                 'gtin' => $gtin_handler->getGtin(
