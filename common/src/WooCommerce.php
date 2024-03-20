@@ -304,10 +304,12 @@ class WooCommerce {
                 $product_id = $line_item['variation_id'];
             }
 
-            if ($lang && has_filter('wpml_object_id')) {
-                if ($order_product_id = apply_filters('wpml_object_id', $product_id, 'post', true, $lang)) {
-                    $product_id = $order_product_id;
-                }
+            if (
+                $lang
+                && has_filter('wpml_object_id')
+                && ($order_product_id = apply_filters('wpml_object_id', $product_id, 'post', true, $lang))
+            ) {
+                $product_id = $order_product_id;
             }
 
             $product = $pf->get_product($product_id);
