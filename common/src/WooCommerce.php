@@ -136,7 +136,7 @@ class WooCommerce {
         if ($with_order_data) {
             $order_arr = $this->get_data($order, []);
             $customer_arr = !empty($order_arr['customer_id']) ? $this->get_data(new WC_Customer($order_arr['customer_id']), []) : [];
-            $products = $this->get_product_data($order_arr);
+            $products = $this->get_product_data($order_arr, $lang);
             $order_data = [
                 'order' => $order_arr,
                 'customer' => $customer_arr,
@@ -295,13 +295,21 @@ class WooCommerce {
         return false;
     }
 
-    private function get_product_data(array $order_arr) {
+    private function get_product_data(array $order_arr, $lang) {
         $pf = new WC_Product_Factory();
         $products = [];
         foreach ($order_arr['line_items'] as $line_item) {
             $product_id = $line_item['product_id'];
             if (!empty($line_item['variation_id'])) {
                 $product_id = $line_item['variation_id'];
+            }
+
+            if (
+                $lang
+                && has_filter('wpml_object_id')
+                && ($order_product_id = apply_filters('wpml_object_id', $product_id, 'post', true, $lang))
+            ) {
+                $product_id = $order_product_id;
             }
 
             $product = $pf->get_product($product_id);
@@ -312,9 +320,9 @@ class WooCommerce {
             $gtin_handler->setGtinMetaKey($this->getGtinMetaKey());
             $gtin_handler->setProduct($product);
             $products[] = [
-                'id' => $product->get_id(),
+                'id' => $product_id,
                 'name' => $product->get_name(),
-                'url' => get_permalink($product->get_id()),
+                'url' => get_permalink($product_id),
                 'image_url' => $this->getProductImage($product->get_image_id()),
                 'sku' => $product->get_sku(),
                 'gtin' => $gtin_handler->getGtin(

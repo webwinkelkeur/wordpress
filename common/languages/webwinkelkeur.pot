@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: webwinkelkeur 1.0\n"
 "Report-Msgid-Bugs-To: info@kiboit.com\n"
-"POT-Creation-Date: 2023-06-07 16:30+0300\n"
+"POT-Creation-Date: 2024-03-20 13:23+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,13 +37,13 @@ msgstr ""
 msgid "This is not a valid API key."
 msgstr ""
 
-#: common/src/Admin.php:87
-#. common/src/Admin.php:87
+#: common/src/Admin.php:88
+#. common/src/Admin.php:88
 msgid "To send invitations, your API key is required."
 msgstr ""
 
-#: common/src/Admin.php:144
-#. common/src/Admin.php:144
+#: common/src/Admin.php:149
+#. common/src/Admin.php:149
 #, php-format
 msgid "An error occurred while requesting the %s invitation:"
 msgstr ""
@@ -59,37 +59,37 @@ msgstr ""
 msgid "Automatic product review sync did not run in the last 24 hours. Make sure that you have cron jobs configured, or sync manually."
 msgstr ""
 
-#: common/src/WooCommerce.php:153
-#. common/src/WooCommerce.php:153
+#: common/src/WooCommerce.php:155
+#. common/src/WooCommerce.php:155
 msgid "Invite was not send as customer did not consent."
 msgstr ""
 
-#: common/src/WooCommerce.php:161
-#. common/src/WooCommerce.php:161
+#: common/src/WooCommerce.php:163
+#. common/src/WooCommerce.php:163
 #, php-format
 msgid "The %s invitation could not be sent. %s"
 msgstr ""
 
-#: common/src/WooCommerce.php:175
-#. common/src/WooCommerce.php:175
+#: common/src/WooCommerce.php:177
+#. common/src/WooCommerce.php:177
 #, php-format
 msgid "The %s invitation could not be sent."
 msgstr ""
 
-#: common/src/WooCommerce.php:185
-#. common/src/WooCommerce.php:185
+#: common/src/WooCommerce.php:187
+#. common/src/WooCommerce.php:187
 #, php-format
 msgid "An invitation was sent to %s dashboard."
 msgstr ""
 
-#: common/src/WooCommerce.php:210
-#. common/src/WooCommerce.php:210
+#: common/src/WooCommerce.php:212
+#. common/src/WooCommerce.php:212
 #, php-format
 msgid "Add the %s for this product"
 msgstr ""
 
-#: common/src/WooCommerce.php:598
-#. common/src/WooCommerce.php:598
+#: common/src/WooCommerce.php:651
+#. common/src/WooCommerce.php:651
 msgid "Not registered."
 msgstr ""
 
@@ -144,17 +144,17 @@ msgstr ""
 
 #: common/templates/options.php:63
 #. common/templates/options.php:63
-msgid "Yes, pop-up after purchase at \"thank you\" page. Privacy first review option: order data will only be shared after permission from the customer."
+msgid "Yes, email after every order. (default)"
 msgstr ""
 
 #: common/templates/options.php:67
 #. common/templates/options.php:67
-msgid "Yes, email after every order. (default)"
+msgid "Yes, email after a customer's first order."
 msgstr ""
 
 #: common/templates/options.php:71
 #. common/templates/options.php:71
-msgid "Yes, email after a customer's first order."
+msgid "Yes, pop-up after purchase at \"thank you\" page. Privacy first review option: order data will only be shared after permission from the customer."
 msgstr ""
 
 #: common/templates/options.php:75
@@ -215,68 +215,78 @@ msgstr ""
 msgid "Automatically display product reviews collected using %s on your WooCommerce shop."
 msgstr ""
 
-#: common/templates/options.php:157
-#. common/templates/options.php:157
+#: common/templates/options.php:156
+#. common/templates/options.php:156
+msgid "Sync to Multisite"
+msgstr ""
+
+#: common/templates/options.php:160
+#. common/templates/options.php:160
+msgid "Enable sync product reviews to multisite setup. Product will be matched by ID and SKU."
+msgstr ""
+
+#: common/templates/options.php:170
+#. common/templates/options.php:170
 msgid "Sync manually"
 msgstr ""
 
-#: common/templates/options.php:163
-#. common/templates/options.php:163
+#: common/templates/options.php:175
+#. common/templates/options.php:175
 msgid "Sync all reviews manually"
 msgstr ""
 
-#: common/templates/options.php:167
-#. common/templates/options.php:167
+#: common/templates/options.php:179
+#. common/templates/options.php:179
 msgid "Last sync"
-msgstr ""
-
-#: common/templates/options.php:169
-#. common/templates/options.php:169
-msgid "Next sync"
 msgstr ""
 
 #: common/templates/options.php:181
 #. common/templates/options.php:181
-msgid "Automatic detection"
-msgstr ""
-
-#: common/templates/options.php:184
-#. common/templates/options.php:184
-msgid "Suggested keys"
-msgstr ""
-
-#: common/templates/options.php:186
-#. common/templates/options.php:186
-msgid "Other keys"
+msgid "Next sync"
 msgstr ""
 
 #: common/templates/options.php:193
 #. common/templates/options.php:193
+msgid "Automatic detection"
+msgstr ""
+
+#: common/templates/options.php:196
+#. common/templates/options.php:196
+msgid "Suggested keys"
+msgstr ""
+
+#: common/templates/options.php:198
+#. common/templates/options.php:198
+msgid "Other keys"
+msgstr ""
+
+#: common/templates/options.php:205
+#. common/templates/options.php:205
 msgid "Tell this plugin where to find the product <strong>GTIN</strong> by selecting a custom key. For example: if you use a field called <strong>_productcode</strong> to store the <strong>GTIN</strong>, you should select  <strong>_product_code</strong>. Our plugin also supports certain 3rd party plugins. If we found a supported plugin, this box is set to <strong>Automatic detection</strong>, you can still choose to select another key."
 msgstr ""
 
-#: common/templates/options.php:199
-#. common/templates/options.php:199
+#: common/templates/options.php:211
+#. common/templates/options.php:211
 msgid "Add rich snippet"
 msgstr ""
 
-#: common/templates/options.php:203
-#. common/templates/options.php:203
+#: common/templates/options.php:215
+#. common/templates/options.php:215
 msgid "Yes, add a rich snippet to the footer of my website."
 msgstr ""
 
-#: common/templates/options.php:206
-#. common/templates/options.php:206
+#: common/templates/options.php:218
+#. common/templates/options.php:218
 msgid "This allows Google to show your rating in the search results. Use at your own risk."
 msgstr ""
 
-#: common/templates/options.php:207
-#. common/templates/options.php:207
+#: common/templates/options.php:219
+#. common/templates/options.php:219
 msgid "More information."
 msgstr ""
 
-#: common/templates/options.php:252
-#. common/templates/options.php:252
+#: common/templates/options.php:265
+#. common/templates/options.php:265
 msgid "Syncing product reviews..."
 msgstr ""
 
