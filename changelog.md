@@ -1,3 +1,6 @@
+= 3.34 - 2024-03-20 =
+* WPML compatibility: retrieve product data based on order language.
+
 = 3.33 - 2024-01-23 =
 * Support review sync in multisite setup.
 
