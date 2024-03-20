@@ -304,6 +304,12 @@ class WooCommerce {
                 $product_id = $line_item['variation_id'];
             }
 
+            if ($lang && has_filter('wpml_object_id')) {
+                if ($order_product_id = apply_filters('wpml_object_id', $product_id, 'post', true, $lang)) {
+                    $product_id = $order_product_id;
+                }
+            }
+
             $product = $pf->get_product($product_id);
             if (!$product) {
                 continue;
@@ -314,7 +320,7 @@ class WooCommerce {
             $products[] = [
                 'id' => $product_id,
                 'name' => $product->get_name(),
-                'url' => $this->getProductUrl($product->get_id(), $lang),
+                'url' => get_permalink($product_id),
                 'image_url' => $this->getProductImage($product->get_image_id()),
                 'sku' => $product->get_sku(),
                 'gtin' => $gtin_handler->getGtin(
@@ -706,13 +712,5 @@ class WooCommerce {
     private function failedInsertError(int $product_id) {
         throw new RuntimeException(
             "Could not insert review for product: {$product_id}");
-    }
-
-    private function getProductUrl(int $product_id, $lang): string {
-        $product_url = get_permalink($product_id);
-        if ($lang && has_filter('wpml_permalink')) {
-            $product_url = apply_filters('wpml_permalink', $product_url, $lang);
-        }
-        return $product_url;
     }
 }
