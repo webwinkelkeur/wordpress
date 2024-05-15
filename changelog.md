@@ -1,3 +1,6 @@
+= 3.35 - 2024-05-15 =
+* WPML compatibility: fix duplicate review sync.
+
 = 3.34 - 2024-03-20 =
 * WPML compatibility: retrieve product data based on order language.
 
