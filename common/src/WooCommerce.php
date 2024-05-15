@@ -445,6 +445,7 @@ class WooCommerce {
             $comment_data['comment_author_email'],
             (int) $review->review_id
         );
+
         if ((int) $review->deleted) {
             if ($comment_id) {
                 if (!wp_delete_comment($comment_id)) {
@@ -465,18 +466,26 @@ class WooCommerce {
     }
 
     private function getExistingComment(int $post_id, string $author_email, int $review_id) {
-        $args = [
-            'post_id' => $post_id,
-            'author_email' => $author_email,
-            'type' => 'review',
-            'meta_query' => [
-                'key' => $this->getReviewIdMetaKey(),
-                'value' => $review_id,
-            ],
-        ];
-        $comments_query = new WP_Comment_Query($args);
-        $comments = $comments_query->comments;
-        return $comments[0]->comment_ID ?? null;
+        global $wpdb;
+
+        $query = "
+            SELECT comment.comment_ID
+            FROM {$wpdb->commentmeta} meta
+            JOIN {$wpdb->comments} as comment 
+            ON comment.comment_ID = meta.comment_id
+            WHERE meta.meta_key = %s
+            AND meta.meta_value = %s
+            AND comment.comment_post_ID = %d    
+            AND comment.comment_author_email = %s
+            LIMIT 1;
+        ";
+
+        return $wpdb->get_var($wpdb->prepare($query, [
+            $this->getReviewIdMetaKey(),
+            $review_id,
+            $post_id,
+            $author_email,
+        ]));
     }
 
     private function getCommentData(\SimpleXMLElement $review) {
