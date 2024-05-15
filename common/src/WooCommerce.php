@@ -471,7 +471,8 @@ class WooCommerce {
         $query = "
             SELECT comment.comment_ID
             FROM {$wpdb->commentmeta} meta
-            JOIN {$wpdb->comments} as comment ON (comment.comment_ID = meta.comment_id)
+            JOIN {$wpdb->comments} as comment 
+            ON comment.comment_ID = meta.comment_id
             WHERE meta.meta_key = %s
             AND meta.meta_value = %s
             AND comment.comment_post_ID = %d    
