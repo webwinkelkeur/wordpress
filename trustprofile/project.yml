@@ -1,4 +1,4 @@
-name: "TrustProfile and reviews"
+name: "Trustprofile and reviews"
 
 readme:
 
@@ -23,12 +23,14 @@ readme:
 
         **Earn trust badges to show more trust!**
 
-        TrustProfile rewards good entrepreneurs. Are you a good entrepreneur? Show you are reliable by using our trustbadges. Verify your webshops identity with our automatic checks and connect your existing trust sources to unlock all our trust badges. Will your webshop earn them all?
+        Trustprofile rewards good entrepreneurs. Are you a good entrepreneur? Show you are reliable by using our trustbadges. Verify your webshops identity with our automatic checks and connect your existing trust sources to unlock all our trust badges. Will your webshop earn them all?
 
         **Present your trust label on your shop!**
 
-        TrustProfile is the official software partner of several online trustmarks. With our software you can present your trustmark perfectly on your website. There is a sidebar and various banners available for the trustmarks. They are at the moment:
-        Belgium: SafeShops.be
+        Trustprofile is the official software partner of several online trustmarks. With our software you can present your trustmark perfectly on your website. There is a sidebar and various banners available for the trustmarks. They are at the moment:
+        Germany: EHI Geprüfter Online - Shop
+        Netherlands: WebwinkelKeur
+        Belgium: Becom
         Croatia: eCommerce Hrvatska
 
         **Fake reviews**
@@ -36,10 +38,21 @@ readme:
         Several controls are in place to prevent fake reviews. What checks do we use? Sorry, that’s our little secret! Every day we aim to upgrade our security systems in order to guarantee the authenticity of reviews.
 
         **A trust profile should be affordable to all shops**
-        Claim your TrustProfile, present our widgets at your webshop and manage the reviews you will recieve. All free of charge!
-        We do however offer more advanced options for those who would like to grow their business even to a higher level. Besides our free plan, we offer 3 paid plans which are invoiced every year. All of these plans are very affordable and flexible. Check out our plans at: www.trustprofile.com/plans/
+        Claim your Trustprofile, present our widgets at your webshop and manage the reviews you will recieve.
+        We offer 3 paid plans which are invoiced every year. All of these plans are very affordable and flexible. Check out our plans at: www.trustprofile.com/en/business/plans
 
         Register at: [www.trustprofile.com](https://www.trustprofile.com)
         
         To make use of our product reviews feature we will need authorization to gather some of your product data.
         Our system needs this data to properly assign the written review to the right product.
+
+    screenshots: |
+        1. Screenshot of Trustprofile webshop page
+        2. Trustprofile member page on mobile phone
+        3. Trustprofile badges on mobile phone
+        4. Trustprofile member page on desktop
+        5. Sidebar hovered
+        6. Trustprofile review widget
+        7. Trustprofile badges
+        8. Trustprofile review source
+        9. Trustprofile on different devices
