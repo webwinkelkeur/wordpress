@@ -62,3 +62,10 @@ readme:
             return $should_invite;
         }, 10, 2);
         ~~~
+
+    screenshots: |
+        1. WebwinkelKeur sidebar
+        2. WebwinkelKeur widget
+        3. WebwinkelKeur sidebar on a website
+        4. WebwinkelKeur sidebar highlights
+        5. WebwinkelKuer member page
