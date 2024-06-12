@@ -4,7 +4,7 @@ Plugin Name: TrustProfile
 Plugin URI: https://trustprofile.io?ref=wp-plugin
 Description: Collect reviews and earn trust badges to show on your webshop. Don't keep losing revenue. Show you can be trusted!
 Version: $VERSION$
-Author: TrustProfile
+Author: Trustprofile
 Author URI: https://trustprofile.io?ref=wp-author
 WC tested up to: 4.99
 */

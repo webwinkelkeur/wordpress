@@ -23,6 +23,7 @@ $sections = [
     'Description' => $info['readme']['description'] ?? '',
     'Installation' => $info['readme']['installation'] ?? '',
     'Frequently' => $info['readme']['faq'] ?? '',
+    'Screenshots' => $info['readme']['screenshots'] ?? '',
     'Changelog' => file_get_contents(__DIR__ . '/../changelog.md'),
 ];
 

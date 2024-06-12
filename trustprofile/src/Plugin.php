@@ -9,7 +9,7 @@ class Plugin extends BasePlugin {
     }
 
     public function getName() {
-        return 'TrustProfile';
+        return 'Trustprofile';
     }
 
     public function getMainDomain() {
