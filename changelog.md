@@ -1,3 +1,6 @@
+= 3.36 - 2024-08-26 =
+* Bump **Tested up to** to WordPress 6.6.1.
+
 = 3.35 - 2024-05-15 =
 * WPML compatibility: fix duplicate review sync.
 
