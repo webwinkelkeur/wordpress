@@ -689,7 +689,7 @@ class WooCommerce {
         $order = wc_get_order($order_id);
 
         $created_data = $order->get_date_created();
-        if ($created_data && $created_data->getTimestamp() <= strtotime('-1 hour')) {
+        if ($created_data && $created_data->getTimestamp() <= strtotime('-10 minute')) {
             return;
         }
 
