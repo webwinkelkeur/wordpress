@@ -687,6 +687,12 @@ class WooCommerce {
         $api_key = $this->plugin->getOption('wwk_api_key');
         $order_id = absint(get_query_var(get_option('woocommerce_checkout_order_received_endpoint')));
         $order = wc_get_order($order_id);
+
+        $created_data = $order->get_date_created();
+        if ($created_data && $created_data->getTimestamp() <= strtotime('-10 minute')) {
+            return;
+        }
+
         $order_data = [
             'webshopId' => $shop_id,
             'orderNumber' => $order->get_order_number(),
