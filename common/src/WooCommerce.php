@@ -62,10 +62,24 @@ class WooCommerce {
     public function set_order_language($order_id) {
         /** @var WC_Order $order */
         $order = wc_get_order($order_id);
-        if (!$order->get_meta('wpml_language') && defined('ICL_LANGUAGE_CODE')) {
-            $order->update_meta_data('wpml_language', ICL_LANGUAGE_CODE);
+        $language_code = $this->detectOrderLanguage();
+        if (!$order->get_meta('wpml_language') && $language_code) {
+            $order->update_meta_data('wpml_language', $language_code);
             $order->save_meta_data();
         }
+    }
+
+    private function detectOrderLanguage() {
+        if (defined('ICL_LANGUAGE_CODE')) { // WPML
+            return ICL_LANGUAGE_CODE;
+        } elseif (isset($_SERVER['HTTP_CLONABLE_TARGET_LANGUAGE'])) { // Clonable
+            return sanitize_text_field($_SERVER['HTTP_CLONABLE_TARGET_LANGUAGE']);
+        } elseif (function_exists('pll_current_language')) { // Polylang
+            return pll_current_language();
+        } elseif (function_exists('weglot_get_current_language')) { // Weglot
+            return weglot_get_current_language();
+        }
+        return null;
     }
 
     private function sendInvite($order_id) {
