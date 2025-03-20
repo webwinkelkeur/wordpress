@@ -78,6 +78,15 @@ class WooCommerce {
             return pll_current_language();
         } elseif (function_exists('weglot_get_current_language')) { // Weglot
             return weglot_get_current_language();
+        } elseif (isset($_SERVER['HTTP_X_GT_LANG'])) { // Gtranslate paid version
+            return sanitize_text_field($_SERVER['HTTP_X_GT_LANG']);
+        } elseif (isset($_COOKIE['googtrans'])) { // Gtranslate free version
+            $googtrans_cookie_value = sanitize_text_field($_COOKIE['googtrans']);
+            $parts = explode('/', $googtrans_cookie_value);
+            if (count($parts) >= 3) {
+                return end($parts);
+            }
+            return null;
         }
         return null;
     }
