@@ -62,10 +62,54 @@ class WooCommerce {
     public function set_order_language($order_id) {
         /** @var WC_Order $order */
         $order = wc_get_order($order_id);
-        if (!$order->get_meta('wpml_language') && defined('ICL_LANGUAGE_CODE')) {
-            $order->update_meta_data('wpml_language', ICL_LANGUAGE_CODE);
+        $language_code = $this->detectOrderLanguage();
+        if (!$order->get_meta('wpml_language') && $language_code) {
+            $order->update_meta_data('wpml_language', $language_code);
             $order->save_meta_data();
         }
+    }
+
+    private function detectOrderLanguage() {
+        if (defined('ICL_LANGUAGE_CODE')) { // WPML
+            return ICL_LANGUAGE_CODE;
+        }
+        if ($clonable_lang = $this->getLanguageFromHeader('HTTP_CLONABLE_TARGET_LANGUAGE')) { // Clonable
+            return $clonable_lang;
+        }
+        if (function_exists('pll_current_language')) { // Polylang
+            return pll_current_language();
+        }
+        if (function_exists('weglot_get_current_language')) { // Weglot
+            return weglot_get_current_language();
+        }
+        if ($gtranslate_lang = $this->getLanguageFromHeader('HTTP_X_GT_LANG')) { // Gtranslate paid version
+            return $gtranslate_lang;
+        }
+        if (isset($_COOKIE['googtrans'])) { // Gtranslate free version
+            $googtrans_cookie_value = sanitize_text_field($_COOKIE['googtrans']);
+            $parts = explode('/', $googtrans_cookie_value);
+            if (count($parts) >= 3 && $googtrans_lang = $this->sanitizeLanguageCode(end($parts))) {
+                return $googtrans_lang;
+            }
+            return null;
+        }
+        return null;
+    }
+
+    private function getLanguageFromHeader($header) {
+        if (!isset($_SERVER[$header])) {
+            return null;
+        }
+
+        return $this->sanitizeLanguageCode($_SERVER[$header]);
+    }
+
+    private function sanitizeLanguageCode($language_code) {
+        if (preg_match('~^([a-z]{2,3})(-|$)~i', $language_code, $match)) {
+            return $match[1];
+        }
+
+        return null;
     }
 
     private function sendInvite($order_id) {
@@ -161,8 +205,8 @@ class WooCommerce {
                 $order_id,
                 sprintf(
                     __('The %s invitation could not be sent. %s', 'webwinkelkeur'),
-                    $this->plugin->getName(), $e->getMessage()
-                )
+                    $this->plugin->getName(), $e->getMessage(),
+                ),
             );
             return;
         }
@@ -175,8 +219,8 @@ class WooCommerce {
                 $order_id,
                 sprintf(
                     __('The %s invitation could not be sent.', 'webwinkelkeur'),
-                    $this->plugin->getName()
-                ) . ' ' . $e->getMessage()
+                    $this->plugin->getName(),
+                ) . ' ' . $e->getMessage(),
             );
             return;
         }
@@ -185,8 +229,8 @@ class WooCommerce {
             $order_id,
             sprintf(
                 __('An invitation was sent to %s dashboard.', 'webwinkelkeur'),
-                $this->plugin->getName()
-            )
+                $this->plugin->getName(),
+            ),
         );
     }
 
@@ -218,7 +262,7 @@ class WooCommerce {
         if (isset($_POST[$this->getGtinMetaKey()])) {
             $product->update_meta_data(
                 $this->getGtinMetaKey(),
-                wc_clean(wp_unslash($_POST[$this->getGtinMetaKey()]))
+                wc_clean(wp_unslash($_POST[$this->getGtinMetaKey()])),
             );
         }
     }
@@ -326,7 +370,7 @@ class WooCommerce {
                 'image_url' => $this->getProductImage($product->get_image_id()),
                 'sku' => $product->get_sku(),
                 'gtin' => $gtin_handler->getGtin(
-                    $this->plugin->getOption('custom_gtin') ?: null
+                    $this->plugin->getOption('custom_gtin') ?: null,
                 ),
                 'reviews_allowed' => $product->get_reviews_allowed(),
             ];
@@ -380,7 +424,7 @@ class WooCommerce {
         if (!$reviews->count()) {
             throw new \RuntimeException(sprintf(
                 "No reviews to sync since %s",
-                $last_synced ?: "forever"
+                $last_synced ?: "forever",
             ));
         }
         $successes = 0;
@@ -443,7 +487,7 @@ class WooCommerce {
         $comment_id = $this->getExistingComment(
             $comment_data['comment_post_ID'],
             $comment_data['comment_author_email'],
-            (int) $review->review_id
+            (int) $review->review_id,
         );
 
         if ((int) $review->deleted) {
@@ -565,7 +609,7 @@ class WooCommerce {
                         'selected' => $option_value == $selected_key,
                     ];
                 },
-                array_merge($this->getProductMetaKeys(), $this->getCustomAttributes())
+                array_merge($this->getProductMetaKeys(), $this->getCustomAttributes()),
             ),
         ]);
         wp_die();
@@ -709,7 +753,7 @@ class WooCommerce {
         echo sprintf(
             '<script type="application/json" id ="%s_order_completed">%s</script>',
             htmlentities(strtolower($this->plugin->getName())),
-            json_encode($order_data, JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS)
+            json_encode($order_data, JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS),
         );
     }
 
