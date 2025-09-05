@@ -1,3 +1,6 @@
+= 3.39 - 2025-09-05 =
+* Bump **Tested up to** to WordPress 6.8.2.
+
 = 3.38 - 2025-04-24 =
 * Added: Support for retrieving order language data from different 3rd party plugins
 
