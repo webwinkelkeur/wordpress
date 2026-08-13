@@ -1,3 +1,6 @@
+= 3.41 - 2026-08-13 =
+* Bump **Tested up to** to WordPress 7.1.
+
 = 3.40 - 2026-07-27 =
 * Bump **Tested up to** to WordPress 7.0.
 
