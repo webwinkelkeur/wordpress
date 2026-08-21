@@ -1,3 +1,6 @@
+= 3.42 - 2026-08-21 =
+* Security: require the `manage_options` capability and a nonce for the plugin's admin AJAX endpoints.
+
 = 3.41 - 2026-08-13 =
 * Bump **Tested up to** to WordPress 7.1.
 

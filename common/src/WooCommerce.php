@@ -379,7 +379,7 @@ class WooCommerce {
     }
 
     public function manualReviewSync() {
-        check_ajax_referer($this->getManualSyncNonce());
+        $this->plugin->verifyAjaxRequest($this->getManualSyncNonce());
         try {
             $details = $this->doSyncReviews(isset($_POST['sync_all']) && $_POST['sync_all'] == 'yes');
             wp_send_json([
@@ -595,8 +595,14 @@ class WooCommerce {
         return $this->plugin->getOptionName('product_keys');
     }
 
+    public function getProductKeysNonce(): string {
+        return $this->plugin->getOptionName('product-keys-data');
+    }
+
     public function getProductKeys() {
-        $selected_key = $_GET['selected_key'];
+        $this->plugin->verifyAjaxRequest($this->getProductKeysNonce());
+        $selected_key = $_GET['selected_key'] ?? '';
+
         wp_send_json([
             'status' => true,
             'data' => array_map(
