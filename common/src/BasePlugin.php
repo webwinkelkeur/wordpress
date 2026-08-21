@@ -5,6 +5,8 @@ use ReflectionClass;
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
 
 abstract class BasePlugin {
+    const MANAGE_CAPABILITY = 'manage_options';
+
     protected static $instances = [];
 
     public $admin;
@@ -131,6 +133,9 @@ abstract class BasePlugin {
     }
 
     public function showUpdateNotice() {
+        if (!current_user_can(self::MANAGE_CAPABILITY)) {
+            return;
+        }
         $class = 'notice notice-info is-dismissible ' . $this->getUpdateNoticeClass();
         $message = $this->getUpdateMessage();
         if (!empty($message)) {
@@ -147,13 +152,14 @@ abstract class BasePlugin {
     }
 
     public function addUpdateNoticeDismissScript() {
+        if (!current_user_can(self::MANAGE_CAPABILITY)) {
+            return;
+        }
         $js_file = plugin_dir_url(__FILE__) . 'admin/js/update-notice.js';
         $script_name = $this->getOptionName('notice_update');
         wp_register_script(
             $script_name,
             $js_file,
-            [],
-            $this->getVersion()
         );
         wp_localize_script($script_name, 'notice_params', [
             'class' => $this->getUpdateNoticeClass(),
@@ -175,14 +181,18 @@ abstract class BasePlugin {
         return $this->getOptionName('notice-dismiss-data');
     }
 
-    public function ajaxDismissUpdateNotice() {
-        check_ajax_referer($this->getUpdateNoticeDismissedNonce());
-        if (!current_user_can(Admin::REQUIRED_CAPABILITY)) {
+    public function verifyAjaxRequest(string $nonce_action): void {
+        check_ajax_referer($nonce_action);
+        if (!current_user_can(self::MANAGE_CAPABILITY)) {
             wp_send_json([
                 'status' => false,
                 'message' => __('You are not allowed to perform this action.', 'webwinkelkeur'),
             ], 403);
         }
+    }
+
+    public function ajaxDismissUpdateNotice() {
+        $this->verifyAjaxRequest($this->getUpdateNoticeDismissedNonce());
         $this->dismissUpdateNotice();
         wp_send_json(['status' => true]);
     }
@@ -197,7 +207,7 @@ abstract class BasePlugin {
     private function shouldDisplayUpdateNotice(): bool {
         return version_compare(
             $this->getVersion(),
-            $this->getOption($this->getOptionName('last_notice_version'), ''),
+            $this->getOption('last_notice_version', ''),
             '>'
         );
     }

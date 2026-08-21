@@ -378,18 +378,8 @@ class WooCommerce {
         return $products;
     }
 
-    private function verifyAjaxRequest(string $nonce_action): void {
-        check_ajax_referer($nonce_action);
-        if (!current_user_can(Admin::REQUIRED_CAPABILITY)) {
-            wp_send_json([
-                'status' => false,
-                'message' => __('You are not allowed to perform this action.', 'webwinkelkeur'),
-            ], 403);
-        }
-    }
-
     public function manualReviewSync() {
-        $this->verifyAjaxRequest($this->getManualSyncNonce());
+        $this->plugin->verifyAjaxRequest($this->getManualSyncNonce());
         try {
             $details = $this->doSyncReviews(isset($_POST['sync_all']) && $_POST['sync_all'] == 'yes');
             wp_send_json([
@@ -610,7 +600,7 @@ class WooCommerce {
     }
 
     public function getProductKeys() {
-        $this->verifyAjaxRequest($this->getProductKeysNonce());
+        $this->plugin->verifyAjaxRequest($this->getProductKeysNonce());
         $selected_key = isset($_GET['selected_key'])
             ? sanitize_text_field(wp_unslash($_GET['selected_key']))
             : '';
