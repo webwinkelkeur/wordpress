@@ -78,7 +78,7 @@ abstract class BasePlugin {
 
     public function loadTranslations() {
         load_plugin_textdomain(
-            'webwinkelkeur',
+            $this->getSlug(),
             false,
             "{$this->getSlug()}/common/languages/"
         );
