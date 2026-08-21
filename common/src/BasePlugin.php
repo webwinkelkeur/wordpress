@@ -159,7 +159,7 @@ abstract class BasePlugin {
         $script_name = $this->getOptionName('notice_update');
         wp_register_script(
             $script_name,
-            $js_file,
+            $js_file
         );
         wp_localize_script($script_name, 'notice_params', [
             'class' => $this->getUpdateNoticeClass(),
