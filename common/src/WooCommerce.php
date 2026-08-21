@@ -601,9 +601,8 @@ class WooCommerce {
 
     public function getProductKeys() {
         $this->plugin->verifyAjaxRequest($this->getProductKeysNonce());
-        $selected_key = isset($_GET['selected_key'])
-            ? sanitize_text_field(wp_unslash($_GET['selected_key']))
-            : '';
+        $selected_key = $_GET['selected_key'] ?? '';
+
         wp_send_json([
             'status' => true,
             'data' => array_map(
