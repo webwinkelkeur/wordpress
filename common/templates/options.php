@@ -232,6 +232,7 @@ use Valued\WordPress\WooCommerce;
             <?= json_encode([
                 'action' => $plugin->woocommerce->getProductKeysAction(),
                 'selected_key' => $config["custom_gtin"],
+                '_ajax_nonce' => wp_create_nonce($plugin->woocommerce->getProductKeysNonce()),
             ]); ?>
         ).done(function (response) {
             if (!response || response.status === undefined) {

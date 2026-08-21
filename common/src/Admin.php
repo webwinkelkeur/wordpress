@@ -2,6 +2,8 @@
 namespace Valued\WordPress;
 
 class Admin {
+    const REQUIRED_CAPABILITY = 'manage_options';
+
     private $plugin;
 
     public function __construct(BasePlugin $plugin) {
@@ -16,7 +18,7 @@ class Admin {
             'options-general.php',
             $this->plugin->getName(),
             $this->plugin->getName(),
-            'manage_options',
+            self::REQUIRED_CAPABILITY,
             $this->plugin->getSlug(),
             [$this, 'options_page']
         );

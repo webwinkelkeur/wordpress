@@ -36,7 +36,7 @@ abstract class BasePlugin {
         register_activation_hook($this->getPluginFile(), [$this, 'activatePlugin']);
         add_action('plugins_loaded', [$this, 'loadTranslations']);
         add_action('admin_enqueue_scripts', [$this, 'addUpdateNoticeDismissScript']);
-        add_action('wp_ajax_' . $this->getUpdateNoticeDismissedAjaxHook(), [$this, 'dismissUpdateNotice']);
+        add_action('wp_ajax_' . $this->getUpdateNoticeDismissedAjaxHook(), [$this, 'ajaxDismissUpdateNotice']);
         add_action('before_woocommerce_init', function() {
             if (class_exists(FeaturesUtil::class)) {
                 FeaturesUtil::declare_compatibility('custom_order_tables', $this->getPluginFile());
@@ -151,11 +151,14 @@ abstract class BasePlugin {
         $script_name = $this->getOptionName('notice_update');
         wp_register_script(
             $script_name,
-            $js_file
+            $js_file,
+            [],
+            $this->getVersion()
         );
         wp_localize_script($script_name, 'notice_params', [
             'class' => $this->getUpdateNoticeClass(),
             'hook' => $this->getUpdateNoticeDismissedAjaxHook(),
+            'nonce' => wp_create_nonce($this->getUpdateNoticeDismissedNonce()),
         ]);
         wp_enqueue_script($script_name);
     }
@@ -166,6 +169,22 @@ abstract class BasePlugin {
 
     private function getUpdateNoticeDismissedAjaxHook(): string {
         return $this->getOptionName('notice_dismiss');
+    }
+
+    private function getUpdateNoticeDismissedNonce(): string {
+        return $this->getOptionName('notice-dismiss-data');
+    }
+
+    public function ajaxDismissUpdateNotice() {
+        check_ajax_referer($this->getUpdateNoticeDismissedNonce());
+        if (!current_user_can(Admin::REQUIRED_CAPABILITY)) {
+            wp_send_json([
+                'status' => false,
+                'message' => __('You are not allowed to perform this action.', 'webwinkelkeur'),
+            ], 403);
+        }
+        $this->dismissUpdateNotice();
+        wp_send_json(['status' => true]);
     }
 
     public function dismissUpdateNotice() {
