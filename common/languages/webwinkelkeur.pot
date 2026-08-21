@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: webwinkelkeur 1.0\n"
 "Report-Msgid-Bugs-To: info@kiboit.com\n"
-"POT-Creation-Date: 2024-03-20 13:23+0200\n"
+"POT-Creation-Date: 2026-08-21 11:43+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -59,37 +59,37 @@ msgstr ""
 msgid "Automatic product review sync did not run in the last 24 hours. Make sure that you have cron jobs configured, or sync manually."
 msgstr ""
 
-#: common/src/WooCommerce.php:155
-#. common/src/WooCommerce.php:155
+#: common/src/WooCommerce.php:199
+#. common/src/WooCommerce.php:199
 msgid "Invite was not send as customer did not consent."
 msgstr ""
 
-#: common/src/WooCommerce.php:163
-#. common/src/WooCommerce.php:163
+#: common/src/WooCommerce.php:207
+#. common/src/WooCommerce.php:207
 #, php-format
 msgid "The %s invitation could not be sent. %s"
 msgstr ""
 
-#: common/src/WooCommerce.php:177
-#. common/src/WooCommerce.php:177
+#: common/src/WooCommerce.php:221
+#. common/src/WooCommerce.php:221
 #, php-format
 msgid "The %s invitation could not be sent."
 msgstr ""
 
-#: common/src/WooCommerce.php:187
-#. common/src/WooCommerce.php:187
+#: common/src/WooCommerce.php:231
+#. common/src/WooCommerce.php:231
 #, php-format
 msgid "An invitation was sent to %s dashboard."
 msgstr ""
 
-#: common/src/WooCommerce.php:212
-#. common/src/WooCommerce.php:212
+#: common/src/WooCommerce.php:256
+#. common/src/WooCommerce.php:256
 #, php-format
 msgid "Add the %s for this product"
 msgstr ""
 
-#: common/src/WooCommerce.php:651
-#. common/src/WooCommerce.php:651
+#: common/src/WooCommerce.php:706
+#. common/src/WooCommerce.php:706
 msgid "Not registered."
 msgstr ""
 

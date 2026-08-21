@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: webwinkelkeur 1.0\n"
 "Report-Msgid-Bugs-To: info@kiboit.com\n"
-"POT-Creation-Date: 2024-03-20 13:23+0200\n"
+"POT-Creation-Date: 2026-08-21 11:43+0300\n"
 "PO-Revision-Date: 2017-05-30 15:45+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -55,47 +55,51 @@ msgstr "Ha habido un error al enviar la invitación de %s."
 msgid ""
 "The %s plugin is not compatible with PHP %s. Please upgrade to PHP 7.0.0 or "
 "higher."
-msgstr "El complemento %s no es compatible con PHP %s. Actualiza a PHP 7.0.0 o superior."
+msgstr ""
+"El complemento %s no es compatible con PHP %s. Actualiza a PHP 7.0.0 o "
+"superior."
 
 #. common/src/WooCommerce.php:57
 #: common/src/WooCommerce.php:57
 msgid ""
 "Automatic product review sync did not run in the last 24 hours. Make sure "
 "that you have cron jobs configured, or sync manually."
-msgstr "La sincronización automática de reseñas de productos no se ha ejecutado en las últimas 24 horas."
-"Asegúrate de tener configurados los trabajos cron o sincronícelos manualmente."
+msgstr ""
+"La sincronización automática de reseñas de productos no se ha ejecutado en "
+"las últimas 24 horas.Asegúrate de tener configurados los trabajos cron o "
+"sincronícelos manualmente."
 
-#. common/src/WooCommerce.php:155
-#: common/src/WooCommerce.php:155
+#. common/src/WooCommerce.php:199
+#: common/src/WooCommerce.php:199
 msgid "Invite was not send as customer did not consent."
 msgstr "La invitación no se envió porque el cliente no dio su consentimiento."
 
-#. common/src/WooCommerce.php:163
-#: common/src/WooCommerce.php:163
+#. common/src/WooCommerce.php:207
+#: common/src/WooCommerce.php:207
 #, fuzzy, php-format
 msgid "The %s invitation could not be sent. %s"
 msgstr "La invitación de %s no ha podido ser enviada."
 
-#. common/src/WooCommerce.php:177
-#: common/src/WooCommerce.php:177
+#. common/src/WooCommerce.php:221
+#: common/src/WooCommerce.php:221
 #, php-format
 msgid "The %s invitation could not be sent."
 msgstr "La invitación de %s no ha podido ser enviada."
 
-#. common/src/WooCommerce.php:187
-#: common/src/WooCommerce.php:187
+#. common/src/WooCommerce.php:231
+#: common/src/WooCommerce.php:231
 #, php-format
 msgid "An invitation was sent to %s dashboard."
 msgstr "Se envió una invitación al panel de control de %s."
 
-#. common/src/WooCommerce.php:212
-#: common/src/WooCommerce.php:212
+#. common/src/WooCommerce.php:256
+#: common/src/WooCommerce.php:256
 #, php-format
 msgid "Add the %s for this product"
 msgstr "Añade el %s para este producto"
 
-#. common/src/WooCommerce.php:651
-#: common/src/WooCommerce.php:651
+#. common/src/WooCommerce.php:706
+#: common/src/WooCommerce.php:706
 msgid "Not registered."
 msgstr "No registrado."
 
@@ -137,8 +141,10 @@ msgstr "Sí, añadir el JavaScript de %s a mi sitio web."
 msgid ""
 "Use the JavaScript integration to add the sidebar and the tooltip to your "
 "website.<br>All settings for the sidebar and tooltip are located on the %s."
-msgstr "Utiliza la integración de JavaScript para añadir la barra lateral y la información de herramientas a su sitio web."
-"<br>Todas las configuraciones para la barra lateral y la información de herramientas se encuentran en %s."
+msgstr ""
+"Utiliza la integración de JavaScript para añadir la barra lateral y la "
+"información de herramientas a su sitio web.<br>Todas las configuraciones "
+"para la barra lateral y la información de herramientas se encuentran en %s."
 
 #. common/templates/options.php:51
 #: common/templates/options.php:51
@@ -168,7 +174,8 @@ msgstr "Sí, correo electrónico tras el primer pedido de un cliente."
 msgid ""
 "Yes, pop-up after purchase at \"thank you\" page. Privacy first review "
 "option: order data will only be shared after permission from the customer."
-msgstr "Sí, ventana emergente después de la compra en la página de agradecimiento. "
+msgstr ""
+"Sí, ventana emergente después de la compra en la página de agradecimiento. "
 "Los datos del pedido sólo se comparten con el consentimiento del cliente."
 
 #. common/templates/options.php:75
@@ -189,7 +196,8 @@ msgstr "Instale y active WooCommerce para poder utilizar esta función."
 #. common/templates/options.php:99
 #: common/templates/options.php:99
 msgid "The invitation is only sent when the order has the checked status."
-msgstr "La invitación sólo se envía cuando el pedido tiene el estado verificado."
+msgstr ""
+"La invitación sólo se envía cuando el pedido tiene el estado verificado."
 
 #. common/templates/options.php:113
 #: common/templates/options.php:113
@@ -197,7 +205,8 @@ msgstr "La invitación sólo se envía cuando el pedido tiene el estado verifica
 msgid ""
 "Do not send my order information to %s (checking this option disables "
 "product reviews!)."
-msgstr "No enviar la información de mi pedido a %s (¡marcar esta opción desactiva "
+msgstr ""
+"No enviar la información de mi pedido a %s (¡marcar esta opción desactiva "
 "valoraciones de productos!)."
 
 #. common/templates/options.php:118
@@ -206,8 +215,9 @@ msgstr "No enviar la información de mi pedido a %s (¡marcar esta opción desac
 msgid ""
 "Please note: not all %s functionality will be available if you check this "
 "option!"
-msgstr "Ten en cuenta: ¡no toda la funcionalidad de %s estará disponible si marcas esto"
-"opción!"
+msgstr ""
+"Ten en cuenta: ¡no toda la funcionalidad de %s estará disponible si marcas "
+"estoopción!"
 
 #. common/templates/options.php:127
 #: common/templates/options.php:127
@@ -239,7 +249,9 @@ msgstr "Importar reseñas de productos a WooCommerce."
 msgid ""
 "Automatically display product reviews collected using %s on your WooCommerce "
 "shop."
-msgstr "Muestra automáticamente reseñas de productos recopiladas utilizando %s en tu tienda WooCommerce."
+msgstr ""
+"Muestra automáticamente reseñas de productos recopiladas utilizando %s en tu "
+"tienda WooCommerce."
 
 #. common/templates/options.php:156
 #: common/templates/options.php:156
@@ -251,8 +263,9 @@ msgstr "Sincronizar con multisitio"
 msgid ""
 "Enable sync product reviews to multisite setup. Product will be matched by "
 "ID and SKU."
-msgstr "Habilita la sincronización de reseñas de productos con la configuración de varios sitios.El producto coincidirá por "
-"ID y SKU."
+msgstr ""
+"Habilita la sincronización de reseñas de productos con la configuración de "
+"varios sitios.El producto coincidirá por ID y SKU."
 
 #. common/templates/options.php:170
 #: common/templates/options.php:170
@@ -299,13 +312,14 @@ msgid ""
 "party plugins. If we found a supported plugin, this box is set to "
 "<strong>Automatic detection</strong>, you can still choose to select another "
 "key."
-msgstr "Dile a este complemento dónde encontrar el </strong>GTIN</strong> del producto seleccionando "
-"una clave personalizada. Por ejemplo: si utilizas un campo llamado "
-"<strong>_productcode</strong> para almacenar el <strong>GTIN</strong>, deberás "
-"seleccionar <strong>_product_code</strong>. Nuestro complemento también admite ciertos "
-"complementos de terceros. Si encontramos un complemento compatible, este cuadro está configurado en "
-"<strong>Detección automática</strong>, aún puedes elegir seleccionar otra "
-" llave."
+msgstr ""
+"Dile a este complemento dónde encontrar el </strong>GTIN</strong> del "
+"producto seleccionando una clave personalizada. Por ejemplo: si utilizas un "
+"campo llamado <strong>_productcode</strong> para almacenar el <strong>GTIN</"
+"strong>, deberás seleccionar <strong>_product_code</strong>. Nuestro "
+"complemento también admite ciertos complementos de terceros. Si encontramos "
+"un complemento compatible, este cuadro está configurado en <strong>Detección "
+"automática</strong>, aún puedes elegir seleccionar otra  llave."
 
 #. common/templates/options.php:211
 #: common/templates/options.php:211
@@ -345,3 +359,6 @@ msgstr "Nuevo: Reseñas de productos WebwinkelKeur para WooCommerce"
 #: webwinkelkeur/src/Plugin.php:29
 msgid "Read more"
 msgstr "Leer más"
+
+#~ msgid "You are not allowed to perform this action."
+#~ msgstr "No tiene permiso para realizar esta acción."
