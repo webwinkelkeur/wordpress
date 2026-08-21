@@ -1,16 +1,32 @@
 #!/usr/bin/env bash
 
 set -euo pipefail
-cd "$(dirname "$0")/.."
+
+files=()
+
+if [[ $# -eq 0 ]]; then
+    cd "$(dirname "$0")/.."
+    project=webwinkelkeur
+    version=1.0
+    while IFS= read -r -d '' file; do files+=("$file"); done < <(git ls-files -z '*.php')
+elif [[ $# -eq 2 ]]; then
+    cd "$1"
+    project="$(basename "$1")"
+    version="$2"
+    while IFS= read -r -d '' file; do files+=("$file"); done < <(find . -type f -name '*.php' -print0 | LC_ALL=C sort -z)
+else
+    echo "Usage: $0 [<project> <version>]" >&2
+    exit 1
+fi
 
 out_dir=common/languages
-out_file=webwinkelkeur.pot
+out_file=$project.pot
 out_file_tmp=$out_file~
 
-git ls-files -z '*.php' | xargs -0 xgettext \
-    --default-domain=webwinkelkeur --output-dir=$out_dir --output=$out_file_tmp \
+xgettext "${files[@]}" \
+    --default-domain="$project" --output-dir=$out_dir --output=$out_file_tmp \
     --from-code=UTF-8 --keyword=__:1 --keyword=_e:1 \
-    --package-name=webwinkelkeur --package-version=1.0 --msgid-bugs-address=info@kiboit.com \
+    --package-name="$project" --package-version="$version" --msgid-bugs-address=info@kiboit.com \
     --force-po --no-wrap
 
 perl -p -i -e 's/^#:( .*)$/$&\n#.$1/' $out_dir/$out_file_tmp

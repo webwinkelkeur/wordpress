@@ -6,6 +6,8 @@ Description: De WordPress plugin zorgt voor een eenvoudige integratie van het We
 Version: $VERSION$
 Author: Albert Peschar
 Author URI: https://peschar.net/
+Text Domain: webwinkelkeur
+Domain Path: /common/languages
 WC tested up to: 4.99
 */
 

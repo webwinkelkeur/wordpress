@@ -6,6 +6,8 @@ Description: Collect reviews and earn trust badges to show on your webshop. Don'
 Version: $VERSION$
 Author: Trustprofile
 Author URI: https://trustprofile.io?ref=wp-author
+Text Domain: trustprofile
+Domain Path: /common/languages
 WC tested up to: 4.99
 */
 

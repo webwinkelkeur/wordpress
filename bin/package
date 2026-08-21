@@ -31,6 +31,32 @@ for project_yml in */project.yml; do
     file="wordpress-$project-$version.zip"
     rm -f "$project/project.yml"
     "$root/bin/gen_readme" "$project" > "$project/readme.txt"
+
+    rm -f "$project/common"
+    cp -R common "$project/common"
+
+    find "$project" -type f -name '*.php' -exec grep --null -l -F "'webwinkelkeur'" {} + |
+    xargs -0 perl -p -i -e "s/(?<=,)(\\s*)'webwinkelkeur'(?=\\s*\\))/\$1'$project'/g"
+
+    rm -f "$project"/common/languages/*
+    "$root/bin/update_pot" "$project" "$version"
+
+    for po in common/languages/webwinkelkeur-*.po; do
+        locale="$(basename "$po" .po)"
+        locale="${locale#webwinkelkeur-}"
+        target="$project/common/languages/$project-$locale.po"
+
+        msgmerge --quiet --no-wrap "$po" "$project/common/languages/$project.pot" |
+        msgattrib --no-wrap --no-obsolete --output-file="$target"
+
+        PROJECT="$project" VERSION="$version" perl -p -i -e '
+            s{^(# This file is distributed under the same license as the ).*( package\.)$}{$1$ENV{PROJECT}$2};
+            s{^"Project-Id-Version: .*}{"Project-Id-Version: $ENV{PROJECT} $ENV{VERSION}\\n"};
+        ' "$target"
+
+        msgfmt "$target" -o "$project/common/languages/$project-$locale.mo"
+    done
+
     zip -r9 out.zip "$project" >&2
     mv out.zip "$out/$file"
     echo "$relout/$file"
