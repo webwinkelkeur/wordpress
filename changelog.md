@@ -1,3 +1,7 @@
+= 3.43 - 2026-08-21 =
+* Add German translations.
+* Generate plugin-specific translation catalogs for WebwinkelKeur and TrustProfile.
+
 = 3.42 - 2026-08-21 =
 * Security: require the `manage_options` capability and a nonce for the plugin's admin AJAX endpoints.
 
