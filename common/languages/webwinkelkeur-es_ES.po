@@ -53,10 +53,10 @@ msgstr "Ha habido un error al enviar la invitación de %s."
 #: common/src/PhpCompatibilityCheck.php:13
 #, php-format
 msgid ""
-"The %s plugin is not compatible with PHP %s. Please upgrade to PHP 7.0.0 or "
+"The %s plugin is not compatible with PHP %s. Please upgrade to PHP 7.4.0 or "
 "higher."
 msgstr ""
-"El complemento %s no es compatible con PHP %s. Actualiza a PHP 7.0.0 o "
+"El complemento %s no es compatible con PHP %s. Actualiza a PHP 7.4.0 o "
 "superior."
 
 #. common/src/WooCommerce.php:57

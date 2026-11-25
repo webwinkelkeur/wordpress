@@ -1,20 +1,22 @@
 <?php
 
 $wp_cli = false;
-$replace_sources_list = false;
+// Debian release to fetch from archive.debian.org, for images based on
+// releases that are no longer on deb.debian.org.
+$debian_archive = null;
 
 switch ($argv[1] ?? null) {
 case 'latest':
     $version = '8.2.7-apache';
     break;
 case 'min':
-    $version = '7.0.33-apache';
+    $version = '7.4.33-apache';
     $wp_cli = true;
-    $replace_sources_list = true;
+    $debian_archive = 'bullseye';
     break;
 case 'old':
     $version = '5.6.40-apache';
-    $replace_sources_list = true;
+    $debian_archive = 'stretch';
     break;
 default:
     fwrite(STDERR, "Usage: {$argv[0]} { latest | min | old }\n");
@@ -24,8 +26,11 @@ default:
 ?>
 FROM php:<?= $version . "\n"; ?>
 
-<?php if ($replace_sources_list): ?>
-RUN echo "deb http://archive.debian.org/debian/ stretch main" > /etc/apt/sources.list
+<?php if ($debian_archive): ?>
+RUN rm -f /etc/apt/sources.list.d/* && \
+    echo "deb http://archive.debian.org/debian/ <?= $debian_archive ?> main" > /etc/apt/sources.list<?php if ($debian_archive !== 'stretch'): ?> && \
+    echo "deb http://archive.debian.org/debian-security/ <?= $debian_archive ?>-security main" >> /etc/apt/sources.list<?php endif; ?>
+
 <?php endif; ?>
 
 <?php if ($wp_cli): ?>

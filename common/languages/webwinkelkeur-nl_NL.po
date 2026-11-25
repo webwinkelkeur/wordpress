@@ -53,10 +53,10 @@ msgstr "Bij het versturen van de %s uitnodiging is een fout opgetreden:"
 #: common/src/PhpCompatibilityCheck.php:13
 #, php-format
 msgid ""
-"The %s plugin is not compatible with PHP %s. Please upgrade to PHP 7.0.0 or "
+"The %s plugin is not compatible with PHP %s. Please upgrade to PHP 7.4.0 or "
 "higher."
 msgstr ""
-"De %s plugin is niet verenigbaar met PHP %s. Graag upgraden naar PHP 7.0.0 "
+"De %s plugin is niet verenigbaar met PHP %s. Graag upgraden naar PHP 7.4.0 "
 "of hoger."
 
 #. common/src/WooCommerce.php:57

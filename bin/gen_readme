@@ -32,7 +32,7 @@ $parts = [trim("
 Contributors: apeschar
 Tags: {$info['readme']['tags']}
 Requires at least: 4.4
-Requires PHP: 7.0
+Requires PHP: 7.4
 Tested up to: 7.1
 Stable tag: trunk
 License: GPLv2 or later
