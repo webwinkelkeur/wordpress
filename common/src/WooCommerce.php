@@ -90,7 +90,7 @@ class WooCommerce {
             return $gtranslate_lang;
         }
         if (isset($_COOKIE['googtrans'])) { // Gtranslate free version
-            $googtrans_cookie_value = sanitize_text_field($_COOKIE['googtrans']);
+            $googtrans_cookie_value = sanitize_text_field(wp_unslash($_COOKIE['googtrans']));
             $parts = explode('/', $googtrans_cookie_value);
             if (count($parts) >= 3 && $googtrans_lang = $this->sanitizeLanguageCode(end($parts))) {
                 return $googtrans_lang;
@@ -288,13 +288,14 @@ class WooCommerce {
     }
 
     private function insert_comment($order_id, $content) {
-        wp_insert_comment([
+        // wp_insert_comment() expects slashed data.
+        wp_insert_comment(wp_slash([
             'comment_post_ID'   => $order_id,
             'comment_author'    => $this->plugin->getName(),
             'comment_content'   => $content,
             'comment_agent'     => $this->plugin->getName(),
             'comment_type'      => 'order_note',
-        ]);
+        ]));
     }
 
     private function filter_data($value) {
@@ -572,10 +573,12 @@ class WooCommerce {
      * entities: a utf8 (3-byte) column can't store them, and $wpdb refuses
      * the whole row if we try. Similar to the retry in wp_new_comment().
      *
+     * $comment_data is unslashed; both functions expect slashed data.
+     *
      * @return int|false The function's return value.
      */
     private function writeComment(callable $write, array $comment_data) {
-        $result = $write($comment_data);
+        $result = $write(wp_slash($comment_data));
         if ($result !== false) {
             return $result;
         }
@@ -588,7 +591,7 @@ class WooCommerce {
             return $result;
         }
 
-        return $write($encoded_data);
+        return $write(wp_slash($encoded_data));
     }
 
     /**
@@ -647,7 +650,7 @@ class WooCommerce {
 
     public function getProductKeys() {
         $this->plugin->verifyAjaxRequest($this->getProductKeysNonce());
-        $selected_key = $_GET['selected_key'] ?? '';
+        $selected_key = wp_unslash($_GET['selected_key'] ?? '');
 
         wp_send_json([
             'status' => true,

@@ -63,7 +63,7 @@ class GtinHandler {
         ];
     }
 
-    public function getGtin(string $custom_gtin_key = null) {
+    public function getGtin(?string $custom_gtin_key = null) {
         if (!empty($custom_gtin_key)) {
             return $this->getGtinFromKey($custom_gtin_key);
         }
