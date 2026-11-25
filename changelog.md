@@ -1,3 +1,11 @@
+= 3.45 - 2026-11-25 =
+* Require PHP 7.4.
+* Fix product reviews containing emoji (or other 4-byte characters) not being imported on sites whose comments table still uses the `utf8` character set. On such sites, these characters are now stored as HTML entities. Run a full review sync to import reviews that were skipped before.
+* Fix backslashes being removed from imported product reviews and from order notes.
+* Fix quotes in settings, such as the custom GTIN field, being saved with an extra backslash. If the custom GTIN field was set to a key containing a quote, select it again.
+* Fix a fatal error when another plugin triggers order language detection for an order that doesn't exist.
+* Fix deprecation notices on PHP 8.4.
+
 = 3.44 - 2026-11-25 =
 * Security: only output the order data for the invitation popup on the order-received page when the visitor presents a valid order key (and, for orders by registered customers, is logged in as that customer). Thanks to [Shail Shah](https://x.com/ssshah2131) for responsibly reporting this issue.
 
