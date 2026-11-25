@@ -51,7 +51,7 @@ msgstr ""
 #: common/src/PhpCompatibilityCheck.php:13
 #. common/src/PhpCompatibilityCheck.php:13
 #, php-format
-msgid "The %s plugin is not compatible with PHP %s. Please upgrade to PHP 7.0.0 or higher."
+msgid "The %s plugin is not compatible with PHP %s. Please upgrade to PHP 7.4.0 or higher."
 msgstr ""
 
 #: common/src/WooCommerce.php:57

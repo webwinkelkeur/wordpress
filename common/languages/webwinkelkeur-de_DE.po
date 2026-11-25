@@ -52,11 +52,11 @@ msgstr "Beim Anfordern der %s-Einladung ist ein Fehler aufgetreten:"
 #: common/src/PhpCompatibilityCheck.php:13
 #, php-format
 msgid ""
-"The %s plugin is not compatible with PHP %s. Please upgrade to PHP 7.0.0 or "
+"The %s plugin is not compatible with PHP %s. Please upgrade to PHP 7.4.0 or "
 "higher."
 msgstr ""
 "Das Plugin %s ist nicht mit PHP %s kompatibel. Bitte aktualisieren Sie auf "
-"PHP 7.0.0 oder höher."
+"PHP 7.4.0 oder höher."
 
 #. common/src/WooCommerce.php:57
 #: common/src/WooCommerce.php:57
