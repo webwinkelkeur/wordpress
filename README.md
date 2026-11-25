@@ -13,11 +13,11 @@ on http://localhost:13779 with the two plugins available.
 
 Log in with username `admin` and password `password`.
 
-Two additional instances are available for testing:
+An additional instance on the minimum supported PHP version is available for
+testing:
 
 | PHP version | URL                    |
 | ----------- | ---------------------- |
-| 5.6.40      | http://localhost:13777 |
 | 7.4.33      | http://localhost:13778 |
 | 8+          | http://localhost:13779 |
 

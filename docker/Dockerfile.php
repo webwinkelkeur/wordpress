@@ -14,12 +14,8 @@ case 'min':
     $wp_cli = true;
     $debian_archive = 'bullseye';
     break;
-case 'old':
-    $version = '5.6.40-apache';
-    $debian_archive = 'stretch';
-    break;
 default:
-    fwrite(STDERR, "Usage: {$argv[0]} { latest | min | old }\n");
+    fwrite(STDERR, "Usage: {$argv[0]} { latest | min }\n");
     exit(1);
 }
 
@@ -28,8 +24,8 @@ FROM php:<?= $version . "\n"; ?>
 
 <?php if ($debian_archive): ?>
 RUN rm -f /etc/apt/sources.list.d/* && \
-    echo "deb http://archive.debian.org/debian/ <?= $debian_archive ?> main" > /etc/apt/sources.list<?php if ($debian_archive !== 'stretch'): ?> && \
-    echo "deb http://archive.debian.org/debian-security/ <?= $debian_archive ?>-security main" >> /etc/apt/sources.list<?php endif; ?>
+    echo "deb http://archive.debian.org/debian/ <?= $debian_archive ?> main" > /etc/apt/sources.list && \
+    echo "deb http://archive.debian.org/debian-security/ <?= $debian_archive ?>-security main" >> /etc/apt/sources.list
 
 <?php endif; ?>
 

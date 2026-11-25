@@ -1,4 +1,4 @@
-PHP_VERSIONS := latest min old
+PHP_VERSIONS := latest min
 PHP_DOCKERFILES := $(patsubst %,docker/Dockerfile-%,$(PHP_VERSIONS))
 LANGUAGES := nl_NL es_ES de_DE
 MO_FILES := $(patsubst %,common/languages/webwinkelkeur-%.mo,$(LANGUAGES))
