@@ -5,6 +5,7 @@ use Exception;
 use ReflectionMethod;
 use RuntimeException;
 use WC_Customer;
+use WC_Order;
 use WC_Product_Factory;
 use WP_Comment_Query;
 use WC_Comments;
@@ -729,14 +730,22 @@ class WooCommerce {
             return;
         }
 
-        if (!is_wc_endpoint_url('order-received') || $this->plugin->getOption('invite') != self::POPUP_OPTION) {
+        if (!function_exists('is_order_received_page') || !is_order_received_page()) {
+            return;
+        }
+
+        if ($this->plugin->getOption('invite') != self::POPUP_OPTION) {
+            return;
+        }
+
+        $order_id = absint(get_query_var(get_option('woocommerce_checkout_order_received_endpoint')));
+        $order = wc_get_order($order_id);
+        if (!$order instanceof WC_Order || !$this->canViewOrderReceived($order)) {
             return;
         }
 
         $shop_id = $this->plugin->getOption('wwk_shop_id');
         $api_key = $this->plugin->getOption('wwk_api_key');
-        $order_id = absint(get_query_var(get_option('woocommerce_checkout_order_received_endpoint')));
-        $order = wc_get_order($order_id);
 
         $created_data = $order->get_date_created();
         if ($created_data && $created_data->getTimestamp() <= strtotime('-10 minute')) {
@@ -761,6 +770,25 @@ class WooCommerce {
             htmlentities(strtolower($this->plugin->getName())),
             json_encode($order_data, JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS),
         );
+    }
+
+    /**
+     * Mirror WooCommerce's own order-received access check: the visitor must
+     * present the order key, and an order placed by a registered customer is
+     * only shown to that customer.
+     */
+    private function canViewOrderReceived(WC_Order $order): bool {
+        $order_key = isset($_GET['key']) ? wc_clean(wp_unslash($_GET['key'])) : '';
+        if (!is_string($order_key) || $order_key === '' || !hash_equals($order->get_order_key(), $order_key)) {
+            return false;
+        }
+
+        $customer_id = $order->get_customer_id();
+        if ($customer_id && get_current_user_id() !== $customer_id) {
+            return false;
+        }
+
+        return true;
     }
 
     private function getInviteDelay(): int {
