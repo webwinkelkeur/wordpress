@@ -1,0 +1,40 @@
+name: Tests
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  phpunit:
+    name: PHP ${{ matrix.php }}, WordPress ${{ matrix.wp }}, WooCommerce ${{ matrix.wc }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - php: '7.4'
+            wp: latest
+            wc: latest-stable
+          - php: '8.4'
+            wp: latest
+            wc: latest-stable
+          - php: '7.4'
+            wp: '6.8'
+            wc: '9.9.5'
+    steps:
+      - uses: actions/checkout@v7
+      - name: Run tests
+        run: tests/run.sh
+        env:
+          PHP_VERSION: ${{ matrix.php }}
+          WP_VERSION: ${{ matrix.wp }}
+          WC_VERSION: ${{ matrix.wc }}

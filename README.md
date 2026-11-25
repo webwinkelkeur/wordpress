@@ -38,6 +38,9 @@ Or on one PHP version, with arguments for PHPUnit:
 
 Tests live in `tests/*Test.php`; shared helpers are in `tests/includes/`.
 
+GitHub Actions runs the tests on every push to master and on pull requests
+(`.github/workflows/tests.yml`).
+
 
 # Release
 
