@@ -5,6 +5,7 @@
 * Fix quotes in settings, such as the custom GTIN field, being saved with an extra backslash. If the custom GTIN field was set to a key containing a quote, select it again.
 * Fix a fatal error when another plugin triggers order language detection for an order that doesn't exist.
 * Fix deprecation notices on PHP 8.4.
+* Bump **WC tested up to** to WooCommerce 11.3.
 
 = 3.44 - 2026-11-25 =
 * Security: only output the order data for the invitation popup on the order-received page when the visitor presents a valid order key (and, for orders by registered customers, is logged in as that customer). Thanks to [Shail Shah](https://x.com/ssshah2131) for responsibly reporting this issue.

@@ -8,7 +8,7 @@ Author: Trustprofile
 Author URI: https://trustprofile.io?ref=wp-author
 Text Domain: trustprofile
 Domain Path: /common/languages
-WC tested up to: 4.99
+WC tested up to: 11.3
 */
 
 namespace TrustProfile\WordPress;

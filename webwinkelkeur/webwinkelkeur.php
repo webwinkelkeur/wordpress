@@ -8,7 +8,7 @@ Author: Albert Peschar
 Author URI: https://peschar.net/
 Text Domain: webwinkelkeur
 Domain Path: /common/languages
-WC tested up to: 4.99
+WC tested up to: 11.3
 */
 
 namespace WebwinkelKeur\WordPress;
