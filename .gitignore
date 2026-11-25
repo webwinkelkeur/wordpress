@@ -5,4 +5,5 @@
 /svn
 .*.swp
 .vagrant
-/www/vendor
+/www
+/vendor
