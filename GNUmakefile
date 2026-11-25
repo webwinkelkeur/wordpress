@@ -9,6 +9,10 @@ all : docker webwinkelkeur/readme.txt trustprofile/readme.txt $(MO_FILES)
 docker : $(PHP_DOCKERFILES)
 .PHONY : docker
 
+test :
+	tests/run.sh
+.PHONY : test
+
 docker/Dockerfile-% : docker/Dockerfile.php
 	php $< $* > $@~
 	mv $@~ $@

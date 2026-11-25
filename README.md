@@ -22,6 +22,21 @@ Two additional instances are available for testing:
 | 8+          | http://localhost:13779 |
 
 
+# Tests
+
+Run the integration tests in a throwaway WordPress + WooCommerce install
+(requires Docker):
+
+    make test
+
+Or run a subset by test file name, and pick versions:
+
+    WP_VERSION=6.8 WC_VERSION=9.9.5 tests/run.sh ReviewSync
+
+Tests live in `tests/*Test.php`. They run inside WordPress through
+`wp eval-file`, using the small harness in `tests/lib.php`.
+
+
 # Release
 
 Decide on a new version number and add it to the top of `changelog.md`.
