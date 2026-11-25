@@ -62,6 +62,9 @@ class WooCommerce {
     public function set_order_language($order_id) {
         /** @var WC_Order $order */
         $order = wc_get_order($order_id);
+        if (!$order) {
+            return;
+        }
         $language_code = $this->detectOrderLanguage();
         if (!$order->get_meta('wpml_language') && $language_code) {
             $order->update_meta_data('wpml_language', $language_code);
