@@ -79,7 +79,7 @@ class Admin {
             foreach ($fields as $field_name => $sanitize) {
                 try {
                     $config[$field_name] =
-                        $sanitize(@$_POST[$this->plugin->getOptionName($field_name)]);
+                        $sanitize(wp_unslash($_POST[$this->plugin->getOptionName($field_name)] ?? null));
                 } catch (ValidationException $e) {
                     $errors[] = $e->getMessage();
                     $config[$field_name] = '';
