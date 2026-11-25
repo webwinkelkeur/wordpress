@@ -63,6 +63,9 @@ class WooCommerce {
     public function set_order_language($order_id) {
         /** @var WC_Order $order */
         $order = wc_get_order($order_id);
+        if (!$order) {
+            return;
+        }
         $language_code = $this->detectOrderLanguage();
         if (!$order->get_meta('wpml_language') && $language_code) {
             $order->update_meta_data('wpml_language', $language_code);
@@ -499,11 +502,11 @@ class WooCommerce {
             }
         } elseif ($comment_id) {
             $comment_data['comment_ID'] = $comment_id;
-            if (wp_update_comment($comment_data) === false) {
+            if ($this->writeComment('wp_update_comment', $comment_data) === false) {
                 throw new RuntimeException("Could not update review: {$comment_id}");
             }
         } else {
-            if (!wp_insert_comment($comment_data)) {
+            if (!$this->writeComment('wp_insert_comment', $comment_data)) {
                 $this->failedInsertError($comment_data['comment_post_ID']);
             }
             WC_Comments::clear_transients($comment_data['comment_post_ID']);
@@ -561,6 +564,48 @@ class WooCommerce {
             'comment_date' => date('Y-m-d H:i:s', strtotime((string) $review->review_timestamp)),
             'comment_approved' => (int) $review->valid,
         ];
+    }
+
+    /**
+     * Write a comment with wp_insert_comment() or wp_update_comment(). If that
+     * fails, retry once with 4-byte characters (emoji etc.) encoded as HTML
+     * entities: a utf8 (3-byte) column can't store them, and $wpdb refuses
+     * the whole row if we try. Similar to the retry in wp_new_comment().
+     *
+     * @return int|false The function's return value.
+     */
+    private function writeComment(callable $write, array $comment_data) {
+        $result = $write($comment_data);
+        if ($result !== false) {
+            return $result;
+        }
+
+        $encoded_data = $comment_data;
+        foreach (['comment_author', 'comment_content'] as $field) {
+            $encoded_data[$field] = $this->encodeAstralChars($comment_data[$field]);
+        }
+        if ($encoded_data === $comment_data) {
+            return $result;
+        }
+
+        return $write($encoded_data);
+    }
+
+    /**
+     * Replace characters outside the Basic Multilingual Plane (U+10000 and up)
+     * with numeric HTML entities. Unlike wp_encode_emoji(), this covers every
+     * 4-byte character, not just known emoji.
+     */
+    private function encodeAstralChars(string $value): string {
+        $encoded = preg_replace_callback('/[\x{10000}-\x{10FFFF}]/u', function (array $m): string {
+            $b = $m[0];
+            $code_point = ((ord($b[0]) & 0x07) << 18)
+                | ((ord($b[1]) & 0x3F) << 12)
+                | ((ord($b[2]) & 0x3F) << 6)
+                | (ord($b[3]) & 0x3F);
+            return sprintf('&#x%x;', $code_point);
+        }, $value);
+        return $encoded ?? $value;
     }
 
     private function logApiError(WebwinkelKeurAPIError $e) {
