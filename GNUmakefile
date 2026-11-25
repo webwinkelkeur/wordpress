@@ -9,9 +9,15 @@ all : docker webwinkelkeur/readme.txt trustprofile/readme.txt $(MO_FILES)
 docker : $(PHP_DOCKERFILES)
 .PHONY : docker
 
-test :
-	tests/run.sh
+# Run the tests on the oldest and newest supported PHP versions.
+TEST_PHP_VERSIONS := 7.4 8.4
+
+test : $(patsubst %,test-php%,$(TEST_PHP_VERSIONS))
 .PHONY : test
+
+test-php% :
+	PHP_VERSION=$* tests/run.sh
+.PHONY : test-php%
 
 docker/Dockerfile-% : docker/Dockerfile.php
 	php $< $* > $@~

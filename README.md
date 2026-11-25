@@ -24,17 +24,19 @@ Two additional instances are available for testing:
 
 # Tests
 
-Run the integration tests in a throwaway WordPress + WooCommerce install
-(requires Docker):
+The tests use PHPUnit with the WordPress test library (`WP_UnitTestCase`).
+Run them in throwaway Docker containers on PHP 7.4 and 8.4:
 
     make test
 
-Or run a subset by test file name, and pick versions:
+Or on one PHP version, with arguments for PHPUnit:
 
-    WP_VERSION=6.8 WC_VERSION=9.9.5 tests/run.sh ReviewSync
+    PHP_VERSION=7.4 tests/run.sh --filter ReviewSync
 
-Tests live in `tests/*Test.php`. They run inside WordPress through
-`wp eval-file`, using the small harness in `tests/lib.php`.
+`WP_VERSION` and `WC_VERSION` select the WordPress and WooCommerce versions
+(default: latest). Downloads are cached in the `wwk-test-cache` Docker volume.
+
+Tests live in `tests/*Test.php`; shared helpers are in `tests/includes/`.
 
 
 # Release
