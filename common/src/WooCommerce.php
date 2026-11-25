@@ -547,9 +547,15 @@ class WooCommerce {
         $author_email = sanitize_text_field((string) $review->email);
         return [
             'comment_post_ID' => $product_id,
-            'comment_author' => sanitize_text_field((string) $review->reviewer->name),
+            'comment_author' => $this->encodeEmojiForCommentColumn(
+                'comment_author',
+                sanitize_text_field((string) $review->reviewer->name),
+            ),
             'comment_author_email' => $author_email,
-            'comment_content' => sanitize_text_field((string) $review->content),
+            'comment_content' => $this->encodeEmojiForCommentColumn(
+                'comment_content',
+                sanitize_text_field((string) $review->content),
+            ),
             'comment_type' => 'review',
             'comment_meta' => [
                 $this->getReviewIdMetaKey() => (int) $review->review_id,
@@ -560,6 +566,19 @@ class WooCommerce {
             'comment_date' => date('Y-m-d H:i:s', strtotime((string) $review->review_timestamp)),
             'comment_approved' => (int) $review->valid,
         ];
+    }
+
+    /**
+     * A utf8 (3-byte) column can't store emoji, and $wpdb refuses the whole
+     * row if we try. Store them as HTML entities instead, like wp_insert_post().
+     */
+    private function encodeEmojiForCommentColumn(string $column, string $value): string {
+        global $wpdb;
+        $charset = $wpdb->get_col_charset($wpdb->comments, $column);
+        if ($charset === 'utf8' || $charset === 'utf8mb3') {
+            return wp_encode_emoji($value);
+        }
+        return $value;
     }
 
     private function logApiError(WebwinkelKeurAPIError $e) {
