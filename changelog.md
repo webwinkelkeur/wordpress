@@ -1,5 +1,6 @@
 = 3.46 - 2026-11-26 =
 * Bump **Tested up to** to WordPress 7.2.
+* Fix updated product reviews containing emoji (or other 4-byte characters) failing to sync on WordPress 7.2 on sites whose comments table still uses the `utf8` character set.
 
 = 3.45 - 2026-11-25 =
 * Require PHP 7.4.
