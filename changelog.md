@@ -1,3 +1,6 @@
+= 3.46 - 2026-11-26 =
+* Bump **Tested up to** to WordPress 7.2.
+
 = 3.45 - 2026-11-25 =
 * Require PHP 7.4.
 * Fix product reviews containing emoji (or other 4-byte characters) not being imported on sites whose comments table still uses the `utf8` character set. On such sites, these characters are now stored as HTML entities. Run a full review sync to import reviews that were skipped before.
