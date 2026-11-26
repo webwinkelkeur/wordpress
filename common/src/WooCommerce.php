@@ -591,7 +591,25 @@ class WooCommerce {
             return $result;
         }
 
-        return $write(wp_slash($encoded_data));
+        // Since WordPress 7.2, KSES (applied by wp_update_comment()) decodes
+        // character references, which would undo the encoding; encode again
+        // after the comment filters.
+        $encode_filtered = function ($data) {
+            if (is_array($data)) {
+                foreach (['comment_author', 'comment_content'] as $field) {
+                    if (isset($data[$field]) && is_string($data[$field])) {
+                        $data[$field] = $this->encodeAstralChars($data[$field]);
+                    }
+                }
+            }
+            return $data;
+        };
+        add_filter('wp_update_comment_data', $encode_filtered, PHP_INT_MAX);
+        try {
+            return $write(wp_slash($encoded_data));
+        } finally {
+            remove_filter('wp_update_comment_data', $encode_filtered, PHP_INT_MAX);
+        }
     }
 
     /**
